@@ -1,0 +1,144 @@
+﻿<cat --> animal>.
+<dog --> animal>.
+<(*, cat, fish) --> eats>.
+<(*, dog, meat) --> eats>.
+<<$X --> (/, eats, _, meat)> ==> <$X --> dog>>.
+<dog --> [barks]>.
+<cat --> [meows, purrs]>.
+<cat --> [furry, meows]>.
+<cat --> [purrs]>.
+<[cat, dog] --> animal>.
+<[meows, purrs] --> cat>.
+<[furry, meows] --> cat>.
+<{tom} --> cat>.
+<tree --> plant>.
+<orange --> fruit>.
+<apple --> fruit>.
+<fruit --> edible>.
+<orange --> color>.
+<blue --> color>.
+<green --> color>.
+<brown --> color>.
+<{lexie} --> female>.
+<{lexie} --> human>.
+<(*, {lexie}, human) --> genus>.
+<(*, {lexie}, tree) --> climbs>.
+<car --> vehicle>.
+<bus --> vehicle>.
+<truck --> vehicle>.
+<(*, human, vehicle) --> drive>.
+<(*, human, fruit) --> eats>.
+<(*, {lexie}, hair) --> [brown]>.
+<plant --> genus>.
+<human --> genus>.
+<{john, tom, alan} --> boys>.
+<cat --> (/, eats, _, fish)>.
+<a --> b>.
+<b --> c>.
+<c --> d>.
+<d --> e>.
+<e --> f>.
+<f --> g>.
+<g --> h>.
+<h --> i>.
+<{tweety} --> bird>.
+<bird --> [short]>.
+<{tweety} --> canary>.
+<bird --> animal>.
+<animal --> [living]>.
+<{tweety} --> [yellow]>.
+<[yellow] --> color>.
+<plant --> [living]>.
+<fruit --> plant>.
+<apple --> fruit>.
+<orange --> fruit>.
+<bird --> [feathered]>.
+<bird --> [flyer]>.
+<fruit --> [edible]>.
+<car --> [driveable]>.
+<car --> machine>.
+<orange --> edible>.
+<{tash} --> human>.
+<human --> [living]>.
+<human --> [hair]>.
+<{tash} --> [tall]>.
+<{tash} --> [fast]>.
+<{tash} --> runner>.
+<girl --> human>.
+<girl --> [hair]>.
+<[hair] --> [brown]>.
+<[red] --> color>.
+<[green] --> color>.
+<[blue] --> color>.
+<[white] --> color>.
+<{black} --> color>.
+<apple --> [red]>.
+<apple --> [green]>.
+<[red] <-> [green]>.
+<[red] <-> [blue]>.
+<[blue] <-> [green]>.
+<[red, green] <-> [blue, green]>.
+<person-->human>.
+<human-->[driver]>.
+<(*, person, car) --> drive>.
+<cod-->fish>.
+<haddock-->fish>.
+<plaice-->fish>.
+<tuna-->fish>.
+<salmon-->fish>.
+<trout-->fish>.
+<sole-->fish>.
+<ball --> toy>.
+<block --> toy>.
+<car --> toy>.
+<doll --> toy>.
+<train --> toy>.
+<plane --> toy>.
+<fish --> food>.
+<fruit --> food>.
+<cheese --> food>.
+<milk --> food>.
+<cream --> food>.
+<bread --> food>.
+<eggs --> food>.
+<ham --> food>.
+<bacon --> food>.
+<pork --> food>.
+<meat --> food>.
+<lamb --> food>.
+<beef --> food>.
+<chicken --> food>.
+<fish --> food>.
+<meat --> food>.
+<beer --> drink>.
+<cider --> drink>.
+<drink --> food>.
+<human --> (/ eats, _, food)>.
+<walk --> action>.
+<run --> action>.
+<sit --> action>.
+<stand --> action>.
+<sleep --> action>.
+<wake --> action>.
+<eat --> action>.
+<pick_up --> action>.
+<put_down --> action>.
+<push --> action>.
+<pull --> action>.
+<person <-> human>.
+<person --> (/, does, _, action)>.
+<(&&, <$X --> female>, <(*, $X, $Y) --> daughter>) ==> <(*, $Y, $X) --> mother>>.
+<<(*, $X, $Y) --> daughter> ==> <(*, $Y, $X) --> mother>>.
+<<$X --> person> ==> <(*, $X, preferences) --> has>>.
+<<(*, car, {SELF}) --> (&, [fast], approaching) > ==> <{SELF} --> move>>.
+<<(*, $1, $2) --> larger> ==> <(*, $2, $1) --> smaller>>.
+<<(*, $1, $2) --> smaller> ==> <(*, $2, $1) --> larger>>.
+<<(*, $1, $2) --> above> ==> <(*, $2, $1) --> below>>.
+<<(*, $1, $2) --> next_to> <=> <(*, $2, $1) --> next_to>>.
+<<(*, $1, $2) --> over> ==> <(*, $2, $1) --> under>>.
+<<(*, $1, $2) --> under> ==> <(*, $2, $1) --> over>>.
+<<(*, $1, $2) --> outside> ==> <(*, $2, $1) --> inside>>.
+<<(*, $1, $2) --> inside> ==> <(*, $2, $1) --> contains>>.
+<<(*, $1, $2) --> contains> ==> <(*, $1, $2) --> larger>>. 
+<<(*, $1, $2) --> on> ==> <(*, $2, $1) --> under>>.
+<<(*, {$1}, {$2}) --> inside> ==> <(*, {$2}, {$1}) --> contains>>.
