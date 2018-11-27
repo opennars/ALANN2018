@@ -24,7 +24,7 @@ The current implementation is not industrial strength but can form a useful tool
 
 The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
 
-The inference test cases are a good place to start to get an idea of how narses can be used with the inference rules.
+The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules.
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference
 
 Have fun!
