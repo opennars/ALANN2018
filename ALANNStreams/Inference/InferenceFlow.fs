@@ -30,23 +30,10 @@ open Akka.Streams
 open Akkling.Streams
 open Types
 open InferenceFlowModules
-open TermUtils
-open TermFormatters
-open ALANNSystem
-open Akkling
 
 let inferenceFlow = GraphDsl.Create(fun builder ->
     let broadcast = builder.Add(Broadcast<EventBelief>(2))
     let merge = builder.Add(Merge<Event>(2))
-
-
-    let firstOrderFilter =
-        Flow.Create<EventBelief>()
-        |> Flow.filter (fun eb -> isFirstOrder (eb.Event.Term))
-
-    let higherOrderFilter =
-        Flow.Create<EventBelief>()
-        |> Flow.filter (fun eb -> (not (isFirstOrder (eb.Event.Term)) && (isFirstOrder (eb.Belief.Term))))
 
     let groupAndDedupe =
         builder.Add(
@@ -57,11 +44,9 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
 
     builder
         .From(broadcast.Out(0))
-        .Via(firstOrderFilter)
         .Via((inferenceFlowModules firstOrderModules).Async())
         .To(merge.In(0))
         .From(broadcast.Out(1))
-        .Via(higherOrderFilter)
         .Via((inferenceFlowModules higherOrderModules).Async())
         .To(merge.In(1))
         .From(merge)
