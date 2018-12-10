@@ -1,4 +1,4 @@
-﻿(* 
+﻿ (*
  * The MIT License
  *
  * Copyright 2018 The ALANN2018 authors.
@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*)
+ *)
 
 module InferenceTests
 
@@ -497,7 +497,7 @@ let test1 =
         testCase "structuralInference: 3" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<ai --> (m <| a _)>." + truth tv1
+            let t1 = parseEvent <|  "<ai --> (m / a _)>." + truth tv1
             let t2 = parseEvent <|  "_." + truth tv1          
             let expected = [("<(a * ai) --> m>", Some <| identity(tv1, tv2))]
             Expect.equal (testInfFunc structuralInference t1 t2)  expected "structuralInference: 3 failed"
@@ -505,7 +505,7 @@ let test1 =
         testCase "structuralInference: 4" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<ai --> (m <| _ b)>." + truth tv1
+            let t1 = parseEvent <|  "<ai --> (m / _ b)>." + truth tv1
             let t2 = parseEvent <|  "_." + truth tv1          
             let expected = [("<(ai * b) --> m>", Some <| identity(tv1, tv2))]
             Expect.equal (testInfFunc structuralInference t1 t2)  expected "structuralInference: 4 failed"
@@ -513,7 +513,7 @@ let test1 =
         testCase "structuralInference: 5" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<(m |> a _) --> ai>." + truth tv1
+            let t1 = parseEvent <|  "<(m \ a _) --> ai>." + truth tv1
             let t2 = parseEvent <|  "_." + truth tv1          
             let expected = [("<m --> (a * ai)>", Some <| identity(tv1, tv2))]
             Expect.equal (testInfFunc structuralInference t1 t2)  expected "structuralInference: 5 failed"
@@ -521,7 +521,7 @@ let test1 =
         testCase "structuralInference: 6" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<(m |> _ b) --> ai>." + truth tv1
+            let t1 = parseEvent <|  "<(m \ _ b) --> ai>." + truth tv1
             let t2 = parseEvent <|  "_." + truth tv1          
             let expected = [("<m --> (ai * b)>", Some <| identity(tv1, tv2))]
             Expect.equal (testInfFunc structuralInference t1 t2)  expected "structuralInference: 6 failed"
@@ -609,7 +609,7 @@ let test1 =
         testCase "backwardDrivenForwardInference: 5" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<(n |> a _) --> z>?" + truth tv1
+            let t1 = parseEvent <|  "<(n \ a _) --> z>?" + truth tv1
             let t2 = parseEvent <|  "<n --> r>." + truth tv1         
             let expected = [("<(n \\ a _) --> (r \\ a _)>", Some <| beliefStructuralDed(tv1, tv2))]
             Expect.equal (testInfFunc backwardDrivenForwardInference t1 t2)  expected "backwardDrivenForwardInference: 5 failed"
@@ -617,7 +617,7 @@ let test1 =
         testCase "backwardDrivenForwardInference: 6" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <|  "<(n <| _ b) --> z>?" + truth tv1
+            let t1 = parseEvent <|  "<(n / _ b) --> z>?" + truth tv1
             let t2 = parseEvent <|  "<s --> b>." + truth tv1         
             let expected = [("<(n / _ b) --> (n / _ s)>", Some <| beliefStructuralDed(tv1, tv2))]
             Expect.equal (testInfFunc backwardDrivenForwardInference t1 t2)  expected "backwardDrivenForwardInference: 6 failed"
@@ -757,7 +757,7 @@ let test1 =
             let t1 = parseEvent <|  "--<a --> b>." + truth tv1
             let t2 = parseEvent <|  "a." + truth tv1        
             let expected = [("<a --> b>", Some <| neg(tv1, tv2))]
-            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2)  expected "Nal1_5_conversion_contrapostion_negation: negation3 failed"
+            Expect.equal (testInfFunc Nal5_conversion_contrapostion_negation t1 t2)  expected "Nal1_5_conversion_contrapostion_negation: negation3 failed"
 
         testCase "Nal1_5_conversion_contrapostion_negation: negation4" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
@@ -765,7 +765,7 @@ let test1 =
             let t1 = parseEvent <|  "--<a --> b>." + truth tv1
             let t2 = parseEvent <|  "b." + truth tv1         
             let expected = [("<a --> b>", Some <| neg(tv1, tv2))]
-            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2)  expected "Nal1_5_conversion_contrapostion_negation: negation4 failed"
+            Expect.equal (testInfFunc Nal5_conversion_contrapostion_negation t1 t2)  expected "Nal1_5_conversion_contrapostion_negation: negation4 failed"
 
         testCase "Nal1_5_conversion_contrapostion_negation: negation5" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
@@ -1775,7 +1775,7 @@ let test1 =
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
             let t1 = parseEvent <|  "(<rabbit --> animal> ; <PETER --> word>)." + truth tv1
-            let t2 = parseEvent <|  "<($1 ; <$2 --> word>) <|> <(REPRESENT <| $2 _) <-> $1>>." + truth tv2
+            let t2 = parseEvent <|  "<($1 ; <$2 --> word>) <|> <(REPRESENT / $2 _) <-> $1>>." + truth tv2
             let expected = [("<(REPRESENT / PETER _) <-> <rabbit --> animal>>", Some <| ana(tv1, tv2))]
             Expect.equal (testInfFunc nal6_variable_elimination t1 t2)  expected "nal6_variable_elimination: 14a failed"
 
@@ -1843,10 +1843,10 @@ let test1 =
             let tv2 = {F = 1.0f; C = 0.9f}
             let t1 = parseEvent <| "(C ; A)." + truth tv1
             let t2 = parseEvent <| "(C ; B)." + truth tv2
-            let expected = [("(C ; (A ; B))", Some <| int(tv1, tv2))
-                            ("(C ; (A , B))", Some <| int(tv1, tv2))
-                            ("(C ; (B , A))", Some <| int(tv1, tv2))]
-            Expect.equal (testInfFunc nal7_temporal_sequence t1 t2)  expected "nal7_temporal_sequence: 1 failed"
+            let expected = [("(C ; (A ; B))", Some <| temporal_int(tv1, tv2))
+                            ("(C ; (A , B))", Some <| temporal_int(tv1, tv2))
+                            ("(C ; (B , A))", Some <| temporal_int(tv1, tv2))]
+            Expect.equal (testInfFunc nal7_temporal_conjunction t1 t2)  expected "nal7_temporal_sequence: 1 failed"
 
 ]
 

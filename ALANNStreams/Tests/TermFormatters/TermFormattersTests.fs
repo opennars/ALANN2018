@@ -1,4 +1,4 @@
-﻿(* 
+﻿ (*
  * The MIT License
  *
  * Copyright 2018 The ALANN2018 authors.
@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*)
+ *)
 
 module TermFormattersTests
 
@@ -125,12 +125,12 @@ let test1 =
             Expect.equal (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest18" <| fun () ->            
-            let expected = "(/ a b _)"
+            let expected = "(a / b _)"
             let term = parseTerm expected
             Expect.equal (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest19" <| fun () ->            
-            let expected = "(\\ a b _)"
+            let expected = "(a \\ b _)"
             let term = parseTerm expected
             Expect.equal (ft term) expected "Incorrect format"
 
