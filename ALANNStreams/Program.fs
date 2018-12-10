@@ -54,4 +54,4 @@ let main argv =
 
     Console.ReadLine() |> ignore
 
-    0 // return ok
+    0 // return ok here
