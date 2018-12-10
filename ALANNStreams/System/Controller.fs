@@ -39,14 +39,6 @@ type Controller() =
 
     let UDPreceiver = RunnableGraph.FromGraph ALANNLobe |> Graph.run mat
 
-    //let rec loop() = async {
-    //    UDPreceiver <! getServerMsg(inSocket)
-    //    return! loop()
-    //    }
-
-    //do
-    //    loop() |> Async.Start
-
     // Publish Events
     member this.DisplayAnswer = DisplayAnswerEvent.Publish  
     member this.ParseError = ParseErrorEvent.Publish
@@ -61,7 +53,6 @@ type Controller() =
         }
 
         loop() |> Async.Start
-        //statsFunc() |> Async.Start
 
     member this.Send (text : string []) =
         for line in text do
