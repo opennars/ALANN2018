@@ -5,7 +5,7 @@ nuget C5 restriction: >= net461
 nuget CsvHelper restriction: >= net461
 nuget FParsec 1.0.4-RC restriction: >= net461
 nuget FsPickler 3.2.0 restriction: >= net46
-nuget System.ValueTuple  restriction: >= net461
-nuget NewtonSoft.Json restriction: >= net461
+nuget System.ValueTuple 4.3.1 restriction: >= net461
+nuget NewtonSoft.Json 11.0.1 restriction: >= net461
 nuget Expecto >= 7.0.0 restriction: >= net461
 nuget FSharp.Configuration
