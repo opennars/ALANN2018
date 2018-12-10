@@ -1,4 +1,4 @@
-﻿(* 
+﻿ (*
  * The MIT License
  *
  * Copyright 2018 The ALANN2018 authors.
@@ -20,16 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*)
+ *)
 
 open System
-open Akkling
-open Akkling.Streams
-open Akka.Streams.Dsl
-open ALANNSystem
-open ALANNLobe
-open Network
-open Expecto
+open Controller
+open Reporting
 
 [<EntryPoint>]
 let main argv = 
@@ -46,22 +41,16 @@ let main argv =
     printfn "\tConfiguring..."
     printfn ""
 
-    let UDPreceiver = RunnableGraph.FromGraph ALANNLobe |> Graph.run mat
+    let controller = new Controller()
 
-    let rec loop() = async {
-        UDPreceiver <! getServerMsg(inSocket)
-        return! loop()
-    }
-
-    loop() |> Async.Start
+    controller.Initialise()
+    controller.ParseError.Add (fun e -> printfn "%s" e.Error)
+    controller.DisplayAnswer.Add (fun e -> displayAnswer e.Answer)
 
     printfn "\tConfiguration complete\n"
     printfn "\tRunning system in [%s] mode\n" (if Params.WORKSTATION then "WORKSTATION" else "SERVER")
     printfn "\tReady to accept commands\n"
 
-    while true do
-        printf "\n\tEnter command: "
-        UDPreceiver <! Console.ReadLine()
 
     Console.ReadLine() |> ignore
 
