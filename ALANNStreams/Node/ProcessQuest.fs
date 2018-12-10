@@ -1,5 +1,4 @@
-﻿
- (*
+(*
  * The MIT License
  *
  * Copyright 2018 The ALANN2018 authors.
@@ -22,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *)
- module ProcessQuest
+ 
+module ProcessQuest
 
 open Types
 
