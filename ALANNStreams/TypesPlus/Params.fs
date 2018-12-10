@@ -55,7 +55,7 @@ let USER_LTI                            = 0.90f         // long Term Importance 
 let TRAIL_LENGTH                        = 15            // maximum length allowed for inference trail within stamp
 let MAX_SC                              = 20            // Maximum syntactic complexity of terms
 let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve slope of the priority buffer selection
-let TERM_DEPTH                          = 4             // depth of term separation
+let TERM_DEPTH                          = 3             // depth of term separation
 let ATTENTION_BUFFER_SIZE               = 10            // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
 
@@ -67,7 +67,7 @@ let INFERENCES_PROCESSED_MOD            = 100_000L      // Frequency of display 
 
 //Streams related Parameters    ***WORKSTATION SETUP***
 let WORKSTATION                         = false          // Set to true if running on a workstation rather than a server
-let NUM_TERM_STREAMS                    = 10            // Number of Term streams
+let NUM_TERM_STREAMS                    = 5             // Number of Term streams
 let NUM_SELECTED_BELIEFS                = 5             // Number of beliefs selected after attention allocated in concept
 let CYCLE_DELAY_MS                      = 5.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 5.0           // Number of ms to allow for grouping of events before despatching 

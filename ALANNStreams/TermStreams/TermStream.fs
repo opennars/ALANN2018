@@ -32,25 +32,21 @@ open Akka.Streams
 open Types
 open Node
 open InferenceFlow
-open TermFormatters
-open ALANNSystem
 
 let termStream (i) =
     GraphDsl.Create(
         fun builder ->
-            //let store = stores.[i]
-
             let processEvent {Term = t; Event = e} = 
                 match stores.[i].TryGetValue(t) with
                 | (true, node) ->
                     let (node', ebs) = processEvent node e
                     match stores.[i].TryUpdate(t, node', node) with
                     | false -> 
-                        printfn "ProcessEvent failed with node update"
+                        failwith "ProcessEvent failed with node update"
                         []
                     | _ -> ebs
                 | (false, _) -> 
-                    printfn "ProcessEvent failed with node get"
+                    failwith "ProcessEvent failed with node get"
                     []
 
             let createNode {Term = t; Event = e} = stores.[i].TryAdd(t, createNode (t, e)) |> ignore; {Term = t; Event = e}
@@ -59,7 +55,7 @@ let termStream (i) =
             
             let create = 
                 Flow.Create<TermEvent>()
-                |> Flow.filter (fun {Term = t; Event = e} -> (e.Stamp.Source = User && e.EventType = Belief) || (e.EventType = Belief && exp(e.TV.Value) > 0.5f && e.Stamp.SC < 20))
+                |> Flow.filter (fun {Term = t; Event = e} -> e.EventType = Belief && (e.Stamp.Source = User || exp(e.TV.Value) > 0.5f))
                 |> Flow.map createNode
 
             let processEvent = 
