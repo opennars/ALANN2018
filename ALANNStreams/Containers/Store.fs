@@ -24,60 +24,51 @@
 
 module Store
 
-open C5
 open Types
-open TruthFunctions
 open TermUtils
+open SubStore
 
-type Store(n : int) =
-    let q = IntervalHeap<Belief>(n) :> IPriorityQueue<Belief>
-    let d = HashDictionary<Key, IPriorityQueueHandle<Belief>>() :>IDictionary<Key, IPriorityQueueHandle<Belief>>
-
-    let maxSize = n
-
-    let addBelief key (belief : Belief) h =
-        q.Add(h, belief) |> ignore
-        d.Add(key, !h)        
-
-    let deleteMinBelief() =
-        let (deleted, h) = q.DeleteMin()
-        let h = ref h
-        match d.Remove(makeKey deleted, h ) with
-        | true -> ()
-        | false -> failwith "ConceptStore.Insert() : failed to remove on maxSize"    
-        !h
+type Store(generalCapacity, temporalCapacity ) =
+    let temporalStore = new SubStore(temporalCapacity) :> ISubStore
+    let GeneralStore = new SubStore(generalCapacity) :> ISubStore
 
     interface IStore with
-        member x.Contains(key) = d.Contains key
+        member x.Contains(key) = 
+            if fst key |> isTemporal then
+                temporalStore.Contains key
+            else
+                GeneralStore.Contains key
 
         member x.Insert(key, belief) =
-            if d.Count >= maxSize then
-                if exp(belief.TV) >= exp(q.FindMin().TV) then 
-                    ref <| deleteMinBelief()
-                    |> addBelief key belief
+            if fst key |> isTemporal then
+                temporalStore.Insert(key, belief)
             else
-                let h = ref null
-                addBelief key belief (ref null)
+                GeneralStore.Insert(key, belief)
 
         member x.Update(key, belief) =
-
-            let h = d.[key]
-            q.[h] <- belief
+            if fst key |> isTemporal then
+                temporalStore.Update(key, belief)
+            else
+                GeneralStore.Update(key, belief)
 
         member x.TryGetValue key = 
-            
-            if d.Contains(key) then Some(q.[d.[key]])
-            else None
+            if fst key |> isTemporal then
+                temporalStore.TryGetValue key
+            else
+                GeneralStore.TryGetValue key
 
         member x.Clear() =
-        
-            d.Clear()
-            while not(q.IsEmpty) do
-                let (_,_) = q.DeleteMax()
-                ()
+            temporalStore.Clear()
+            GeneralStore.Clear()
 
-        member x.GetEnumerator() = q.GetEnumerator()
+        member x.Count = temporalStore.Count + GeneralStore.Count
 
-        member x.Count = d.Count
+        member x.GetBeliefs() =           
+            Seq.append
+                (temporalStore.GetBeliefs())
+                (GeneralStore.GetBeliefs())
 
-        member x.Beliefs() = q :> seq<Belief>
+        member x.GetTemporalBeliefs() = temporalStore.GetBeliefs()
+           
+        member x.GetGeneralBeliefs() = GeneralStore.GetBeliefs() 
+
