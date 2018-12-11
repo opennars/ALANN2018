@@ -39,7 +39,6 @@ namespace PriorityBuffer
             private readonly IPriorityQueue<T> _queue;
             private bool _downstreamWaiting = false;
             private int _size;
-            private static Random rnd = new Random();
 
             public Logic(MyBuffer<T> buffer, int n) : base(buffer.Shape)
             {
