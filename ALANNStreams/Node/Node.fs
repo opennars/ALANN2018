@@ -66,9 +66,9 @@ let processEvent state (event : Event) =
 
 let initState term av =
     {Term = term
-     Beliefs = Store(Params.BELIEF_CAPACITY) :> IStore
+     Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
-     AV = av //{STI = Params.NODE_STI; LTI = Params.NODE_LTI}
+     AV = av
      LastUsed = SystemTime()
      UseCount = 0L}
     
