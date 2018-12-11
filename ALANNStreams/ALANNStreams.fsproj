@@ -80,6 +80,7 @@
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
     <Compile Include="Inference\ImmediateInference.fs" />
+    <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
     <Compile Include="Containers\EventStore.fs" />
     <Compile Include="Parser\Parser.fs" />
