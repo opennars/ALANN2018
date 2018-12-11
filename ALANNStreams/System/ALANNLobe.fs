@@ -40,7 +40,7 @@ let mainSink =
     GraphDsl.Create(
         fun builder-> 
             let mergePref = builder.Add(MergePreferred<Event>(1))
-            let inBuffer = builder.Add(Flow.Create<Event>() |> Flow.buffer OverflowStrategy.DropHead Params.INPUT_BUFFER_SIZE)
+            let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
 
             let groupAndDelay =
