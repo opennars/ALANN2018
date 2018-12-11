@@ -105,7 +105,7 @@ let isConcurrent s p = abs (p.Created - s.Created) < Params.CONCURRENCY_DURATION
 let isAfter s p = s.Created > p.Created && abs(s.Created - p.Created) < 1000L
 let isQuoted = function | Word s -> s.Chars(s.Length - 1) = ''' | _ -> false
 let isBelief e = e.EventType = EventType.Belief
-
+ 
 let rec containsVars = function
     | Var(_, _) -> true
     | Term(_, hd::tl) when tl = [] -> containsVars hd
@@ -128,5 +128,6 @@ let isFirstOrder = function | Term(Inh, _) | Term(Sim, _) -> true | _ -> false
 // Helper functions
 let makeKey (b : Belief) = (b.Term, sort b.Stamp.Evidence)
 let makeKeyFromEvent (e : Event) = (e.Term, sort e.Stamp.Evidence)
+
 
 
