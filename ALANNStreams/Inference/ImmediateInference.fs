@@ -33,18 +33,6 @@ let immediate = function
     | {Belief.Term = Term(Inh, [s; p]); TV = tv; Stamp = stamp} when s <> p -> Some {Term = Term(Inh, [p; s]); TV = cnv(tv, tv); Stamp = stamp} 
     | _ -> None
 
-//let immediateInference state (event : Event) =
-//    match event with
-//    | {EventType = Belief} ->
-//        let belief = makeBeliefFromEvent event
-//        match immediate belief with
-//        | Some b -> 
-//            if isMainTerm state.Term b.Term then
-//                if not(state.Beliefs.Contains(makeKey b)) then state.Beliefs.Insert(makeKey b, b)
-//        | _ -> ()
-
-//    | _ -> ()
-
 let immediateInference state (event : Event) =
     match event with
     | {EventType = Belief} ->
