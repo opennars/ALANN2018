@@ -47,7 +47,7 @@ let processQuestion state (event : Event) =
         | Some belief ->
             tryPrintAnswer event belief
             [makeAnsweredEventBelief state event belief]
-        | None ->
+        | None -> 
             getInferenceBeliefs state event
     | _ ->
        getInferenceBeliefs state event
