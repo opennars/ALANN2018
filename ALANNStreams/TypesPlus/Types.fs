@@ -26,7 +26,6 @@ module Types
 
 open System
 open System.Threading
-open System.Collections.Generic
 open System.Collections.Concurrent
 
 type OpCode =
@@ -85,10 +84,11 @@ type Belief =
     interface System.IComparable<Belief> with
         member this.CompareTo other =
             exp(this.TV).CompareTo(exp(other.TV))
+            //this.TV.C.CompareTo(other.TV.C)
 
     override this.Equals(other) =
         match other with
-        | :? Belief as y -> this.Term = y.Term
+        | :? Belief as y -> this.Term = y.Term && List.sort this.Stamp.Evidence = List.sort y.Stamp.Evidence
         | _ -> false
 
     override this.GetHashCode() = this.Term.GetHashCode()
@@ -161,8 +161,9 @@ type IStore =
     abstract TryGetValue : Key -> Belief option
     abstract Clear : unit -> unit
     abstract Count : int
-    abstract GetEnumerator : unit -> IEnumerator<Belief>
-    abstract Beliefs : unit -> seq<Belief>
+    abstract GetBeliefs : unit -> seq<Belief>
+    abstract GetTemporalBeliefs : unit -> seq<Belief>
+    abstract GetGeneralBeliefs : unit -> seq<Belief>
 
 type Node     = {Term : Term
                  Beliefs : IStore
