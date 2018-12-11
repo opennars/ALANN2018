@@ -81,29 +81,36 @@ let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
     | _ -> b
 
 let getInferenceBeliefs state event = 
-    // If event and belief terms match then do inference and update Beliefs store locally
-    let doRevision revisables =
-        let reviseTVOption optTV TV = optTV |> Option.map (fun tv -> rev(tv, TV))
-        let updateStamp st1 st2 = {st1 with Evidence = merge st1.Evidence st2.Evidence; LastUsed = SystemTime(); UseCount = st1.UseCount + 1L}
 
-        revisables
-        |> List.filter (fun eb -> eb.Event.Term = eb.Belief.Term)
-        |> List.map (fun eb -> {eb.Event with TV = reviseTVOption eb.Event.TV eb.Belief.TV; Stamp = updateStamp eb.Event.Stamp eb.Belief.Stamp})
-        |> List.iter (updateBeliefs state)
-        
-    // Check for non overlapping evidence, apply assumption of failure, make event belief pair for deriver
-    let inferencables =
-        [for belief in state.Beliefs.Beliefs() -> belief]
-        |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
-        |> List.filter (fun belief -> belief.TV.C > Params.INFERENCE_CONFIDENCE_MIN)
-        |> List.map (fun belief -> tryUpdatePredictiveTemporalbelief state event belief)
-        |> List.map (makeEventBelief state event)
+    let getInferenceBeliefsByType state event (beliefs : Belief list) =
+        // If event and belief terms match then do inference and update Beliefs store locally
+        let doRevision revisables =
+            let reviseTVOption optTV TV = optTV |> Option.map (fun tv -> rev(tv, TV))
+            let updateStamp st1 st2 = {st1 with Evidence = merge st1.Evidence st2.Evidence; LastUsed = SystemTime(); UseCount = st1.UseCount + 1L}
 
-    // Do revision locally
-    doRevision inferencables
+            revisables
+            |> List.filter (fun eb -> eb.Event.Term = eb.Belief.Term)
+            |> List.map (fun eb -> {eb.Event with TV = reviseTVOption eb.Event.TV eb.Belief.TV; Stamp = updateStamp eb.Event.Stamp eb.Belief.Stamp})
+            |> List.iter (updateBeliefs state)
+            
+        // Check for non overlapping evidence, apply assumption of failure, make event belief pair for deriver
+        let inferencables =
+            beliefs
+            |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
+            |> List.filter (fun belief -> belief.TV.C > Params.INFERENCE_CONFIDENCE_MIN)
+            |> List.map (fun belief -> tryUpdatePredictiveTemporalbelief state event belief)
+            |> List.map (makeEventBelief state event)
 
-    // Sort inference pairs and select top priority, at most, Params.NUM_SELECTED_BELIEFS 
-    inferencables
-    |> List.sortBy (fun eb -> -eb.AV.STI)
-    |> List.truncate Params.NUM_SELECTED_BELIEFS    
-    
+        // Do revision locally
+        doRevision inferencables
+
+        // Sort inference pairs and select top priority, at most, Params.NUM_SELECTED_BELIEFS 
+        inferencables
+        |> List.sortBy (fun eb -> -eb.AV.STI)
+        |> List.truncate Params.NUM_SELECTED_BELIEFS    
+
+    List.append
+        (getInferenceBeliefsByType state event (Seq.toList <| state.Beliefs.GetGeneralBeliefs()))
+         (getInferenceBeliefsByType state event (Seq.toList <| state.Beliefs.GetTemporalBeliefs()))
+
+
