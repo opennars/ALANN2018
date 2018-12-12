@@ -50,7 +50,6 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
         .Via((inferenceFlowModules higherOrderModules).Async())
         .To(merge.In(1))
         .From(merge)
-        .Via(Flow.Create<Event>() |> Flow.map (fun e -> (if e.ProcessType = Inference then failwith "Deriver pprocess type error"); e))
         .To(groupAndDedupe)
         |> ignore
 

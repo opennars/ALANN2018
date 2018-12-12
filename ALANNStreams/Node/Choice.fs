@@ -65,7 +65,7 @@ let selectiveAnswer state (event : Event) =
         Some(Seq.maxBy (fun (b : Belief) -> exp b.TV) matches)
 
 let isBetterThan aTV bTV =
-    let cond1 = bTV.C >= aTV.C 
+    let cond1 = bTV.C > aTV.C 
     let cond2 = (bTV.C = aTV.C) && (bTV.F > aTV.F)
     cond1 || cond2
 
