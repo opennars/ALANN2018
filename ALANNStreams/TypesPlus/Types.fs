@@ -50,6 +50,7 @@ type TV = {F : float32; C : float32}    // Acts as DV for goals
 type AV = {STI : float32; LTI : float32}
 
 type EventType = | Belief | Goal | Question | Quest
+type ProcessType = Prime | InferenceReq | Inference
 
 type Id = int64
 
@@ -99,12 +100,13 @@ type Event =
     {Term : Term
      AV : AV
      EventType : EventType
+     ProcessType : ProcessType
      TV : TV option
      Stamp : Stamp
      Solution : Belief option}
      interface System.IComparable<Event> with
         member this.CompareTo other =
-            this.AV.STI.CompareTo(other.AV.STI)
+            this.AV.STI.CompareTo(other.AV.STI)            
             
     override this.Equals(other) =
         match other with
@@ -183,3 +185,5 @@ let startTime = DateTime.Now.Ticks
 let SystemTime() = (DateTime.Now.Ticks - startTime) / 10000L 
 
 let mutable stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]
+let mutable activationThreshold = ref Params.ACTIVATION_THRESHOLD
+

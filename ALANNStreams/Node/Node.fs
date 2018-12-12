@@ -33,21 +33,33 @@ open ProcessBelief
 open ProcessQuestion
 open ProcessGoal
 open ProcessQuest
+open Loggers
+open System.Threading
+open TruthFunctions
 
 let processEvent state (event : Event) =
 
-    immediateInference state event
-    updateBeliefs state event
+    //immediateInference state event
+    //updateBeliefs state event
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
 
+    let state = {state with AV = forget state now }
+    let event = {event with AV = {event.AV with STI = _or[event.AV.STI; state.AV.STI]}}
     let state = updateAttention state now event.AV
-        
-    match (not inLatencyPeriod) && (state.AV.STI > Params.ACTIVATION_THRESHOLD) || (event.EventType = Question && event.Stamp.Source = User) with
-    | true ->
-        let state = {state with LastUsed = now; UseCount = state.UseCount + 1L}
 
+    //match (event.EventType = Question && event.Stamp.Source = User) || (not inLatencyPeriod && state.AV.STI >= Params.ACTIVATION_THRESHOLD) with
+    match not inLatencyPeriod && state.AV.STI >= !activationThreshold with
+    | true ->
+        let event = {event with ProcessType = processType event}
+        
+        immediateInference state event
+        updateBeliefs state event
+
+        let state = {state with LastUsed = now; UseCount = state.UseCount + 1L}
+        Interlocked.Increment(activeConcepts) |> ignore
+        
         let createEventBeliefs state = function
             | {Event.EventType = Question} as event -> processQuestion state event
             | {Event.EventType = Belief} as event   -> processBelief state event
@@ -68,7 +80,7 @@ let initState term av =
     {Term = term
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
-     AV = av
+     AV = av //{STI = Params.NODE_STI; LTI = Params.NODE_LTI}
      LastUsed = SystemTime()
      UseCount = 0L}
     

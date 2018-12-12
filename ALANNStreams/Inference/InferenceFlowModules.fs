@@ -83,7 +83,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         let flow =
             Flow.Create<EventBelief>() 
             |> Flow.filter (fun eb -> eb.AV.STI > Params.MINIMUM_STI)
-            |> Flow.map (fun eb -> eb.Event::(inf (fst modules.[j]) (snd modules.[j]) eb))  // add event to inference results
+            |> Flow.map (fun eb -> {eb.Event with ProcessType = Prime}::(inf (fst modules.[j]) (snd modules.[j]) eb))  // add event to inference results
             |> Flow.collect (fun lst -> List.map (fun event -> event) lst)
             |> Flow.filter (fun event -> Option.isNone event.TV || event.TV |> Option.exists (fun tv -> tv.C > Params.MINIMUM_CONFIDENCE))
             |> Flow.filter (fun e -> e.Stamp.SC < Params.MAX_SC)
