@@ -31,14 +31,20 @@ open TruthFunctions
 open TermUtils
 open Evidence
 
+let processType event = 
+    match event.ProcessType with
+    | Prime -> InferenceReq
+    | InferenceReq -> Inference
+    | Inference -> Prime
+
 let makeEventBelief state event (belief : Belief) =
     {AV = {state.AV with STI = state.AV.STI * TruthFunctions.exp(belief.TV)}
-     Event = {event with AV = {event.AV with STI = _or([state.AV.STI; event.AV.STI]) * event.AV.LTI}}
+     Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI}}
      Belief = belief}
 
 let makeAnsweredEventBelief state event (belief : Belief) =
     {AV = {state.AV with STI = state.AV.STI * TruthFunctions.exp(belief.TV)}
-     Event = {event with AV = {event.AV with STI = _and [state.AV.STI; event.AV.LTI; 1.0f - belief.TV.C]}; Solution = Some belief}
+     Event = {event with ProcessType = Inference; AV = {event.AV with STI = event.AV.LTI * 1.0f - belief.TV.C}; Solution = Some belief}
      Belief = belief}
 
 let updateBeliefs state event =    
@@ -59,14 +65,14 @@ let updateBeliefs state event =
         | _ -> ()
     | _ -> ()
 
-let forget (state : Node) now lti = 
+let forget (state : Node) now = 
     let lambda = float((1.0f - state.AV.LTI) / Params.DECAY_RATE)
     let delta = float(now - state.LastUsed)
     {state.AV with STI = state.AV.STI * float32(Math.Exp(-lambda * delta))}
 
 let updateAttention state now eventAV =
-    let av = forget state now eventAV.LTI
-    let sti = _or [av.STI; eventAV.STI]
+    //let av = forget state now eventAV.LTI
+    let sti = _or [state.AV.STI; eventAV.STI]
     {state with AV = {state.AV with STI = sti}}
 
 let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
@@ -106,8 +112,8 @@ let getInferenceBeliefs state event =
 
         // Sort inference pairs and select top priority, at most, Params.NUM_SELECTED_BELIEFS 
         inferencables
-        |> List.sortBy (fun eb -> -eb.AV.STI)
-        |> List.truncate Params.NUM_SELECTED_BELIEFS    
+        //|> List.sortBy (fun eb -> -eb.AV.STI)
+        //|> List.truncate Params.NUM_SELECTED_BELIEFS    
 
     List.append
         (getInferenceBeliefsByType state event (Seq.toList <| state.Beliefs.GetGeneralBeliefs()))

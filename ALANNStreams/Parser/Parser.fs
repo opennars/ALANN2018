@@ -161,7 +161,7 @@ let pquestType    = (str_ws "@") |>> (fun _ -> Quest)
 let peventType = pbeliefType <|> pgoalType <|> pquestionType <|> pquestType
 
 // Sentence parsers
-let psentence    = pipe3 pstatement peventType (opt ptruth) (fun a b c -> {EventType = b; Term = a; TV = Some(optor c {F = 1.0f; C = 0.9f})})
+let psentence    = pipe3 pstatement peventType (opt ptruth) (fun a b c -> {EventType = b; Term = a; TV = match b with | Belief -> Some(optor c {F = 1.0f; C = 0.9f}) | _ -> None})
 let psentence_ws = psentence .>> ws
 
 let makeStamp eType term = 
@@ -172,7 +172,7 @@ let makeStamp eType term =
 let pcommand_ws = pshow_beliefs <|> pshow_node
 
 // Event parser
-let pevent          = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType;  TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
+let pevent          = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType; ProcessType = Prime; TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
 let peventEvent     = pevent |>> (fun e -> Event(e)) 
 let peventEvent_ws  = ws >>. peventEvent .>> eof
 
