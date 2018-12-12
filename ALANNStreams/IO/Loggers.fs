@@ -31,7 +31,7 @@ open System.Diagnostics
 open TermFormatters
 open System
 open PrintUtils
-open System.Threading
+open System.Collections.Concurrent
 
 let logTimer1 = Stopwatch()
 logTimer1.Start()
@@ -64,10 +64,9 @@ let showSelectedConcepts() =
         for kvp in store do
             let node = kvp.Value
             if node.Beliefs.Count < 3 then
-                [for b in node.Beliefs.GetBeliefs() -> b]
+                [for b in node.Beliefs.Beliefs() -> b]
                 |> List.iter (fun b -> printfn "Node %s [%f] %s {%s} %s" (ft node.Term) node.AV.STI (ft b.Term) (truth b.TV) (Trail b.Stamp.Evidence))
 
-let activeConcepts = ref 0L
 let mutable l = 0L
 let mutable log3_time = 0L
 let log3 (e : Event) = 
@@ -77,13 +76,8 @@ let log3 (e : Event) =
         printfn "Number of concepts = %d" (numConcepts())
         let now = logTimer1.ElapsedMilliseconds
         let duration = now - log3_time
-
-        printfn "ActivationThreshold = %f" !activationThreshold
-        printfn "Active concepts = %.0f/s" ((float32(!activeConcepts) / float32(duration)) * 1000.0f)
-        Interlocked.Exchange(activeConcepts, 0L) |> ignore
         printfn "Cycled events %d/s" ((l / duration) * 1000L)
-        cprintf ConsoleColor.Red "%s" (match e.ProcessType with | Prime -> "PRIME" |  InferenceReq -> "INFERENCE_REQ"  |Inference -> "INFERENCE")
-        cprintf ConsoleColor.White "[%f] " e.AV.STI
+        cprintf ConsoleColor.Red "[%f] " e.AV.STI
         cprintf ConsoleColor.Yellow "%s " (match e.TV with | Some tv -> truth tv | _ -> "None")
         cprintf ConsoleColor.Green "%s " (ft e.Term)
         cprintf ConsoleColor.Gray "%s \n" (Trail e.Stamp.Evidence)
@@ -93,19 +87,14 @@ let log3 (e : Event) =
         //let term = Term(Inh, [Term(ExtSet, [Word "tom"]); Term(IntSet, [Word "living"])])
         //let term = Term(Inh, [Word "animal"; Term(IntSet, [Word "living"])])
         //let term = Term(ExtSet, [Word "tom"])
-        //let term = Term(IntSet, [Word "living"])
-        //let term = Word "b"
+        //let term = Word "cod"
         //let i =  abs(term.GetHashCode() % Params.NUM_TERM_STREAMS )
         //for node in stores.[i].Values do
         //    if node.Term = term then
         //        printfn "Node = %s [%d]" (ft node.Term) node.Beliefs.Count
         //        printfn "Event = %s %A [%A]" (ft e.Term) e.EventType e.Stamp.Evidence
-        //        //for belief in node.Beliefs.GetGeneralBeliefs() do
-        //        //    printfn "%s {%f %f} %A" (ft belief.Term) belief.TV.F belief.TV.C belief.Stamp.Evidence
-        //        node.Beliefs.GetGeneralBeliefs()
-        //        |> Seq.sortBy (fun b -> -exp(b.TV))
-        //        |> Seq.iter (fun belief -> printfn "%s {%f %f} %A" (ft belief.Term) belief.TV.F belief.TV.C belief.Stamp.Evidence)
-                
+        //        for belief in node.Beliefs.Beliefs() do
+        //            printfn "%s {%f %f} %A" (ft belief.Term) belief.TV.F belief.TV.C belief.Stamp.Evidence
         //showSelectedConcepts()
     e
 

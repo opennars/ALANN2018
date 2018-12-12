@@ -32,7 +32,6 @@ open Akka.Streams
 open Types
 open Node
 open InferenceFlow
-open NodeFunctions
 
 let termStream (i) =
     GraphDsl.Create(
@@ -53,26 +52,6 @@ let termStream (i) =
             let createNode {Term = t; Event = e} = stores.[i].TryAdd(t, createNode (t, e)) |> ignore; {Term = t; Event = e}
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if stores.[i].ContainsKey(t) then 1 else 0))
-            let partitionEvents = builder.Add(Partition<EventBelief>(2, fun {Event = e} -> match e.ProcessType with | InferenceReq -> 0 | Inference -> 1 | _ -> failwith "partition error"))
-            let mergeEvents = builder.Add(Merge<Event>(2))
-            let makeEventFromEventBelief eb = 
-
-                match eb.Belief.Stamp.Source with 
-                | Virtual -> 
-                    eb.Event
-                | _ -> 
-                    {Term = eb.Belief.Term
-                     AV = eb.AV
-                     EventType = Belief
-                     ProcessType = eb.Event.ProcessType
-                     TV = Some eb.Belief.TV
-                     Stamp = eb.Belief.Stamp
-                     Solution = eb.Event.Solution}
-
-            let converter = 
-                Flow.Create<EventBelief>() 
-                |> Flow.map (fun eb -> makeEventFromEventBelief eb)
-
             let createableNode = function 
                 | {Term = _; Event = e} when e.EventType = Belief -> true
                 | _ -> false
@@ -108,14 +87,8 @@ let termStream (i) =
                 .Via(groupAndDelay)
                 .Via(processEvent)
                 .Via(collector)
-                .To(partitionEvents)
-                .From(partitionEvents.Out(1))
                 .Via(deriver)
-                .To(mergeEvents.In(1))
-                .From(partitionEvents.Out(0))
-                .Via(converter)
-                .To(mergeEvents.In(0))
                 |> ignore
 
-            FlowShape<TermEvent, Event>(preferCreatedTermMerge.In(0), mergeEvents.Out)
+            FlowShape<TermEvent, Event>(preferCreatedTermMerge.In(0), deriver.Outlet)
         ).Named("TermStream")

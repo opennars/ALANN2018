@@ -24,8 +24,6 @@
 
 module Controller
 
-open System
-open System.Threading
 open Events
 open Akka.Streams.Dsl
 open Akkling
@@ -36,27 +34,10 @@ open Network
 open Types
 open FileIO
 open System.Collections.Concurrent
-open Loggers
 
 type Controller() =
 
     let UDPreceiver = RunnableGraph.FromGraph ALANNLobe |> Graph.run mat
-
-    //let timer = new Timers.Timer(50.0)
-    //let event = Async.AwaitEvent (timer.Elapsed) |> Async.Ignore
-
-    //let adjustActivationThreshold() = 
-    //    async{
-    //        while true do
-    //            Async.RunSynchronously event
-    //            //let n = float32(!activeConcepts * int64(1000.0f / 50.0f ))
-    //            let n = float32(Interlocked.Exchange(activeConcepts, 0L))
-
-    //            match n with
-    //            | l when l > 300.0f -> activationThreshold := min (n * 1.005f) 0.85f
-    //            | l when l < 300.0f -> activationThreshold := max (n * 0.995f) 0.25f
-    //            | _ -> ()
-    //    }
 
     // Publish Events
     member this.DisplayAnswer = DisplayAnswerEvent.Publish  
@@ -72,9 +53,6 @@ type Controller() =
         }
 
         loop() |> Async.Start
-
-        //timer.Start()
-        //Async.Start(adjustActivationThreshold())
 
     member this.Send (text : string []) =
         for line in text do

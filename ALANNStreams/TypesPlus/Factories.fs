@@ -46,7 +46,7 @@ let makeInferredEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; ProcessType = Prime; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
 
 let makeInferredFromQuestionEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -59,7 +59,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; ProcessType = Prime; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
 
 let makeStructuralEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -71,18 +71,18 @@ let makeStructuralEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; ProcessType = Prime; Term = term; TV = Some tv; AV = eb.AV; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = eb.AV; Stamp = stamp; Solution = None}
 
 let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
     let stamp = {Created = now
                  SC = syntacticComplexity term 
-                 Evidence = merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence // TODO check this
+                 Evidence = [] //merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence
                  LastUsed = now
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; ProcessType = Prime; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
 
 let makeQuestEvent (eb : EventBelief) term =
     let now = SystemTime()
@@ -93,7 +93,7 @@ let makeQuestEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Quest; ProcessType = Prime; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
+    {EventType = Quest; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
 
 let makeVirtualBelief term =
     let now = SystemTime()
@@ -107,7 +107,6 @@ let makeVirtualBelief term =
     
 let ebToE eb =
     {EventType = EventType.Belief
-     ProcessType = Prime
      Term = eb.Belief.Term
      TV = Some eb.Belief.TV
      AV = {eb.AV with STI = eb.AV.STI * (1.0f - eb.Belief.TV.C)}

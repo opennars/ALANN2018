@@ -42,7 +42,6 @@ let mainSink =
             let mergePref = builder.Add(MergePreferred<Event>(1))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
-            //let attentionBuffer = Flow.Create<Event>() |> Flow.buffer OverflowStrategy.DropHead Params.ATTENTION_BUFFER_SIZE 
 
             let groupAndDelay =
                     Flow.Create<Event>()
@@ -80,7 +79,5 @@ let ALANNLobe = Source.actorRef OverflowStrategy.DropHead 1000
                  |> Source.map (fun s -> Parser s)
                  |> Source.collect (fun lst -> lst)
                  |> Source.map (fun ie -> match ie with | Event e -> e | _ -> failwith "Expected InputEvent.Event")
-                 //|> Source.map (fun e -> [for i in 0..4 -> e])
-                 //|> Source.collect (fun e -> e)
                  |> Source.toMat mainSink Keep.left
 
