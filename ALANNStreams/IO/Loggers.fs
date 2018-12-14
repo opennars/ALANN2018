@@ -59,13 +59,13 @@ let numConcepts () =
     loop 0 (stores.GetLength(0) - 1)
 
 
-let showSelectedConcepts() =
-    for store in stores do
-        for kvp in store do
-            let node = kvp.Value
-            if node.Beliefs.Count < 3 then
-                [for b in node.Beliefs.Beliefs() -> b]
-                |> List.iter (fun b -> printfn "Node %s [%f] %s {%s} %s" (ft node.Term) node.AV.STI (ft b.Term) (truth b.TV) (Trail b.Stamp.Evidence))
+//let showSelectedConcepts() =
+//    for store in stores do
+//        for kvp in store do
+//            let node = kvp.Value
+//            if node.Beliefs.Count < 3 then
+//                [for b in node.Beliefs.Beliefs() -> b]
+//                |> List.iter (fun b -> printfn "Node %s [%f] %s {%s} %s" (ft node.Term) node.AV.STI (ft b.Term) (truth b.TV) (Trail b.Stamp.Evidence))
 
 let mutable l = 0L
 let mutable log3_time = 0L
