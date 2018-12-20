@@ -33,8 +33,7 @@ open FirstOrderInference
 open HigherOrderInference
 
 let firstOrderModules : (InferenceFunction * Postcondition) [] =
-              [|(revision, NoSwap) 
-                (nal7_temporal_inference, NoSwap)
+              [|(nal7_temporal_inference, NoSwap)
                 (firstOrderSyllogisitic, Swap)
                 (similaritySyllogisitic, Swap)
                 (similarityFromInheritance, NoSwap)
@@ -82,9 +81,9 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
     for j in 0..(numModules - 1) do 
         let flow =
             Flow.Create<EventBelief>() 
-            |> Flow.filter (fun eb -> eb.AV.STI > Params.MINIMUM_STI)
+            |> Flow.filter (fun eb -> eb.Attention > Params.MINIMUM_STI)
             |> Flow.map (fun eb -> eb.Event::(inf (fst modules.[j]) (snd modules.[j]) eb))  // add event to inference results
-            |> Flow.collect (fun lst -> List.map (fun event -> event) lst)
+            |> Flow.collect (fun eb -> eb)
             |> Flow.filter (fun event -> Option.isNone event.TV || event.TV |> Option.exists (fun tv -> tv.C > Params.MINIMUM_CONFIDENCE))
             |> Flow.filter (fun e -> e.Stamp.SC < Params.MAX_SC)
 

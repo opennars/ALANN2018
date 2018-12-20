@@ -82,7 +82,6 @@
     <Compile Include="Inference\ImmediateInference.fs" />
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
-    <Compile Include="Containers\EventStore.fs" />
     <Compile Include="Parser\Parser.fs" />
     <Compile Include="Node\Choice.fs" />
     <Compile Include="Node\NodeFunctions.fs" />

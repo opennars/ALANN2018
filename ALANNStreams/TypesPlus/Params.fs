@@ -28,12 +28,13 @@ module Params
 let HORIZON                             = 1.0f          // System Personality Factor
                                                         
 // Node Related Parameters                              
-let DECAY_RATE                          = 0.75f         // Lambda decay rate for node forgetting - higher value -> slower decay
-let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.60f         // Minimum concept STI for concept activation
+let RESTING_POTENTIAL                   = 0.10f         // After firing node attention is reset to this
+let ACTION_POTENTIAL                    = 0.70f         // After firing node attention is reset to this
+let DECAY_RATE                          = 2.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 2L            // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 100           // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 25            // Max number of temporal beliefs per node
-let INFERENCE_CONFIDENCE_MIN            = 0.30f         // Confidence must reach this value before it can be used in general inference
+let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 15            // Max number of temporal beliefs per node
 
 // Temporal Related Parameters
 let CONCURRENCY_DURATION                = 50L           // Period when two occurence times are deemed concurrent
@@ -47,12 +48,8 @@ let CONFIDENCE                          = 0.90f         // Truth Value confidenc
 let FREQUENCY                           = 1.00f         // Truth Value frequency component
 let MINIMUM_CONFIDENCE                  = 0.10f         // don't accept inference results with confidence below this Value
 let MINIMUM_STI                         = 0.05f         // filter STI below this threhold
-let STI                                 = 0.50f         // Short Term Importance default Value AKA priority
-let LTI                                 = 0.50f         // long Term Importance default Value AKA duration
-let NODE_STI                            = 0.75f         // Initial Node Short Term Importance default Value AKA priority
-let NODE_LTI                            = 0.50f         // Initial Node long Term Importance default Value AKA duration
-let USER_STI                            = 0.70f         // Short Term Importance default Value for user entered Values AKA priority
-let USER_LTI                            = 0.90f         // long Term Importance default Value for user entered Values AKA duration
+let USER_STI                            = 1.00f         // Short Term Importance default Value for user entered Values AKA priority
+let USER_LTI                            = 0.85f         // long Term Importance default Value for user entered Values AKA duration
 let TRAIL_LENGTH                        = 15            // maximum length allowed for inference trail within stamp
 let MAX_SC                              = 20            // Maximum syntactic complexity of terms
 let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve slope of the priority buffer selection
@@ -66,12 +63,10 @@ let NODE_COUNT_MOD                      = 10_000        // Frequency of display 
 let EVENTS_PROCESSED_MOD                = 100_000L      // Frequency of display of selected events 
 let INFERENCES_PROCESSED_MOD            = 100_000L      // Frequency of display of derived events
 
-//Streams related Parameters    ***WORKSTATION SETUP***
-let WORKSTATION                         = true          // Set to true if running on a workstation rather than a server
-let NUM_TERM_STREAMS                    = 10            // Number of Term streams
-let NUM_SELECTED_BELIEFS                = 5             // Number of beliefs selected after attention allocated in concept
-let CYCLE_DELAY_MS                      = 5.0           // Number of ms to allow for main cycle delay
-let GROUP_DELAY_MS                      = 5.0           // Number of ms to allow for grouping of events before despatching 
+//Streams related Parameters  
+let NUM_TERM_STREAMS                    = 20            // Number of Term streams
+let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
+let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
 let MAJOR_BLOCK_SIZE                    = 10_000        // Number of events to form a main stream block
 let MINOR_BLOCK_SIZE                    = 1_000         // Number of events to form a minor stream block
 

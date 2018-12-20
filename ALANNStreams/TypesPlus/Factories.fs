@@ -28,12 +28,24 @@ open Types
 open Evidence
 open TermUtils
 
-let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f         // to avoid forward references to TruthFunctions
+// Belief factories
 
 let makeBeliefFromEvent (e : Event) =
     match e with
     | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = e.Stamp}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
+
+let makeVirtualBelief term =
+    let now = SystemTime()
+    let stamp = {Created = now
+                 SC = 1
+                 Evidence = []//[ID()]
+                 LastUsed = now
+                 UseCount = 0L
+                 Source = Virtual}
+    {Term = term; TV = {F = 0.0f; C = 0.5f}; Stamp = stamp}    
+
+// EventBelief factories
 
 let makeInferredEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -46,10 +58,9 @@ let makeInferredEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
 
 let makeInferredFromQuestionEvent eb (term, tv) =
-    let stamp1 = eb.Event.Stamp
     let stamp2 = eb.Belief.Stamp
     let now = SystemTime()
     let stamp = {Created = now
@@ -59,7 +70,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {eb.AV with STI = eb.AV.STI * exp(tv)}; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
 
 let makeStructuralEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -71,44 +82,26 @@ let makeStructuralEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = eb.AV; Stamp = stamp; Solution = None}
+    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
 
 let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
     let stamp = {Created = now
                  SC = syntacticComplexity term 
-                 Evidence = [] //merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence
+                 Evidence = []
                  LastUsed = now
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
 
 let makeQuestEvent (eb : EventBelief) term =
     let now = SystemTime()
     let stamp = {Created = now
                  SC = syntacticComplexity term 
-                 Evidence = merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence
+                 Evidence = []
                  LastUsed = now
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Quest; Term = term; TV = None; AV = eb.AV; Stamp = stamp; Solution = None}
-
-let makeVirtualBelief term =
-    let now = SystemTime()
-    let stamp = {Created = now
-                 SC = 1
-                 Evidence = []//[ID()]
-                 LastUsed = now
-                 UseCount = 0L
-                 Source = Virtual}
-    {Term = term; TV = {F = 0.0f; C = 0.0f}; Stamp = stamp}    
-    
-let ebToE eb =
-    {EventType = EventType.Belief
-     Term = eb.Belief.Term
-     TV = Some eb.Belief.TV
-     AV = {eb.AV with STI = eb.AV.STI * (1.0f - eb.Belief.TV.C)}
-     Stamp = {eb.Belief.Stamp with LastUsed = SystemTime()}
-     Solution = None}
+    {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}

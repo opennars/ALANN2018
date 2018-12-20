@@ -31,24 +31,11 @@ open System.Diagnostics
 open TermFormatters
 open System
 open PrintUtils
-open System.Collections.Concurrent
 
 let logTimer1 = Stopwatch()
 logTimer1.Start()
-let mutable k = 0
-let mutable log1_time = 0L
-
-let mutable i = 0L
-let mutable log2_time = 0L
-let log2 e = 
-    i <- i + 1L
-    if i % Params.INFERENCES_PROCESSED_MOD = 0L then
-        let now = logTimer1.ElapsedMilliseconds
-        let duration = now - log2_time
-        printfn "****Derivations  %d/s" ((i / duration) * 1000L)
-        log2_time <- now
-        i <- 0L
-    e
+let mutable l = 0L
+let mutable log3_time = 0L
 
 let numConcepts () =
     let rec loop acc n =
@@ -58,17 +45,6 @@ let numConcepts () =
 
     loop 0 (stores.GetLength(0) - 1)
 
-
-//let showSelectedConcepts() =
-//    for store in stores do
-//        for kvp in store do
-//            let node = kvp.Value
-//            if node.Beliefs.Count < 3 then
-//                [for b in node.Beliefs.Beliefs() -> b]
-//                |> List.iter (fun b -> printfn "Node %s [%f] %s {%s} %s" (ft node.Term) node.AV.STI (ft b.Term) (truth b.TV) (Trail b.Stamp.Evidence))
-
-let mutable l = 0L
-let mutable log3_time = 0L
 let log3 (e : Event) = 
     l <- l + 1L
     if l % Params.EVENTS_PROCESSED_MOD = 0L then
@@ -77,7 +53,7 @@ let log3 (e : Event) =
         let now = logTimer1.ElapsedMilliseconds
         let duration = now - log3_time
         printfn "Cycled events %d/s" ((l / duration) * 1000L)
-        cprintf ConsoleColor.Red "[%f] " e.AV.STI
+        cprintf ConsoleColor.DarkGray "%s "  (av e.AV)
         cprintf ConsoleColor.Yellow "%s " (match e.TV with | Some tv -> truth tv | _ -> "None")
         cprintf ConsoleColor.Green "%s " (ft e.Term)
         cprintf ConsoleColor.Gray "%s \n" (Trail e.Stamp.Evidence)
@@ -98,6 +74,5 @@ let log3 (e : Event) =
         //showSelectedConcepts()
     e
 
-let logger2 = Flow.Create<Event>() |> Flow.map log2            
 let eventLogger = Flow.Create<Event>() |> Flow.map log3
 

@@ -67,15 +67,7 @@ type Stamp = {Created : int64
               UseCount : int64
               Source : Source}
 
-type Command = | Show_Beliefs of Term
-               | Show_Node of Term
-               | Show_Node_Count
-               | Enable_Trace
-               | Disable_Trace
-
-type CommandEvent = {Term : Term; Command : Command}
-
-let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f
+let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f // to avoid forward reference
 
 [<CustomComparison>]
 [<CustomEquality>]
@@ -84,7 +76,6 @@ type Belief =
     interface System.IComparable<Belief> with
         member this.CompareTo other =
             exp(this.TV).CompareTo(exp(other.TV))
-            //this.TV.C.CompareTo(other.TV.C)
 
     override this.Equals(other) =
         match other with
@@ -129,17 +120,15 @@ type TermEvent =
 
     override this.GetHashCode() = this.Term.GetHashCode()
 
-type InputEvent = | Event of Event | Command of CommandEvent
-
 [<CustomComparison>]
 [<CustomEquality>]
 type EventBelief =
-    {AV : AV
+    {Attention : float32
      Event : Event
      Belief : Belief}
     interface System.IComparable<EventBelief> with
         member this.CompareTo other =
-            this.AV.STI.CompareTo(other.AV.STI)
+            this.Attention.CompareTo(other.Attention)
 
     override this.Equals(other) =
         match other with
@@ -168,7 +157,7 @@ type IStore =
 type Node     = {Term : Term
                  Beliefs : IStore
                  VirtualBelief : Belief
-                 mutable AV : AV
+                 mutable Attention : float32
                  mutable LastUsed : SysTime
                  mutable UseCount : int64}
 

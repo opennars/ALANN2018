@@ -25,11 +25,7 @@
 module InferenceUtils
 
 open Types
-open Unify
 open Factories
-open TermFormatters
-open ALANNSystem
-open Akkling
 
 type Postcondition = | AllowBackward | Swap | NoSwap | QuestionOnly | BeliefFromQuestion | BeliefOnly | IsAfter | IsBefore | IsConcurrent | NotTemporal | Structural
 type InferenceFunction = (Term * Term) -> (Term * (TV * TV -> TV) * (TV * TV -> TV) option * Postcondition list) list
@@ -48,14 +44,15 @@ let inf f swap eb =
     let matchToEvent = function
         | (term, tf1, tf2, conds) ->
             match eb.Event.EventType with
-            | Belief when List.contains (concurrency()) conds -> [makeInferredEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
+            | Belief when List.contains (concurrency()) conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
             | Belief when List.contains Structural conds -> [makeStructuralEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Belief when not(List.contains QuestionOnly conds) -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Question when List.contains BeliefFromQuestion conds -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
-            | Question when List.contains QuestionOnly conds -> [makeQuestionEvent eb term]
-            | Question when List.contains AllowBackward conds -> [makeQuestionEvent eb term]
-            | Goal when Option.isSome tf2 -> [makeInferredEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
-            | Quest when List.contains AllowBackward conds -> [makeQuestEvent eb term]
+            | Belief when not(List.contains QuestionOnly conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
+            | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
+            | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
+            | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
+            | Question when List.contains Structural conds -> [makeQuestionEvent eb term]
+            | Goal when Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
+            | Quest when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestEvent eb term]
             | _ -> []
 
     let matches f eb =
@@ -73,19 +70,3 @@ let inf f swap eb =
             matches f eb
 
     matches' f eb
-
-let questionAnswerCheck eb =
-    let result =
-        match eb.Event.Term, eb.Belief.Term with
-        | t1, t2 when t1 = t2 -> true
-        | t1, t2 -> unifies t1 t2
-        | _ -> false
-
-    match result with
-    | true -> [ebToE eb]
-    | false -> []
-
-//    match answered with
-//    | true -> [tbToT eb]
-//    | false -> []
-

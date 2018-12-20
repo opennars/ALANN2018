@@ -30,10 +30,6 @@ open TermUtils
 open ActivePatterns
 open InferenceUtils
 
-let revision = function
-    | a, b when a = b -> [(a, rev, None, [])]
-    | _ -> []
-
 let firstOrderSyllogisitic = function
     | Inh(a, b1), Inh(b2, c) when b1 = b2 && a <> c && noCommonSubterm a c -> [(Term(Inh, [a; c]), ded, Some strong, [AllowBackward; Swap])
                                                                                (Term(Inh, [c; a]), exe, Some weak, [AllowBackward; Swap])]
@@ -55,7 +51,6 @@ let similaritySyllogisitic = function
 
 let similarityFromInheritance = function
     | Inh(s1, p1), Inh(p2, s2) when p1 = p2 && s1 = s2 && p1 <> s1 && noCommonSubterm s1 p1 -> [(Term(Sim, [s1; p1]), int, None, [AllowBackward])]
-    //| Term(Inh, []), Term(Inh, []) when p1 = p2 && s1 = s2 && noCommonSubterm s1 p1 -> [(Term(Inh, [s1; p1]), ???(tv1, tv2))]
     | _ -> []
 
 let setIntersectionComprehension = function
@@ -136,22 +131,15 @@ let (setDefinitionUnwrap : InferenceFunction) = function
     | Inh(IntSet([s]), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Sim, [Term(IntSet, [s]); p1]), identity, Some d_id, [AllowBackward])]
     | _ -> []
 
-let structuralConditions m = if Params.WORKSTATION then isSetOrAtomic m else true
-
 let structuralInference : InferenceFunction = function
-    | Inh(Prod(a, b), m), _ when structuralConditions m -> [(Term(Inh, [a; Term(ExtImg, [m; Word "_"; b])]), identity, None, [Structural])   // when isSetOrAtomic m for all rules
-                                                            (Term(Inh, [b; Term(ExtImg, [m; a; Word "_"])]), identity, None, [Structural])]
-    | Inh(m, Prod(a, b)), _ when structuralConditions m -> [(Term(Inh, [Term(IntImg, [m; Word "_"; b]); a]), identity, None, [Structural])   
-                                                            (Term(Inh, [Term(IntImg, [m; a; Word "_"]); b]), identity, None, [Structural])]
-    | Inh(ai, ExtImg(m, a, Word "_")), _ when structuralConditions m -> [(Term(Inh, [Term(Prod, [a; ai]); m]), identity, None, [Structural])]
-    | Inh(ai, ExtImg(m, Word "_", b)), _ when structuralConditions m -> [(Term(Inh, [Term(Prod, [ai; b]); m]), identity, None, [Structural])]
-    | Inh(IntImg(m, a, Word "_"), ai), _ when structuralConditions m -> [(Term(Inh, [m; Term(Prod, [a; ai])]), identity, None, [Structural])]
-    | Inh(IntImg(m, Word "_", b), ai), _ when structuralConditions m -> [(Term(Inh, [m; Term(Prod, [ai; b])]), identity, None, [Structural])]     
-
-    //| RepRes(a, b), _ when a <> b && isQuoted a -> [(Term(RepTed, [b; a]), identity, None, [])]
-    //| RepTed(a, b), _ when a <> b && isQuoted a -> [(Term(RepRes, [b; a]), identity, None, [])]
-    //| Inh(Prod(a, b), m), _ when isQuoted a -> [(Term(RepRes, [a; b]), identity, None, [])
-    //                                            (Term(RepTed, [b; a]), identity, None, [])]
+    | Inh(Prod(a, b), m), _ -> [(Term(Inh, [a; Term(ExtImg, [m; Word "_"; b])]), identity, None, [Structural])   
+                                (Term(Inh, [b; Term(ExtImg, [m; a; Word "_"])]), identity, None, [Structural])]
+    | Inh(m, Prod(a, b)), _ -> [(Term(Inh, [Term(IntImg, [m; Word "_"; b]); a]), identity, None, [Structural])   
+                                (Term(Inh, [Term(IntImg, [m; a; Word "_"]); b]), identity, None, [Structural])]
+    | Inh(ai, ExtImg(m, a, Word "_")), _ -> [(Term(Inh, [Term(Prod, [a; ai]); m]), identity, None, [Structural])]
+    | Inh(ai, ExtImg(m, Word "_", b)), _ -> [(Term(Inh, [Term(Prod, [ai; b]); m]), identity, None, [Structural])]
+    | Inh(IntImg(m, a, Word "_"), ai), _ -> [(Term(Inh, [m; Term(Prod, [a; ai])]), identity, None, [Structural])]
+    | Inh(IntImg(m, Word "_", b), ai), _ -> [(Term(Inh, [m; Term(Prod, [ai; b])]), identity, None, [Structural])]     
     | _ -> []
 
 let structuralInference2 = function
@@ -204,17 +192,3 @@ let backwardOnlyInference = function
                                                         (Term(Sim, [a; b]), identity, None, [QuestionOnly])]
     | _ -> []
 
-let nal7_temporal_inference  = function
-    | p, s when isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(ConImp, [s; p]), temporal_ind, None, [IsConcurrent])
-                                                        (Term(ConImp, [p; s]), temporal_abd, None, [IsConcurrent])
-                                                        (Term(ConEqu, [s; p]), temporal_com, None, [IsConcurrent])
-                                                        (Term(Par,    [s; p]), temporal_int, None, [IsConcurrent])
-                                                        (Term(PreImp, [s; p]), temporal_ind, None, [IsBefore])
-                                                        (Term(RetImp, [p; s]), temporal_abd, None, [IsBefore])
-                                                        (Term(PreEqu, [s; p]), temporal_com, None, [IsBefore])
-                                                        (Term(Seq,    [s; p]), temporal_int, None, [IsBefore])
-                                                        (Term(PreImp, [p; s]), temporal_ind, None, [IsAfter])
-                                                        (Term(RetImp, [s; p]), temporal_abd, None, [IsAfter])
-                                                        (Term(PreEqu, [p; s]), temporal_com, None, [IsAfter])
-                                                        (Term(Seq,    [p; s]), temporal_int, None, [IsAfter])]
-    | _ -> []

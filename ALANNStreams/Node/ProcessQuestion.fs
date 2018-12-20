@@ -38,7 +38,7 @@ let processQuestion state (event : Event) =
         match bestAnswer state event with
         | Some belief -> 
             tryPrintAnswer event belief
-            [makeAnsweredEventBelief state event belief]
+            [makeAnsweredEventBelief event belief]
         | None -> 
             getInferenceBeliefs state event
     
@@ -46,8 +46,13 @@ let processQuestion state (event : Event) =
         match selectiveAnswer state event with
         | Some belief ->
             tryPrintAnswer event belief
-            [makeAnsweredEventBelief state event belief]
+            [makeAnsweredEventBelief event belief]
         | None -> 
             getInferenceBeliefs state event
-    | _ ->
-       getInferenceBeliefs state event
+
+    | _ ->                                      
+        match bestAnswer state event with
+        | Some belief -> 
+            [makeAnsweredEventBelief event belief]
+        | None -> 
+            getInferenceBeliefs state event

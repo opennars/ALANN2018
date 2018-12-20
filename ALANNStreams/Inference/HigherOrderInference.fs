@@ -28,13 +28,8 @@ open Types
 open TruthFunctions
 open TermUtils
 open Unify
-open Factories
 open ActivePatterns
 open InferenceUtils
-
-let revision = function
-    | a, b when a = b -> [(a, rev, None, [])]
-    | _ -> []
 
 let Nal5_conversion_contrapostion_negation : InferenceFunction = function
     // conversion

@@ -28,6 +28,8 @@ open Types
 open ActivePatterns
 
 let truth tv = sprintf "{%.2f %.2f}" tv.F tv.C
+let av av = sprintf "[%.2f %.2f]" av.STI av.LTI
+
 let Trail trail = 
     match trail with
     | [] -> "[]"

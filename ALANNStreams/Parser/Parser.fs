@@ -77,10 +77,6 @@ let pdvar = str_ws "#" >>. varname_ws |>> fun a -> Var(DVar , a.ToUpper())
 let pqvar = str_ws "?" >>. varname_ws |>> fun a -> Var(QVar , a.ToUpper())
 let pvariable_ws = pivar <|> pdvar <|> pqvar .>> ws
 
-// command parsers
-let pshow_beliefs = str_ws "SHOW_BELIEFS" >>. pword_ws |>> fun a -> Command({Term = a; Command = Show_Beliefs(a)})
-let pshow_node = str_ws "SHOW_NODE" >>. pword_ws |>> fun a -> Command({Term = a; Command = Show_Node(a)})
-
 // Set parser
 let setBetweenStrings sOpen sClose pElement f =
     between (str_ws sOpen) (str_ws sClose)
@@ -166,17 +162,12 @@ let psentence_ws = psentence .>> ws
 
 let makeStamp eType term = 
     match eType with
-    | Belief | Goal | Question | Quest -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0L; Source = User}
-
-// command parser
-let pcommand_ws = pshow_beliefs <|> pshow_node
+    | Belief | Goal -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0L; Source = User}
+    | Question | Quest -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0L; Source = User}
 
 // Event parser
 let pevent          = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType;  TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
-let peventEvent     = pevent |>> (fun e -> Event(e)) 
-let peventEvent_ws  = ws >>. peventEvent .>> eof
-
-let pevent_ws = pcommand_ws <|> peventEvent_ws
+let pevent_ws = ws >>. pevent
 
 // General Parser entry point
 let Parser(program:string) =
@@ -184,7 +175,6 @@ let Parser(program:string) =
     | Success(result, _, _)   -> 
         [result]
     | Failure(errorMsg, e, s) -> 
-        //printfn "%s" errorMsg
         raiseParseErrorEvent errorMsg
         []
 

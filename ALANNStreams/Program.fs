@@ -48,7 +48,6 @@ let main argv =
     controller.DisplayAnswer.Add (fun e -> displayAnswer e.Answer)
 
     printfn "\tConfiguration complete\n"
-    printfn "\tRunning system in [%s] mode\n" (if Params.WORKSTATION then "WORKSTATION" else "SERVER")
     printfn "\tReady to accept commands\n"
 
 

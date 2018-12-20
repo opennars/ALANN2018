@@ -41,10 +41,12 @@ let processEvent state (event : Event) =
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
-
     let state = updateAttention state now event.AV
+
+    let cond1 = (not inLatencyPeriod) && (state.Attention > Params.ACTIVATION_THRESHOLD)
+    let cond2 = (event.EventType = Question && event.Stamp.Source = User)
         
-    match (not inLatencyPeriod) && (state.AV.STI > Params.ACTIVATION_THRESHOLD) || (event.EventType = Question && event.Stamp.Source = User) with
+    match cond1 || cond2 with
     | true ->
         let state = {state with LastUsed = now; UseCount = state.UseCount + 1L}
 
@@ -58,7 +60,7 @@ let processEvent state (event : Event) =
 
         match event.EventType with
         | Belief | Question ->
-            let veb = makeEventBelief state event state.VirtualBelief    // add virtual EventBelief for structural Inference
+            let veb = makeEventBelief event state.VirtualBelief    // add virtual EventBelief for structural Inference
             (state, veb::eventBeliefs)               
         | _ -> (state, [])
 
@@ -68,7 +70,7 @@ let initState term av =
     {Term = term
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
-     AV = av
+     Attention = Params.RESTING_POTENTIAL
      LastUsed = SystemTime()
      UseCount = 0L}
     

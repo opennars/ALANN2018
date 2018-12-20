@@ -46,7 +46,7 @@ let mainSink =
             let groupAndDelay =
                     Flow.Create<Event>()
                     |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
+                    |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                     |> Flow.collect (fun events -> events)
 
             builder
@@ -78,6 +78,5 @@ let ALANNLobe = Source.actorRef OverflowStrategy.DropHead 1000
                  |> Source.mapMaterializedValue spawnActor2
                  |> Source.map (fun s -> Parser s)
                  |> Source.collect (fun lst -> lst)
-                 |> Source.map (fun ie -> match ie with | Event e -> e | _ -> failwith "Expected InputEvent.Event")
                  |> Source.toMat mainSink Keep.left
 
