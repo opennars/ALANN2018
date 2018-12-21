@@ -1,0 +1,6 @@
+<cat --> animal>.
+<animal --> [living]>.
+<{tom} --> cat>.
+<(cat * fish) --> eats>.
+<cod --> fish>.
+<{tom} --> (eats / _ cod)>?
