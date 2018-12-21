@@ -59,8 +59,8 @@
     <None Include="App.config" />
     <Compile Include="TypesPlus\AsyncUtils.fs" />
     <Compile Include="TypesPlus\Events.fs" />
-    <Compile Include="TypesPlus\Types.fs" />
     <Compile Include="TypesPlus\Params.fs" />
+    <Compile Include="TypesPlus\Types.fs" />
     <Compile Include="TypesPlus\ActivePatterns.fs" />
     <Compile Include="TypesPlus\Evidence.fs" />
     <Compile Include="TypesPlus\TermUtils.fs" />
