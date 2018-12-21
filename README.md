@@ -32,7 +32,7 @@ Enter Narsese statements into top GUI windows and click <Enter> button
   
 Results will appear in console currently
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALLANConsole.gif" width="500" height="300">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="300">
 
   
 EXAMPLE NARSESE FILES
