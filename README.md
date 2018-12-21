@@ -21,6 +21,8 @@ Run ALLANStreams in a console
 Run the ALLANUI in Windows (accept the Forewall access to port 5000)
 
 Enter Narses statements into top GUI windows and click <Enter> button
+
+<img src="https://github.com/opennars/ALANN2018/blob/master/ALANNGUI.png" width="500" height="450">
   
 Results will appear in console currently
 
