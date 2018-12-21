@@ -37,7 +37,7 @@ Results will appear in console currently
   
 EXAMPLE NARSESE FILES
 ---------------------
-Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
+Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Cat-blue-sky.txt
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
 
