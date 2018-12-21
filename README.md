@@ -25,7 +25,7 @@ EXAMPLE NARSESE FILES
 ---------------------
 Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
 
-Chains of deduction
+Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
 
 Generalised reasoning in shape world scenario https://github.com/opennars/ALANN2018/blob/master/Examples/Shape_world
 
