@@ -27,7 +27,7 @@ Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.
 
 Chains of deduction
 
-Generalised reasoning in shape world scenario
+Generalised reasoning in shape world scenario https://github.com/opennars/ALANN2018/blob/master/Examples/Shape_world
 
 Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
