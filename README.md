@@ -27,9 +27,9 @@ Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.
 
 Chains of deduction
 
-Generalised reasoning in shpae world scenario
+Generalised reasoning in shape world scenario
 
-Infamous "Cat-blue-sky" challenge
+Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
