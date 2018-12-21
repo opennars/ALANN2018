@@ -13,16 +13,22 @@ Build solution
 
 HOW TO RUN
 ----------
-Run ALLANStreams in a console https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
+Run ALLANStreams in a console
+
 Run the ALLANUI in Windows (accept the Forewall access to port 5000)
+
 Enter Narses statements into top GUI windows and click <Enter> button
+  
 Results will appear in console currently
   
 EXAMPLE NARSESE FILES
 ---------------------
-Simple deduction
+Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
+
 Chains of deduction
+
 Generalised reasoning in shpae world scenario
+
 Infamous "Cat-blue-sky" challenge
 
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
