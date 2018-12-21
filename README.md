@@ -28,11 +28,11 @@ Run the ALLANUI in Windows (accept the Forewall access to port 5000)
 
 Enter Narses statements into top GUI windows and click <Enter> button
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/ALANNGUI.png" width="500" height="450">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png" width="500" height="450">
   
 Results will appear in console currently
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/ALLANConsole.png" width="500" height="300">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALLANConsole.png" width="500" height="300">
 
   
 EXAMPLE NARSESE FILES
@@ -58,7 +58,7 @@ The current implementation is not industrial strength but can form a useful tool
 The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
 
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%201.png)
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%202.png)
+![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%202.png)
 
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets, which can have additional elements), and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
