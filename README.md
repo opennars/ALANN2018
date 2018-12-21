@@ -3,6 +3,33 @@
 Adaptive Logic and Neural Network
 _________________________________
 
+HOW TO BUILD
+------------
+Clone the solution
+Install paket in the solution directory
+Run paket install
+Run paket update
+Build solution
+
+HOW TO RUN
+----------
+Run ALLANStreams in a console
+Run the ALLANUI in Windows (accept the Forewall access to port 5000)
+Enter Narses statements into top GUI windows and click <Enter> button
+Results will appear in console currently
+  
+EXAMPLE NARSESE FILES
+---------------------
+Simple deduction
+Chains of deduction
+Generalised reasoning in shpae world scenario
+Infamous "Cat-blue-sky" challenge
+
+The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
+https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
+
+OVERVIEW
+--------
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/NARS_Visualisation.gif" width="500" height="450">
@@ -26,29 +53,6 @@ The current implementation is not industrial strength but can form a useful tool
 
 The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
 
-HOW TO BUILD
-------------
-Clone the solution
-Install paket in the solution directory
-Run paket install
-Run paket update
-Build solution
-
-HOW TO RUN
-----------
-Run ALLANStreams in a console
-Run the ALLANUI in Windows (accept the Forewall access to port 5000)
-Enter Narses statements into top GUI windows and click <Enter> button
-Results will appear in console currently
-  
-EXAMPLE NARSESE FILES
----------------------
-Simple deduction
-Chains of deduction
-Generalised reasoning in shpae world scenario
-Infamous "Cat-blue-sky" challenge
-
-The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules.
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference
 
 Have fun!
