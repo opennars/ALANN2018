@@ -1,0 +1,4 @@
+<{sky}-->[blue]>.
+<{tom}-->cat>.
+<({tom}*{sky})-->likes>.
+<(cat*[blue])-->likes>? 
