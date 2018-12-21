@@ -57,7 +57,7 @@ The current implementation is not industrial strength but can form a useful tool
 
 The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
 
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%201.png)
+![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%201.png)
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%202.png)
 
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets, which can have additional elements), and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
