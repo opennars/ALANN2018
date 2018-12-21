@@ -5,7 +5,7 @@ _________________________________
 
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
-![](https://github.com/opennars/ALANN2018/blob/master/NARS_Visualisation.gif width="100" height="200")
+<img src="https://github.com/opennars/ALANN2018/blob/master/NARS_Visualisation.gif" width="100" height="100">
 
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets, which can have additional elements), and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
