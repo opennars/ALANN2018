@@ -3,11 +3,16 @@ ________________________________________________
 
 HOW TO BUILD
 ------------
-Clone the solution
+Clone the solution in Visual Studio (2017 Community Edition)
+
 Install paket in the solution directory
+
 Run paket install
+
 Run paket update
+
 Build solution
+
 
 HOW TO RUN
 ----------
@@ -18,6 +23,7 @@ Run the ALLANUI in Windows (accept the Forewall access to port 5000)
 Enter Narses statements into top GUI windows and click <Enter> button
   
 Results will appear in console currently
+
   
 EXAMPLE NARSESE FILES
 ---------------------
@@ -31,6 +37,7 @@ Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/mas
 
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
+
 
 OVERVIEW
 --------
