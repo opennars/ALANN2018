@@ -32,6 +32,8 @@ Enter Narses statements into top GUI windows and click <Enter> button
   
 Results will appear in console currently
 
+<img src"https://github.com/opennars/ALANN2018/blob/master/ALLANConsole.png" width=300" height="300">
+
   
 EXAMPLE NARSESE FILES
 ---------------------
