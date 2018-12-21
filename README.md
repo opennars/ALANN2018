@@ -13,7 +13,7 @@ Build solution
 
 HOW TO RUN
 ----------
-Run ALLANStreams in a console
+Run ALLANStreams in a console https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
 Run the ALLANUI in Windows (accept the Forewall access to port 5000)
 Enter Narses statements into top GUI windows and click <Enter> button
 Results will appear in console currently
