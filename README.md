@@ -1,7 +1,5 @@
-# ALANN2018
-
-Adaptive Logic and Neural Network
-_________________________________
+# Adaptive Logic and Neural Network (ALANN) 2018
+________________________________________________
 
 HOW TO BUILD
 ------------
