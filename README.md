@@ -5,7 +5,7 @@ HOW TO BUILD
 ------------
 Clone the solution in Visual Studio (2017 Community Edition)
 
-Install paket in the solution directory
+Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
 
 Run paket install
 
