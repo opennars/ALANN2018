@@ -48,25 +48,24 @@ let updateBeliefs state event =
         cond1 || cond2
 
     match event with
-    | {Event.EventType = Belief; TV = Some(eTV); Stamp = stamp} ->
+    | {Event.EventType = Belief; TV = Some(eTV)} ->
+        let newBelief = makeBeliefFromEvent event
         match state.Beliefs.TryGetValue(makeKeyFromEvent event) with
-        | Some(b) when eTV |> isBetterThan b.TV -> 
-                let b = makeBeliefFromEvent event
-                state.Beliefs.Update(makeKey b, b)
+        | Some(oldBelief) when eTV |> isBetterThan oldBelief.TV -> 
+            state.Beliefs.Update(makeKey newBelief, newBelief)
         | None ->
-            let b = makeBeliefFromEvent event
-            state.Beliefs.Insert(makeKey b, b)
-        | _ -> ()
-    | _ -> ()
+            state.Beliefs.Insert(makeKey newBelief, newBelief)
+        | _ -> () // exisitng belief has better TV
+    | _ -> () // Not a belief
 
-let forget (state : Node) now lti = 
+let forget (state : Node) now = 
     let lambda = float(1.0f / Params.DECAY_RATE)
     let delta = float(now - state.LastUsed)
     state.Attention * float32(Math.Exp(-lambda * delta))
 
-let updateAttention state now eventAV =
-    let attention = forget state now eventAV.LTI
-    let sti = _or [attention; eventAV.STI]
+let updateAttention state now event =
+    let attention = forget state now
+    let sti = _or [attention; event.AV.STI]
     {state with Attention = sti}
 
 let tryUpdatePredictiveTemporalbelief state e (b : Belief) =

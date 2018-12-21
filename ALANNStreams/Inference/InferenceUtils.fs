@@ -50,7 +50,7 @@ let inf f swap eb =
             | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
             | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
             | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
-            | Question when List.contains Structural conds -> [makeQuestionEvent eb term]
+            | Question when List.contains Structural conds -> [makeQuestionStructuralEvent eb term]
             | Goal when Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
             | Quest when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestEvent eb term]
             | _ -> []

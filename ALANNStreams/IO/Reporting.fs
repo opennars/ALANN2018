@@ -39,8 +39,9 @@ let displayAnswer answer =
     
     match answerDict.ContainsKey answer with
     | false ->
-        answerDict.TryAdd(answer, answer) |> ignore
-        printActor <! PrintMessage (sprintf "%s" answer)
+        match answerDict.TryAdd(answer, answer) with
+        | true -> printActor <! PrintMessage (sprintf "%s" answer)
+        | _ -> ()
     | _ -> ()
 
 let statsFunc() = async {

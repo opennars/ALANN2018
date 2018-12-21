@@ -33,6 +33,8 @@ open ProcessBelief
 open ProcessQuestion
 open ProcessGoal
 open ProcessQuest
+open ALANNSystem
+open Akkling
 
 let processEvent state (event : Event) =
 
@@ -41,7 +43,8 @@ let processEvent state (event : Event) =
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
-    let state = updateAttention state now event.AV
+    let state = if inLatencyPeriod then state else updateAttention state now event
+    //let state = updateAttention state now event
 
     let cond1 = (not inLatencyPeriod) && (state.Attention > Params.ACTIVATION_THRESHOLD)
     let cond2 = (event.EventType = Question && event.Stamp.Source = User)
@@ -49,6 +52,8 @@ let processEvent state (event : Event) =
     match cond1 || cond2 with
     | true ->
         let state = {state with LastUsed = now; UseCount = state.UseCount + 1L}
+
+        //if event.EventType = Belief then printActor <! PrintMessage (sprintf "[%d]" (List.length event.Stamp.Terms))
 
         let createEventBeliefs state = function
             | {Event.EventType = Question} as event -> processQuestion state event

@@ -53,6 +53,7 @@ let log3 (e : Event) =
         let now = logTimer1.ElapsedMilliseconds
         let duration = now - log3_time
         printfn "Cycled events %d/s" ((l / duration) * 1000L)
+        cprintf ConsoleColor.Red "%A " e.EventType 
         cprintf ConsoleColor.DarkGray "%s "  (av e.AV)
         cprintf ConsoleColor.Yellow "%s " (match e.TV with | Some tv -> truth tv | _ -> "None")
         cprintf ConsoleColor.Green "%s " (ft e.Term)

@@ -157,7 +157,7 @@ let pquestType    = (str_ws "@") |>> (fun _ -> Quest)
 let peventType = pbeliefType <|> pgoalType <|> pquestionType <|> pquestType
 
 // Sentence parsers
-let psentence    = pipe3 pstatement peventType (opt ptruth) (fun a b c -> {EventType = b; Term = a; TV = Some(optor c {F = 1.0f; C = 0.9f})})
+let psentence    = pipe3 pstatement peventType (opt ptruth) (fun a b c -> {EventType = b; Term = a; TV = if b = Belief then Some(optor c {F = Params.FREQUENCY; C = Params.CONFIDENCE}) else None})
 let psentence_ws = psentence .>> ws
 
 let makeStamp eType term = 

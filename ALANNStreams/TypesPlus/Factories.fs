@@ -39,10 +39,11 @@ let makeVirtualBelief term =
     let now = SystemTime()
     let stamp = {Created = now
                  SC = 1
-                 Evidence = []//[ID()]
+                 Evidence = []
                  LastUsed = now
                  UseCount = 0L
                  Source = Virtual}
+
     {Term = term; TV = {F = 0.0f; C = 0.5f}; Stamp = stamp}    
 
 // EventBelief factories
@@ -94,6 +95,18 @@ let makeQuestionEvent (eb : EventBelief) term =
                  Source = Derived}
 
     {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+
+let makeQuestionStructuralEvent (eb : EventBelief) term =
+    let now = SystemTime()
+    let stamp = {Created = now
+                 SC = syntacticComplexity term 
+                 Evidence = []
+                 LastUsed = now
+                 UseCount = 0L
+                 Source = Derived}
+
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+
 
 let makeQuestEvent (eb : EventBelief) term =
     let now = SystemTime()

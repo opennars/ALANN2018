@@ -53,7 +53,7 @@ let termStream (i) =
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if stores.[i].ContainsKey(t) then 1 else 0))
             let createableNode = function 
-                | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || e.TV.Value.C > 0.30f) -> true
+                | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || e.TV.Value.C > 0.30f) -> true 
                 | _ -> false
             
             let create = 

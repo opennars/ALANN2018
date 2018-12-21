@@ -30,7 +30,7 @@ let HORIZON                             = 1.0f          // System Personality Fa
 // Node Related Parameters                              
 let ACTIVATION_THRESHOLD                = 0.60f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.10f         // After firing node attention is reset to this
-let ACTION_POTENTIAL                    = 0.70f         // After firing node attention is reset to this
+let ACTION_POTENTIAL                    = 0.70f         // When node is fired this is the attention level used
 let DECAY_RATE                          = 2.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 2L            // Concept latency period in milliseconds
 let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
