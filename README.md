@@ -51,6 +51,15 @@ https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
 Project Details
 ---------------
+The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
+
+The current implementation is not industrial strength but can form a useful toolset for building GMI's.
+
+The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
+
+![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%201.png)
+![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%202.png)
+
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets, which can have additional elements), and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
 The most significant differences are related to the attention mechanism. In OpenNARS there are two key aspects to activation spreading; firstly, term links, which connects concepts (related to the depth of sub terms in the concept host term) and secondly, inference results which cause concept activation as a by-product of their derivation.  In ALANN there are no term links and activation spreading is entirely due to event distribution and inference spreading. So activation spreading is totally controlled by inference.
@@ -64,15 +73,4 @@ Given the potential combinatorial explosion from multiple inference rules for ev
 
 The current implementation has full support for Non-Axiomatic Logic (NAL) Levels 1 through 7 with framework support for NAL 8 and 9 but not local inference support for the latter (Levels 8 and 9).
 
-The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
-
-The current implementation is not industrial strength but can form a useful toolset for building GMI's.
-
-The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
-
-https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference
-
 Have fun!
-
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%201.png)
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%202.png)
