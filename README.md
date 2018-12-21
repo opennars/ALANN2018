@@ -26,7 +26,7 @@ Run ALLANStreams in a console
 
 Run the ALLANUI in Windows (accept the Forewall access to port 5000)
 
-Enter Narses statements into top GUI windows and click <Enter> button
+Enter Narsese statements into top GUI windows and click <Enter> button
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png" width="500" height="450">
   
