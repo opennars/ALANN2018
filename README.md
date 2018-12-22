@@ -24,7 +24,7 @@ HOW TO RUN
 ----------
 Run ALLANStreams in a console
 
-Run the ALLANUI in Windows (accept the Forewall access to port 5000)
+Run the ALLANUI in Windows (accept the Firewall access to port 5000)
 
 Enter Narsese statements into top GUI windows and click <Enter> button
 
