@@ -1,9 +1,9 @@
-# Adaptive Logic and Neural Network (ALANN) 2018
+https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif# Adaptive Logic and Neural Network (ALANN) 2018
 
 ## Overview
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
+![NARS Visualisation](https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif)
 
 ## How To Build
 Clone the solution in Visual Studio (2017 Community Edition)
