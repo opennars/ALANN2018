@@ -22,7 +22,7 @@ ALANN is an alternative control theory and design for implementing a NARS style 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
   
 ## Example Narsese Files
-Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
+Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/deductive%20reasoning
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
 
