@@ -1,13 +1,13 @@
 # Adaptive Logic and Neural Network (ALANN) 2018
 ________________________________________________
 
-OVERVIEW
+## OVERVIEW
 --------
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
-HOW TO BUILD
+## HOW TO BUILD
 ------------
 Clone the solution in Visual Studio (2017 Community Edition)
 
@@ -20,7 +20,7 @@ Run paket update
 Build solution
 
 
-HOW TO RUN
+## HOW TO RUN
 ----------
 Run ALLANStreams in a console
 
@@ -35,7 +35,7 @@ Results will appear in console currently
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
 
   
-EXAMPLE NARSESE FILES
+## EXAMPLE NARSESE FILES
 ---------------------
 Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
@@ -80,7 +80,7 @@ floatTuple ::== real-number  real-number
 
 Note: relationl images are considered binary operators although in practice the following form is used: (rel / _ term) or (rel / term _), similarly for intensional images.
 
-Project Details
+## Project Details
 ---------------
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
 
