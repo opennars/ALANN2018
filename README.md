@@ -1,14 +1,11 @@
 # Adaptive Logic and Neural Network (ALANN) 2018
-________________________________________________
 
 ## OVERVIEW
---------
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
 ## HOW TO BUILD
-------------
 Clone the solution in Visual Studio (2017 Community Edition)
 
 Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
@@ -21,7 +18,6 @@ Build solution
 
 
 ## HOW TO RUN
-----------
 Run ALLANStreams in a console
 
 Run the ALLANUI in Windows (accept the Firewall access to port 5000)
@@ -36,7 +32,6 @@ Results will appear in console currently
 
   
 ## EXAMPLE NARSESE FILES
----------------------
 Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
@@ -48,7 +43,7 @@ Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/mas
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
-###### Supported grammar
+## Supported grammar
 ```
 event ::== [attention] sentence
 sentence ::== belief | question | goal | quest 
@@ -83,7 +78,6 @@ Note: relationl images are considered binary operators although in practice the 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
 
 ## Project Details
----------------
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
 
 The current implementation is not industrial strength but can form a useful toolset for building GMI's.
