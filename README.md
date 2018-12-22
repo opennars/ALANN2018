@@ -55,7 +55,7 @@ compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
 term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
 binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
-copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
+copula ::== '-->' | '<->'  | 'o--' | '--o' | 'o-o'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
 variable ::== independent-variable | dependent-variable | query-variable
 independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
