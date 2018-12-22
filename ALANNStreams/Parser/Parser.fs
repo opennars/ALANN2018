@@ -50,7 +50,7 @@ let pfloat_ws = pfloat .>> ws
 // Word Parser
 let pstringliteral =
     let isIdentifierFirstChar c = isLetter c || c = '_' || c = '"' || isDigit c || c = '''
-    let isIdentifierChar c = isLetter c || isDigit c || c = '_' || c = ''' || c = '"'
+    let isIdentifierChar c = isLetter c || isDigit c || c = '_' || c = ''' || c = '"' || c = '.'
     many1Satisfy2 isIdentifierFirstChar isIdentifierChar 
     |>> fun i -> Word(i)
 
@@ -120,7 +120,7 @@ let pcompound_term_ws =
       (pipe3 pterm binary_op_ws (many1 pterm) matchOpToTerm)
 
 // Copula parsers       
-let first_order_copula = str_ws "-->" <|> str_ws "<->" <|> str_ws "o--" <|> str_ws "--o" <|> str_ws "o-o" <|> str_ws "->>" <|> str_ws "<<-"
+let first_order_copula = str_ws "-->" <|> str_ws "<->" <|> str_ws "{--" <|> str_ws "--]" <|> str_ws "{-]" <|> str_ws "->>" <|> str_ws "<<-"
 let higher_order_copula = str_ws "==>" <|> str_ws "=+>" <|> str_ws "=|>" <|> str_ws "=->" <|> str_ws "<=>" <|> str_ws "<+>" <|> str_ws "<|>"
 
 let copula_ws = first_order_copula <|> higher_order_copula
@@ -133,9 +133,9 @@ let statement =
           match b with
           | "-->" -> Term(Inh, [a; c])
           | "<->" -> Term(Sim, [a; c])
-          | "o--" -> Term(Inh, [Term(ExtSet, [a]); c])
-          | "--o" -> Term(Inh, [a; Term(IntSet, [c])])
-          | "o-o" -> Term(Inh, [Term(ExtSet, [a]); Term(IntSet, [c])])
+          | "{--" -> Term(Inh, [Term(ExtSet, [a]); c])
+          | "--]" -> Term(Inh, [a; Term(IntSet, [c])])
+          | "{-]" -> Term(Inh, [Term(ExtSet, [a]); Term(IntSet, [c])])
           | "==>" -> Term(Imp, [a; c])
           | "=+>" -> Term(PreImp, [a; c])
           | "=|>" -> Term(ConImp, [a; c])

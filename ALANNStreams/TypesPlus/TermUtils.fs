@@ -74,6 +74,12 @@ let isMainTerm host = function
     | Term(_, [t1]) when t1 = host -> true
     | _ -> false
 
+let isTarget host = function
+    | term when term = host -> true
+    | Term(_, [_; t2]) when t2 = host -> true
+    | Term(_, [t1]) when t1 = host -> true
+    | _ -> false
+
 let isSimilarComplexity sc1 sc2  = float32(abs(sc1 - sc2)) < 0.1f
 
 let inline sort lst = lst |> List.sort
