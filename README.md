@@ -70,7 +70,7 @@ real-number ::== ['-' | '+'] digit-sequence '.' digit-sequence
 truth ::== ‘{ floatTuple ‘}’
 desire ::== floatTuple
 attention ::== ‘[‘ floatTuple ‘]’
-floatTuple ::== real-number  real-number	 
+floatTuple ::== real-number real-number	 
 ```
 
 Note: relationl images are considered binary operators although in practice the following form is used: 
