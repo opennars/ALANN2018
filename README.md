@@ -78,7 +78,9 @@ attention ::== ‘[‘ floatTuple ‘]’
 floatTuple ::== real-number  real-number	 
 ```
 
-Note: relationl images are considered binary operators although in practice the following form is used: (rel / _ term) or (rel / term _), similarly for intensional images.
+Note: relationl images are considered binary operators although in practice the following form is used: 
+
+`(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
 
 ## Project Details
 ---------------
