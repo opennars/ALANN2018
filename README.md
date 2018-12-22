@@ -50,32 +50,32 @@ https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
 ###### Supported grammar
 ```
-event ::==	[attention] sentence
-sentence  ::==	belief | question | goal | quest 
-judgement ::==	statement ‘.’ [truth]
-goal 	                ::==	statement ‘!’  [desire] 
-question 	            ::==	statement ‘?’
-statement 	          ::==	‘<’ term copula term ‘>’
-compound-term	        ::==	‘(‘ term binary-infix-operator term ‘)’
-term 	                ::==	word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
-set	                  ::==	'{' {term}+ '}' | '[' {term}+ ']'
-binary-infix-operator	::==	'&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
-copula	              ::==	'-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
-variable	            ::==	independent-variable | dependent-variable | query-variable
-independent-variable	::== 	‘#’ word
-dependent-variable	  ::==	‘$’ word
-query-variable	      ::==	‘?’ word
-word	                ::==	string-literal | decimal-integer | real-number
-string-literal	      ::==	leading-identifier {identifier | digit | '_'}
-leading-identifier	  ::==	letter | ‘_’ | ‘”’ | ‘’’
-identifier	          ::==	letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
-decimal-integer	      ::==	['-' | '+'] digit-sequence
-digit-sequence	      ::==	digit {digit}
-real-number	          ::==	['-' | '+'] digit-sequence '.' digit-sequence
-truth	                ::==	‘{ floatTuple ‘}’
-desire	              ::==	floatTuple
-attention	            ::==	‘[‘ floatTuple ‘]’
-floatTuple	          ::==	real-number  real-number	 
+event ::== [attention] sentence
+sentence ::== belief | question | goal | quest 
+judgement ::== statement ‘.’ [truth]
+goal ::== statement ‘!’  [desire] 
+question ::== statement ‘?’
+statement ::== ‘<’ term copula term ‘>’
+compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
+term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
+set ::== '{' {term}+ '}' | '[' {term}+ ']'
+binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
+copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
+variable ::== independent-variable | dependent-variable | query-variable
+independent-variable ::== ‘#’ word
+dependent-variable ::== ‘$’ word
+query-variable ::== ‘?’ word
+word ::== string-literal | decimal-integer | real-number
+string-literal ::== leading-identifier {identifier | digit | '_'}
+leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
+identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
+decimal-integer ::== ['-' | '+'] digit-sequence
+digit-sequence ::== digit {digit}
+real-number ::== ['-' | '+'] digit-sequence '.' digit-sequence
+truth ::== ‘{ floatTuple ‘}’
+desire ::== floatTuple
+attention ::== ‘[‘ floatTuple ‘]’
+floatTuple ::== real-number  real-number	 
 ```
 
 Note: relationl images are considered binary operators although in practice the following form is used: (rel / _ term) or (rel / term _), similarly for intensional images.
