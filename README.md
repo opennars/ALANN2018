@@ -1,11 +1,11 @@
 # Adaptive Logic and Neural Network (ALANN) 2018
 
-## OVERVIEW
+## Overview
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
-## HOW TO BUILD
+## How To Build
 Clone the solution in Visual Studio (2017 Community Edition)
 
 Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
@@ -17,7 +17,7 @@ Run paket update
 Build solution
 
 
-## HOW TO RUN
+## How To Run
 Run ALLANStreams in a console
 
 Run the ALLANUI in Windows (accept the Firewall access to port 5000)
@@ -31,7 +31,7 @@ Results will appear in console currently
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
 
   
-## EXAMPLE NARSESE FILES
+## Example Narsese Files
 Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
