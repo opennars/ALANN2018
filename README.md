@@ -1,14 +1,11 @@
 # Adaptive Logic and Neural Network (ALANN) 2018
-________________________________________________
 
-OVERVIEW
---------
+## Overview
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/NARS_Visualisation.gif" width="500" height="450">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
-HOW TO BUILD
-------------
+## How To Build
 Clone the solution in Visual Studio (2017 Community Edition)
 
 Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
@@ -20,35 +17,76 @@ Run paket update
 Build solution
 
 
-HOW TO RUN
-----------
+## How To Run
 Run ALLANStreams in a console
 
-Run the ALLANUI in Windows (accept the Forewall access to port 5000)
+Run the ALLANUI in Windows (accept the Firewall access to port 5000)
 
-Enter Narses statements into top GUI windows and click <Enter> button
+Enter Narsese statements into top GUI windows and click <Enter> button
 
-<img src="https://github.com/opennars/ALANN2018/blob/master/ALANNGUI.png" width="500" height="450">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png" width="500" height="450">
   
 Results will appear in console currently
 
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
+
   
-EXAMPLE NARSESE FILES
----------------------
-Simple deduction https://github.com/opennars/ALANN2018/blob/master/Cat-blue-sky.txt
+## Example Narsese Files
+Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
 
-Generalised reasoning in shape world scenario https://github.com/opennars/ALANN2018/blob/master/Examples/Shape_world
+Generalised reasoning in shape world https://github.com/opennars/ALANN2018/blob/master/Examples/Shape_world
 
 Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
 
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
+## Supported grammar
+```
+event ::== [attention] sentence
+sentence ::== belief | question | goal | quest 
+belief ::== statement ‘.’ [truth]
+goal ::== statement ‘!’  [desire] 
+question ::== statement ‘?’
+statement ::== ‘<’ term copula term ‘>’
+compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
+term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
+set ::== '{' {term}+ '}' | '[' {term}+ ']'
+binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
+copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
+variable ::== independent-variable | dependent-variable | query-variable
+independent-variable ::== ‘#’ word
+dependent-variable ::== ‘$’ word
+query-variable ::== ‘?’ word
+word ::== string-literal | decimal-integer | real-number
+string-literal ::== leading-identifier {identifier | digit | '_'}
+leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
+identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
+decimal-integer ::== ['-' | '+'] digit-sequence
+digit-sequence ::== digit {digit}
+real-number ::== ['-' | '+'] digit-sequence '.' digit-sequence
+truth ::== ‘{ floatTuple ‘}’
+desire ::== floatTuple
+attention ::== ‘[‘ floatTuple ‘]’
+floatTuple ::== real-number real-number	 
+```
 
-Project Details
----------------
+Note: relationl images are considered binary operators although in practice the following form is used: 
+
+`(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
+
+## Project Details
+The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
+
+The current implementation is not industrial strength but can form a useful toolset for building GMI's.
+
+The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
+
+![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%201.png)
+![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%202.png)
+
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets, which can have additional elements), and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
 The most significant differences are related to the attention mechanism. In OpenNARS there are two key aspects to activation spreading; firstly, term links, which connects concepts (related to the depth of sub terms in the concept host term) and secondly, inference results which cause concept activation as a by-product of their derivation.  In ALANN there are no term links and activation spreading is entirely due to event distribution and inference spreading. So activation spreading is totally controlled by inference.
@@ -62,15 +100,4 @@ Given the potential combinatorial explosion from multiple inference rules for ev
 
 The current implementation has full support for Non-Axiomatic Logic (NAL) Levels 1 through 7 with framework support for NAL 8 and 9 but not local inference support for the latter (Levels 8 and 9).
 
-The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
-
-The current implementation is not industrial strength but can form a useful toolset for building GMI's.
-
-The implementation of the inference rules uses the beautiful Rule meta language developed by patham9 to create a flexible language based inference rules set. The Narjure code base (Clojure implementation of NARS) can be used as reference.
-
-https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference
-
 Have fun!
-
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%201.png)
-![alt text](https://github.com/opennars/ALANN2018/blob/master/ALANN%20System%20Architecture%202.png)
