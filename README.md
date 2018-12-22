@@ -50,9 +50,9 @@ https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
 ###### Supported grammar
 ```
-event	                ::==	[attention] sentence
-sentence 	            ::==	belief | question | goal | quest 
-judgement	            ::==	statement ‘.’ [truth]
+event ::==	[attention] sentence
+sentence  ::==	belief | question | goal | quest 
+judgement ::==	statement ‘.’ [truth]
 goal 	                ::==	statement ‘!’  [desire] 
 question 	            ::==	statement ‘?’
 statement 	          ::==	‘<’ term copula term ‘>’
