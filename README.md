@@ -6,13 +6,12 @@ ALANN is an alternative control theory and design for implementing a NARS style 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
 ## How To Build
-```
-Clone the solution in Visual Studio (2017 Community Edition)
-Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
-Run paket install
-Run paket update
-Build solution
-```
+
+-Clone the solution in Visual Studio (2017 Community Edition)
+-Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
+-Run paket install
+-Run paket update
+-Build solution
 
 ## How To Run
 Run ALLANStreams in a console
