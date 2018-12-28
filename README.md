@@ -66,10 +66,10 @@ floatTuple ::== real-number real-number
 Note: relationl images are considered binary operators although in practice the following form is used: 
 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
-```
+
 ## Server Command Grammar
 The ALANN Server accepts a range of commands to support run time control and onspection of various elements. The ALANN GUI is a simple graphical layer utilising th server commands. Commands in brackets are abbreviated version of the comands:
-
+```
 #RESET (#R) Reset memory and system streams
 #LOAD (#L) "fiename" loads an exisitng file from DATA directory within BIN directory
 #SAVE (#S) "filename" saves memory to disk in DATA directory
