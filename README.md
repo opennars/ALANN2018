@@ -66,7 +66,7 @@ floatTuple ::== real-number real-number
 Note: relationl images are considered binary operators although in practice the following form is used: 
 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
-'''
+```
 ## Server Command Grammar
 The ALANN Server accepts a range of commands to support run time control and onspection of various elements. The ALANN GUI is a simple graphical layer utilising th server commands. Commands in brackets are abbreviated version of the comands:
 
@@ -81,7 +81,7 @@ The ALANN Server accepts a range of commands to support run time control and ons
 #DISABLE_TRACE (#DT) "term" turns off tracing for the specified node
 #SHOW_GENERAL_BELIEFS (#SGB) "term" shows the general beliefs for the specified node
 #SHOW_TEMPORAL_BELIEFS (#STB) "term" show the temporal beliefs for the specified node
-'''
+```
 ## Project Details
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
 
