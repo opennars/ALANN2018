@@ -33,7 +33,7 @@ Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/mas
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
-## Supported grammar
+## Supported Narsese grammar
 ```
 event ::== [attention] sentence
 sentence ::== belief | question | goal | quest 
@@ -67,7 +67,7 @@ Note: relationl images are considered binary operators although in practice the 
 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
 
-## Server Command Grammar
+## Server Command grammar
 The ALANN Server accepts a range of commands to support run time control and onspection of various elements. The ALANN GUI is a simple graphical layer utilising th server commands. Commands in brackets are abbreviated version of the comands:
 ```
 #RESET (#R) Reset memory and system streams
