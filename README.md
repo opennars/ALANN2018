@@ -74,7 +74,7 @@ The ALANN Server accepts a range of commands to support run time control and ins
 #PAUSE (#P) pause the server
 #CONTINUE (#C) continue the server after pausing
 #NODE_COUNT (#NC) show number of current nodes in storage
-#NODE_INFO (#NI) show node speciic information such as current attention level
+#SHOW_NODE (#SN) show node specific information such as current attention level
 #ENABLE_TRACE (#ET) "term" turns on node activation tracing for the node with the specified term - can be multiple traces
 #DISABLE_TRACE (#DT) "term" turns off tracing for the specified node
 #SHOW_GENERAL_BELIEFS (#SGB) "term" shows the general beliefs for the specified node
