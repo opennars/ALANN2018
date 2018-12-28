@@ -68,7 +68,7 @@ Note: relationl images are considered binary operators although in practice the 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
 
 ## Server Command grammar
-The ALANN Server accepts a range of commands to support run time control and onspection of various elements. The ALANN GUI is a simple graphical layer utilising th server commands. Commands in brackets are abbreviated version of the comands:
+The ALANN Server accepts a range of commands to support run time control and inspection of various elements. The ALANN GUI is a simple graphical layer utilising these server commands. Commands in brackets are abbreviated version of the commands:
 ```
 #RESET (#R) Reset memory and system streams
 #LOAD (#L) "fiename" loads an exisitng file from DATA directory within BIN directory
