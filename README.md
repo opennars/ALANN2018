@@ -39,7 +39,7 @@ event ::== [attention] sentence
 sentence ::== belief | question | goal | quest 
 belief ::== statement ‘.’ [truth]
 goal ::== statement ‘!’  [desire] 
-question ::== statement ‘?’
+Question ::== statement ‘?’
 statement ::== ‘<’ term copula term ‘>’
 compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
 term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
@@ -66,7 +66,22 @@ floatTuple ::== real-number real-number
 Note: relationl images are considered binary operators although in practice the following form is used: 
 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
+'''
+## Server Command Grammar
+The ALANN Server accepts a range of commands to support run time control and onspection of various elements. The ALANN GUI is a simple graphical layer utilising th server commands. Commands in brackets are abbreviated version of the comands:
 
+#RESET (#R) Reset memory and system streams
+#LOAD (#L) "fiename" loads an exisitng file from DATA directory within BIN directory
+#SAVE (#S) "filename" saves memory to disk in DATA directory
+#PAUSE (#P) pause the server
+#CONTINUE (#C) continue the server after pausing
+#NODE_COUNT (#NC) show number of current nodes in storage
+#NODE_INFO (#NI) show node speciic information such as current attention level
+#ENABLE_TRACE (#ET) "term" turns on node activation tracing for the node with the specified term - cam be multiple traces
+#DISABLE_TRACE (#DT) "term" turns off tracing for the specified node
+#SHOW_GENERAL_BELIEFS (#SGB) "term" shows the general beliefs for the specified node
+#SHOW_TEMPORAL_BELIEFS (#STB) "term" show the temporal beliefs for the specified node
+'''
 ## Project Details
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
 
