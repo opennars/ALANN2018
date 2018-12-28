@@ -44,7 +44,7 @@ term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
 binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
-variable ::== independent-variable | dependent-variable | query-variable
+variable ::== independent-variable identifier | dependent-variable identifier | query-variable identifier 
 independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
 query-variable ::== ‘?’ word
