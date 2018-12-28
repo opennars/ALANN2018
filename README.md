@@ -17,7 +17,7 @@ ALANN is an alternative control theory and design for implementing a NARS style 
 1. Run ALLANStreams in a console
 2. Run the ALLANUI in Windows (accept the Firewall access to port 5000)
 3. Enter Narsese statements into top GUI windows and click <Enter> button
-<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png" width="500" height="450">
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png">
 4. Results will appear in console currently
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
   
