@@ -6,33 +6,21 @@ ALANN is an alternative control theory and design for implementing a NARS style 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
 ## How To Build
-Clone the solution in Visual Studio (2017 Community Edition)
 
-Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
-
-Run paket install
-
-Run paket update
-
-Build solution
-
+1. Clone the solution in Visual Studio (2017 Community Edition)
+2. Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
+3. Run paket install
+4. Run paket update
+5. Build solution
 
 ## How To Run
-Run ALLANStreams in a console
-
-Run the ALLANUI in Windows (accept the Firewall access to port 5000)
-
-Enter Narsese statements into top GUI windows and click <Enter> button
-
-<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png" width="500" height="450">
-  
-Results will appear in console currently
-
-<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNConsole.gif" width="500" height="250">
-
+1. Run ALLANStreams in a console
+2. Run the ALLANUI in Windows (accept the Firewall access to port 5000)
+3. Enter Narsese statements into 'Input' windows and click <Input> button
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png">
   
 ## Example Narsese Files
-Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/cat-blue-sky.txt
+Simple deduction https://github.com/opennars/ALANN2018/blob/master/Examples/deductive%20reasoning
 
 Chains of deduction https://github.com/opennars/ALANN2018/blob/master/Examples/Deductive%20chain
 
@@ -43,20 +31,20 @@ Infamous "Cat-blue-sky" challenge https://github.com/opennars/ALANN2018/blob/mas
 The inference test cases are a good place to start to get an idea of how narsese can be used with the inference rules (here:
 https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 
-## Supported grammar
+## Supported Narsese grammar
 ```
 event ::== [attention] sentence
 sentence ::== belief | question | goal | quest 
 belief ::== statement ‘.’ [truth]
 goal ::== statement ‘!’  [desire] 
-question ::== statement ‘?’
+Question ::== statement ‘?’
 statement ::== ‘<’ term copula term ‘>’
 compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
 term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
 binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
-variable ::== independent-variable | dependent-variable | query-variable
+variable ::== independent-variable identifier | dependent-variable identifier | query-variable identifier 
 independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
 query-variable ::== ‘?’ word
@@ -77,6 +65,21 @@ Note: relationl images are considered binary operators although in practice the 
 
 `(rel / _ term)` or `(rel / term _)`, similarly for intensional images.
 
+## Server Command grammar
+The ALANN Server accepts a range of commands to support run time control and inspection of various elements. The ALANN GUI is a simple graphical layer utilising these server commands. Commands in brackets are abbreviated version of the commands. By default the server is listening on port 5000 and responds on port 5001. UDP is the current protocol.
+```
+#RESET (#R) Reset memory and system streams
+#LOAD (#L) "fiename" loads an exisitng file from DATA directory within BIN directory
+#SAVE (#S) "filename" saves memory to disk in DATA directory
+#PAUSE (#P) pause the server
+#CONTINUE (#C) continue the server after pausing
+#NODE_COUNT (#NC) show number of current nodes in storage
+#SHOW_NODE (#SN) show node specific information such as current attention level
+#ENABLE_TRACE (#ET) "term" turns on node activation tracing for the node with the specified term - can be multiple traces
+#DISABLE_TRACE (#DT) "term" turns off tracing for the specified node
+#SHOW_GENERAL_BELIEFS (#SGB) "term" shows the general beliefs for the specified node
+#SHOW_TEMPORAL_BELIEFS (#STB) "term" show the temporal beliefs for the specified node
+```
 ## Project Details
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
 
