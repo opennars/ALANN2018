@@ -31,7 +31,7 @@ type Postcondition = | AllowBackward | Swap | NoSwap | QuestionOnly | BeliefFrom
 type InferenceFunction = (Term * Term) -> (Term * (TV * TV -> TV) * (TV * TV -> TV) option * Postcondition list) list
 type TemporalInferenceFunction = (Term * Term) * Stamp * Stamp -> (Term * (TV * TV -> TV) * (TV * TV -> TV) option * Postcondition list) list
 
-let inf f swap eb =
+let inf (f, swap) eb =
     let concurrency() = 
         match eb.Event.Stamp.LastUsed, eb.Belief.Stamp.LastUsed with
         | o1, o2 when abs(o1 - o2) < Params.CONCURRENCY_DURATION -> IsConcurrent

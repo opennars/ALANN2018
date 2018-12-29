@@ -32,6 +32,7 @@ open InferenceUtils
 open FirstOrderInference
 open HigherOrderInference
 open TermUtils
+open TermFormatters
 
 let firstOrderModules : (InferenceFunction * Postcondition) [] =
               [|(nal7_temporal_inference, NoSwap)
@@ -88,7 +89,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         let flow =
             Flow.Create<EventBelief>() 
             |> Flow.filter (fun eb -> eb.Attention > Params.MINIMUM_STI && eb.Event.AV.STI > Params.MINIMUM_STI)
-            |> Flow.map (fun eb -> eb.Event::(inf (fst modules.[j]) (snd modules.[j]) eb))  // add event to inference results
+            |> Flow.map (fun eb -> eb.Event::(inf modules.[j] eb))  // add event to inference results
             |> Flow.collect (fun eb -> eb)
             |> Flow.filter truthFilter
             |> Flow.filter complexityFilter

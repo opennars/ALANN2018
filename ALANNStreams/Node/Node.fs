@@ -38,7 +38,7 @@ open Reporting
 let processEvent state (event : Event) =
 
     immediateInference state event
-    updateBeliefs state event
+    let oldBelief = updateBeliefs state event
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
@@ -61,6 +61,12 @@ let processEvent state (event : Event) =
             | {Event.EventType = Quest} as event    -> processQuest state event
 
         let eventBeliefs = createEventBeliefs state event
+
+        // add eventBelief for oldBelief (if it existed) so overlap does not filter out
+        let eventBeliefs =
+            match oldBelief with
+            | Some belief -> (makeEventBelief event belief)::eventBeliefs
+            | None -> eventBeliefs
 
         match event.EventType with
         | Belief | Question ->

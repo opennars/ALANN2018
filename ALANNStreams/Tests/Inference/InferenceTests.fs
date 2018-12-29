@@ -54,7 +54,7 @@ let testInfFunc (f : InferenceFunction) (e1 : Event) (e2 : Event) =
         | {Event.Term = t1; TV = Some tv1} -> (ft t1, Some tv1)
         | {Event.Term = t1; TV = None} -> (ft t1, None)
 
-    List.map matcher (inf f NoSwap (makeTestEventBelief e1 e2))
+    List.map matcher (inf (f, NoSwap) (makeTestEventBelief e1 e2))
 
 //let testTemporalInfFunc t1 t2 =
 //    let matcher = function

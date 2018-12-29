@@ -30,6 +30,7 @@ open Factories
 open TruthFunctions
 open TermUtils
 open Evidence
+open TermFormatters
 
 let makeEventBelief event (belief : Belief) =
     {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
@@ -65,12 +66,15 @@ let updateBeliefs state event =
         | Some oldBelief when isRevisble oldBelief newBelief ->
             let belief' = makeRevisedBelief oldBelief newBelief
             state.Beliefs.Update(makeKey belief', belief')
+            Some oldBelief
         | Some oldBelief when eTV |> isBetterThan oldBelief.TV -> 
             state.Beliefs.Update(makeKey newBelief, newBelief)
+            Some oldBelief
         | None ->
             state.Beliefs.Insert(makeKey newBelief, newBelief)
-        | _ -> () // Exists but not better truth or revisable
-    | _ -> () // Not a belief
+            None
+        | _ -> None // Exists but not better truth or revisable
+    | _ -> None // Not a belief
 
 
 let forget (state : Node) now = 

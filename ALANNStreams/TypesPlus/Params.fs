@@ -26,6 +26,7 @@ module Params
 
 // NAL Related Parameters
 let HORIZON                             = 1.0f          // System Personality Factor
+let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
                                                         
 // Node Related Parameters                              
 let ACTIVATION_THRESHOLD                = 0.60f         // Minimum concept STI for concept activation
@@ -57,21 +58,18 @@ let MAX_GENERAL_SC                      = 20            // Maximum syntactic com
 let MAX_TEMPORAL_SC                     = 30            // Maximum syntactic complexity of temporal terms
 let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve slope of the priority buffer selection
 let TERM_DEPTH                          = 3             // depth of term separation
-let ATTENTION_BUFFER_SIZE               = 200           // Maximum number of events in Attention buffer
+let ATTENTION_BUFFER_SIZE               = 100           // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
-let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
-let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
-let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inference samples from main event stream in ms
-let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
+let MAX_CONCEPTS                        = 10_000        // Maximum number of concepts
 
 // UI related Parameters
-let NODES_PROCESSED_MOD                 = 1_000_000     // Frequency of display of processd nodes
-let NODE_COUNT_MOD                      = 10_000        // Frequency of display of created node count
 let EVENTS_PROCESSED_MOD                = 100_000L      // Frequency of display of selected events 
-let INFERENCES_PROCESSED_MOD            = 100_000L      // Frequency of display of derived events
+let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
+let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inference samples from main event stream in ms
+let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
 
 //Streams related Parameters  
-let NUM_TERM_STREAMS                    = 50            // Number of Term streams
+let NUM_TERM_STREAMS                    = 20            // Number of Term streams
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
 let MAJOR_BLOCK_SIZE                    = 10_000        // Number of events to form a main stream block
@@ -83,7 +81,7 @@ let CLIENT_ADDR                         = "127.0.0.1"   // ALANN GUI Client IP a
 let SERVER_PORT                         = 5000          // Port for server
 let CLIENT_PORT                         = 5001          // CLient port
 
-//Commd related prefixes
+//Commad related prefixes
 let COMMAND_PREFIX                      = "#"           // Start of command message
 let BELIEF_PREFIX                       = "!"           // Start of belief message
 let ANSWER_PREFIX                       = "?"           // Start of answer message
