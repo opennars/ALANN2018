@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Timers;
 
 namespace ALANNUI
 {
@@ -45,11 +46,33 @@ namespace ALANNUI
         static UdpClient outSocket = new UdpClient();
         static UdpClient inSocket = new UdpClient(clientEndPoint);
 
+        private static System.Timers.Timer timer;
+        private bool ServerLive = false;
+
         public Form1()
         {
             InitializeComponent();
             outSocket.Connect(serverEndPoint);
             Start();
+            SetTimer();
+        }
+
+
+        private void SetTimer()
+        {
+            timer = new System.Timers.Timer(1000.0);
+            timer.AutoReset = true;
+            timer.Elapsed += OnTimedEvent;
+            timer.Enabled = true;
+        }
+
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            if (!ServerLive)
+            {
+                statusLabel.Text = "Status: ALANN Server Not Running";
+            }
+            ServerLive = false;
         }
 
         private void InputBtn_Click(object sender, EventArgs e)
@@ -132,6 +155,7 @@ namespace ALANNUI
             {
                 eventsPerSecondStatus.Text = statusMsg;
             }
+            ServerLive = true;
         }
 
         private void UpdateMsg(string msg)
