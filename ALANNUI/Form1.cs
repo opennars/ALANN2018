@@ -23,13 +23,7 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
@@ -58,16 +52,17 @@ namespace ALANNUI
             Start();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void InputBtn_Click(object sender, EventArgs e)
         {
-            var lines = richTextBox1.Text.Split('\n');
-            foreach(var line in lines)
+            var lines = inputRTB.Text.Split('\n');
+
+            foreach (var line in lines)
             {
                 var data = Encoding.ASCII.GetBytes(line);
                 outSocket.SendAsync(data, data.Length);
-                //Thread.Sleep(10);
+                Thread.Sleep(10);
+                UpdateMsg(line + "\n");
             }
-            //richTextBox1.Text = "";
         }
 
         private void Start()
@@ -75,67 +70,287 @@ namespace ALANNUI
             ThreadStart ts = new ThreadStart(Listening);
             Thread th = new Thread(ts);
             th.Start();
-            //Thread listenThread = new Thread(new ThreadStart(Listening));
-        }
 
+            DisplayWelcomeMessage();
+        }
 
         private async void Listening()
         {
-            byte[] data;
-
-            Thread.Sleep(100);
-            
-            while(true)
+            while (true)
             {
                 var result = await inSocket.ReceiveAsync();
-                data = result.Buffer;
+                var data = result.Buffer;
                 string msg = Encoding.ASCII.GetString(data, 0, data.Length);
-                msg += "\n";
                 UpdateText updateMsg = UpdateMsg;
                 this.Invoke(updateMsg, msg);
             }
         }
 
+        private void UpdateRTB(RichTextBox rtb, char prefix, string msg)
+        {
+            rtb.Text += msg.TrimStart(prefix) + "\n";
+            rtb.SelectionStart = rtb.Text.Length;
+            rtb.ScrollToCaret();
+        }
+
+        private void ProcessAnswerMsg(string msg)
+        {
+            UpdateRTB(answersRTB, '?', msg);
+        }
+
+        private void ProcessBeliefMsg(string msg)
+        {
+            UpdateRTB(beliefsRTB, '!', msg);
+        }
+
+        private void ProcessCmdMsg(string msg)
+        {
+            UpdateRTB(cmdLogRTB, '#', msg);
+        }
+
+        private void ProcessInferenceMsg(string msg)
+        {
+            UpdateRTB(inferenceRTB, '$', msg);
+        }
+
+        private void ProcessStatusMsg(string msg)
+        {
+            var statusMsg = msg.TrimStart(':');
+
+            if (statusMsg.StartsWith("Cycle"))
+            {
+                CycleStatus.Text = statusMsg;
+            }
+            else if (statusMsg.StartsWith("Status"))
+            {
+                statusLabel.Text = statusMsg;
+            }
+            else if (statusMsg.StartsWith("Events"))
+            {
+                eventsPerSecondStatus.Text = statusMsg;
+            }
+        }
+
         private void UpdateMsg(string msg)
         {
-            var text = richTextBox2.Text;
-            var len = text.Length;
+            var msgType = msg.Substring(0, 1);
 
-            text = text.Substring(0, Math.Min(len, 5000));
-            text = msg + text;
-            richTextBox2.Text = text;
+            switch(msgType)
+            {
+                case "?":
+                    ProcessAnswerMsg(msg);
+                    break;
+
+                case "!":
+                    ProcessBeliefMsg(msg);
+                    break;
+
+                case "$":
+                    ProcessInferenceMsg(msg);
+                    break;
+
+                case ":":
+                    ProcessStatusMsg(msg);
+                    break;
+
+                default:
+                    ProcessCmdMsg(msg);
+                    break;
+            }
         }
 
-        private string makeRndStatement()
+        private void EchoCmd(string prefix, string msg)
         {
-            var rnd = new Random();
-            var sb = new StringBuilder();
-            sb = sb.AppendFormat("<term{0} --> term{1}>.", rnd.Next(1000), rnd.Next(1000));
-            return sb.ToString();
+            cmdLogRTB.Text += prefix + msg + "\n";
+            cmdLogRTB.SelectionStart = cmdLogRTB.Text.Length;
+            cmdLogRTB.ScrollToCaret();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void LoadSampleBtn_Click(object sender, EventArgs e)
         {
-            foreach(var str in samples)
+            EchoCmd("LOADING SAMPLE...", "");
+            foreach (var str in Samples)
             {
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
-                Thread.Sleep(10);
             }
-
-            //for (var i = 0; i < 100000000; i++)
-            //{
-            //    var data = Encoding.ASCII.GetBytes(makeRndStatement());
-            //    outSocket.SendAsync(data, data.Length);
-
-            //    if (i % 100000 == 0)
-            //        Thread.Sleep(10);
-            //}
-
+            EchoCmd("SAMPLE LOADED", "");
         }
 
-        string[] samples =
+        private void SendTestToServer(string[] test)
         {
+            foreach (var str in test)
+            {
+                var data = Encoding.ASCII.GetBytes(str);
+                outSocket.SendAsync(data, data.Length);
+                EchoCmd("PERCEIVED: ", str);
+                Thread.Sleep(10);
+            }
+        }
+
+        private void CatBlueSkyTestBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(CatBlueSkyTest);
+        }
+
+        private void CatLikeCodTestBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(CatLikesCodTest);
+        }
+
+        private void ChainingTestBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(ChainingTest);
+        }
+
+        private void ShapeWorldTestBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(ShapeWorldTest);
+        }
+
+        private void SendCmdToServer(string cmd, params string[] list)
+        {
+            var cmdStr = cmd + (list.Length == 0 ? "" : list[0]);
+            var data = Encoding.ASCII.GetBytes(cmdStr);
+            outSocket.SendAsync(data, data.Length);
+        }
+
+        private void ShowGeneralBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SGB ", termNameTB.Text);
+        }
+
+        private void ShowTemporalBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#STB ", termNameTB.Text);
+        }
+
+        private void EnableTraceBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#ET ", termNameTB.Text);
+        }
+
+        private void DisableTraceBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#DT ", termNameTB.Text);
+        }
+
+        private void NodeCountBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#NC");
+        }
+
+        private void ShowNodeBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SN ", termNameTB.Text);
+        }
+
+        private void LoadDataBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#L ", filenameTB.Text);
+        }
+
+        private void SaveDataBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#S ", filenameTB.Text);
+        }
+
+        private void PauseBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#P");
+        }
+
+        private void ContinueBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#C");
+        }
+
+        private void ResetBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#RESET");
+        }
+
+        private void ClearFormBtn_Click(object sender, EventArgs e)
+        {
+            answersRTB.Text = "";
+            cmdLogRTB.Text = "";
+            beliefsRTB.Text = "";
+            inputRTB.Text = "";
+            inferenceRTB.Text = "";
+        }
+
+        private void DisplayWelcomeMessage()
+        {
+            var msg =
+                "*** WELCOME TO ALANN ***\n\n" +
+                "REMEMBER TO START THE ALANN SERVER\n";
+
+            inputRTB.Text = msg;
+        }
+
+        string[] CatBlueSkyTest =
+        {
+            "<{sky}-->[blue]>.",
+            "<{tom}-->cat>.",
+            "<({tom}*{sky})-->likes>.",
+            "<(cat*[blue])-->likes>?"
+        };
+
+
+        string[] CatLikesCodTest =
+        {
+            "<cat --> animal>.",
+            "<animal --> [living]>.",
+            "<{tom} --> cat>.",
+            "<(cat * fish) --> eats>.",
+            "<cod --> fish>.",
+            "<{tom} --> (eats / _ cod)>?"
+            };
+
+        string[] ChainingTest =
+        {
+            "<a --> b>.",
+            "<b --> c>.",
+            "<c --> d>.",
+            "<d --> e>.",
+            "<e --> f>.",
+            "<f --> g>.",
+            "<g --> h>.",
+            "<h --> i>.",
+            "<a --> i>?"
+            };
+
+
+        string[] ShapeWorldTest =
+        {
+        "<<($1 * $2) --> larger> ==> <($2 * $1) --> smaller>>.",
+        "<<($1 * $2) --> smaller> ==> <($2 * $1) --> larger>>.",
+        "<<($1 * $2) --> next_to> <=> <($2 * $1) --> next_to>>.",
+        "<<($1 * $2) --> over> ==> <($2 * $1) --> under>>.",
+        "<<($1 * $2) --> under> ==> <($2 * $1) --> over>>.",
+        "<<($1 * $2) --> outside> ==> <($2 * $1) --> inside>>.",
+        "<<($1 * $2) --> inside> ==> <($2 * $1) --> contains>>.",
+        "<<($1 * $2) --> contains> ==> <($1 * $2) --> larger>>. ",
+        "<<($1 * $2) --> on> ==> <($2 * $1) --> under>>.",
+        "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>.",
+        "<({box} * floor) --> on>.",
+        "<({toy} * {box}) --> inside>.",
+        "<({ball} * {box}) --> on>.",
+        "<<$1 --> (inside / _ $2)> ==> <$2 --> (contains / _ $1)>>.",
+        "<<$1 --> (contains / _ $2)> ==> <$1 --> (larger / _ $2)>>.",
+        "<<$1 --> (smaller / _ $2)> ==> <$2 --> (larger / _ $1)>>.",
+        "<<$1 --> (larger / _ $2)> ==> <$2 --> (smaller / _ $1)>>.",
+        "<{?1} --> (on / _ floor)>?",
+        "<{?1} --> (on / {ball} _)>?",
+        "<{?1} --> (under / _ {ball})>?",
+        "<{?1} --> (contains / _ {toy})>?",
+        "<{box} --> (larger / _ {toy})>?",
+        "<{toy} --> (smaller / _ {box})>?",
+        "<?1 --> (on / _(on / _ floor))>?"
+        };
+
+        string[] Samples =
+{
          "<cat --> animal>.",
          "<dog --> animal>.",
          "<(cat * fish) --> eats>.",
@@ -277,10 +492,11 @@ namespace ALANNUI
          "<<($1 * $2) --> under> ==> <($2 * $1) --> over>>.",
          "<<($1 * $2) --> outside> ==> <($2 * $1) --> inside>>.",
          "<<($1 * $2) --> inside> ==> <($2 * $1) --> contains>>.",
-         "<<($1 * $2) --> contains> ==> <($1 * $2) --> larger>>.", 
+         "<<($1 * $2) --> contains> ==> <($1 * $2) --> larger>>.",
          "<<($1 * $2) --> on> ==> <($2 * $1) --> under>>.",
          "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>."
             };
+
     }
 }
 
