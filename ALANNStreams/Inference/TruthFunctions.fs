@@ -45,7 +45,7 @@ module TruthFunctions
         let wplus = (fst a + fst b)
         let w = (snd a + snd b)
         let f, c = w2c(wplus, w) 
-        {F = f; C = c}
+        {F = f; C = min Params.CONF_MAX_CLAMP c}
 
     let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f
 

@@ -60,6 +60,7 @@ let TERM_DEPTH                          = 3             // depth of term separat
 let ATTENTION_BUFFER_SIZE               = 200           // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
 let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
+let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
 let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inference samples from main event stream in ms
 let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
 
