@@ -33,7 +33,7 @@ open ProcessBelief
 open ProcessQuestion
 open ProcessGoal
 open ProcessQuest
-open TermUtils
+open Reporting
 
 let processEvent state (event : Event) =
 
@@ -42,17 +42,17 @@ let processEvent state (event : Event) =
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
-    let state =
-        match not inLatencyPeriod with
-        | true when isTarget state.Term event.Term -> updateAttention state now event
-        | _ -> state
 
-    let cond1 = (not inLatencyPeriod) && (state.Attention > Params.ACTIVATION_THRESHOLD)
-    let cond2 = (event.EventType = Question && event.Stamp.Source = User)
+    let state = updateAttention state now event
+
+    let cond1 = not inLatencyPeriod
+    let cond2 = event.EventType = Question && event.Stamp.Source = User
         
-    match cond1 || cond2 with
+    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
     | true ->
-        let state = {state with LastUsed = now; UseCount = state.UseCount + 1L}
+        if state.Trace then showTrace state event
+
+        let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
 
         let createEventBeliefs state = function
             | {Event.EventType = Question} as event -> processQuestion state event
@@ -76,7 +76,8 @@ let initState term =
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL
      LastUsed = SystemTime()
-     UseCount = 0L}
+     UseCount = 0L
+     Trace = false}
     
 let createNode (t, e : Event) = 
     initState t

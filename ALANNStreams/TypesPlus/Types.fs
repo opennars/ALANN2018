@@ -27,6 +27,8 @@ module Types
 open System
 open System.Threading
 open System.Collections.Concurrent
+open Akka.Streams.Dsl
+open Akkling
 
 type OpCode =
     | Inh                                           // NAL 1
@@ -75,7 +77,8 @@ type Belief =
     {Term : Term; TV : TV; Stamp : Stamp }
     interface System.IComparable<Belief> with
         member this.CompareTo other =
-            exp(this.TV).CompareTo(exp(other.TV))
+            let rank belief = exp belief.TV / float32(belief.Stamp.SC)
+            (rank this).CompareTo(rank other)
 
     override this.Equals(other) =
         match other with
@@ -141,7 +144,7 @@ type EventBelief =
         let hash = hash * 31 + this.Belief.Term.GetHashCode()
         hash
 
-type Key = Term * Id list
+type Key = Term
 
 type IStore =
     abstract Contains : Key -> bool
@@ -159,16 +162,36 @@ type Node     = {Term : Term
                  VirtualBelief : Belief
                  mutable Attention : float32
                  mutable LastUsed : SysTime
-                 mutable UseCount : int64}
+                 mutable UseCount : int64
+                 mutable Trace : bool}
 
 type Message = | ProcessEvent of Event
                | PrintMessage of string
                | PrimeConcept of AV
 
+type Command = | Show_General_Beliefs of Term
+               | Show_Temporal_Beliefs of Term
+               | Show_Node of Term
+               | Node_Count
+               | Enable_Trace of Term
+               | Disable_Trace of Term
+               | Pause
+               | Continue
+               | Load of string
+               | Save of string
+               | Reset
+               | Unknown
+
 let Id = ref 0L
 let ID() = Interlocked.Increment(Id)
 
-let startTime = DateTime.Now.Ticks
+let mutable startTime = DateTime.Now.Ticks
 let SystemTime() = (DateTime.Now.Ticks - startTime) / 10000L 
+
+let cycle = ref 0L
+let eventsPerSecond = ref 0L
+
+let mutable valveAsync : Async<IValveSwitch> = Unchecked.defaultof<Async<IValveSwitch>>
+let mutable resetSwitch = false
 
 let mutable stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]

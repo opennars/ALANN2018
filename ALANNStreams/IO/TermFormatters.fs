@@ -74,3 +74,6 @@ let rec ft t =
     | Var(QVar, c) -> "?" + c
     | _ -> "Unknown type Error"
 
+let formatEvent e = sprintf "%A %s %s %s %s" e.EventType (av e.AV) (match e.TV with | Some tv -> truth tv | _ -> "None") (ft e.Term) (Trail e.Stamp.Evidence)
+
+let formatBelief (b : Belief) = sprintf "%s %s %s @%d" (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) (b.Stamp.LastUsed)

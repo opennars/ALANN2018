@@ -31,9 +31,8 @@ open Akkling.Streams
 open ALANNSystem
 open ALANNLobe
 open Network
-open Types
-open FileIO
-open System.Collections.Concurrent
+open Reporting
+open CommandProcessor
 
 type Controller() =
 
@@ -47,27 +46,24 @@ type Controller() =
     // Initialise Controller
     member this.Initialise() =
 
+        // main message loop
         let rec loop() = async {
-            UDPreceiver <! getServerMsg(inSocket)
+            let msg = getServerMsg(inSocket)
+            match msg.StartsWith(Params.COMMAND_PREFIX) with
+            | true -> processCommand(msg)
+            | false -> UDPreceiver <! msg
             return! loop()
         }
 
-        loop() |> Async.Start
+        // status update loop
+        let timer = new System.Timers.Timer(Params.STATUS_UPDATE_FREQUENCY_MS, Enabled = true)
+        timer.AutoReset <- true
 
-    member this.Send (text : string []) =
-        for line in text do
-            UDPreceiver <! line
-        ()
+        let rec statusLoop() = async {
+            let! _ = Async.AwaitEvent timer.Elapsed
+            updateStatus()
+            return! statusLoop()
+        }
 
-    member this.SaveConcepts(filename) =
-        ExportGraph(filename)
-        
-    member this.LoadConcepts(filename) =
-        LoadGraph(filename)
-
-    member this.Reset() =
-        let timer = new System.Timers.Timer(2000.0)
-        let event = Async.AwaitEvent timer.Elapsed |> Async.Ignore
-
-        Async.RunSynchronously event
-        stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]
+        loop() |> Async.Start           // start main message loop
+        statusLoop() |> Async.Start     // start status update loop

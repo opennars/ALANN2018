@@ -37,23 +37,30 @@ let termStream (i) =
     GraphDsl.Create(
         fun builder ->
             let processEvent {Term = t; Event = e} = 
-                match stores.[i].TryGetValue(t) with
-                | (true, node) ->
-                    let (node', ebs) = processEvent node e
-                    match stores.[i].TryUpdate(t, node', node) with
-                    | false -> 
-                        failwith "ProcessEvent failed with node update"
+                try
+                    match stores.[i].TryGetValue(t) with
+                    | (true, node) ->
+                        let (node', ebs) = processEvent node e
+                        match stores.[i].TryUpdate(t, node', node) with
+                        | false -> 
+                            failwith "ProcessEvent failed with node update"
+                            []
+                        | _ -> ebs
+                    | (false, _) -> 
+                        failwith "ProcessEvent failed with node get"
                         []
-                    | _ -> ebs
-                | (false, _) -> 
-                    failwith "ProcessEvent failed with node get"
-                    []
+                with
+                    | ex -> []
 
-            let createNode {Term = t; Event = e} = stores.[i].TryAdd(t, createNode (t, e)) |> ignore; {Term = t; Event = e}
+            let createNode {Term = t; Event = e} = 
+                match stores.[i].TryAdd(t, createNode (t, e)) with
+                | true -> {Term = t; Event = e}
+                | false -> failwith "createNode failed to create node"
+
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if stores.[i].ContainsKey(t) then 1 else 0))
             let createableNode = function 
-                | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || exp(e.TV.Value) > 0.65f) -> true
+                | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || exp(e.TV.Value) > Params.MIN_NODE_CREATION_EXP) -> true
                 | _ -> false
             
             let create = 
@@ -73,7 +80,7 @@ let termStream (i) =
                 Flow.Create<TermEvent>()
                 |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
                 |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
-                |> Flow.collect (fun events -> events)
+                |> Flow.collect (fun termEvents -> termEvents)
 
             let deriver = builder.Add(inferenceFlow.Async())
 

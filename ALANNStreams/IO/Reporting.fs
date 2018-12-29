@@ -25,27 +25,32 @@
 module Reporting
 
 open System.Collections.Concurrent
-open System.Threading.Tasks
-open AsyncUtils
-open Events
-open Loggers
+open System.Threading
 open ALANNSystem
 open Types
 open Akkling
+open TermUtils
+open TermFormatters
 
 let answerDict = ConcurrentDictionary<string, string>()
 
-let displayAnswer answer =
-    
+let displayAnswer answer =    
     match answerDict.ContainsKey answer with
     | false ->
         match answerDict.TryAdd(answer, answer) with
-        | true -> printActor <! PrintMessage (sprintf "%s" answer)
+        | true -> printActor <! PrintMessage (sprintf "?%s" answer)
         | _ -> ()
     | _ -> ()
 
-let statsFunc() = async {
-    while true do
-        do raiseConceptCountEvent (numConcepts())
-        do! Task.Delay(1000) |> AwaitTaskVoid}
+let updateStatus() =
+    myprintfn (sprintf ":Cycle [%d]" !cycle)
+    myprintfn ":Status: ALANN Server Running"
+    myprintfn (sprintf ":Events %d/s" (Interlocked.Exchange(eventsPerSecond, 0L)))            
 
+
+let showTrace state e =
+    let activationType (e : Event) = if isTemporal e.Term then "TEMPORAL" else "GENERAL"
+    let msg1 = sprintf "TRACING NODE '%s': ACTIVATED WITH %s ATTENTION %.2f" (ft state.Term) (activationType e) state.Attention
+    let msg2 = formatEvent e
+    printActor <! PrintMessage msg1
+    printActor <! PrintMessage msg2

@@ -41,4 +41,7 @@ let LoadGraph filename =
     use streamReader = new BinaryReader(File.Open(filename, FileMode.Open))
     stores <- streamReader.ReadBytes(int(FileInfo(filename).Length)) |> binarySerializer.UnPickle 
 
-
+let createDirectoryIfNotExists path =
+    match Directory.Exists path with
+    | false -> Directory.CreateDirectory(path) |> ignore
+    | _ -> ()

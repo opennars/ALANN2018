@@ -132,8 +132,8 @@ let isSelective t = containsVars t
 let isFirstOrder = function | Term(Inh, _) | Term(Sim, _) -> true | _ -> false
 
 // Helper functions
-let makeKey (b : Belief) = (b.Term, sort b.Stamp.Evidence)
-let makeKeyFromEvent (e : Event) = (e.Term, sort e.Stamp.Evidence)
+let makeKey (b : Belief) = b.Term
+let makeKeyFromEvent (e : Event) = e.Term
 
 
 

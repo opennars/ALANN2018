@@ -35,7 +35,7 @@ let immediate = function
 
 let immediateInference state (event : Event) =
     match event with
-    | {EventType = Belief} ->
+    | {EventType = Belief} when event.Term <> state.Term ->
         let belief = makeBeliefFromEvent event
         match immediate belief with
         | Some b -> 

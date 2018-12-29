@@ -32,7 +32,7 @@ open TermUtils
 
 let makeBeliefFromEvent (e : Event) =
     match e with
-    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = e.Stamp}
+    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with LastUsed = SystemTime(); UseCount = e.Stamp.UseCount + 1L}}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeVirtualBelief term =
@@ -59,7 +59,7 @@ let makeInferredEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
 
 let makeInferredFromQuestionEvent eb (term, tv) =
     let stamp2 = eb.Belief.Stamp
@@ -71,7 +71,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
 
 let makeStructuralEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -83,7 +83,7 @@ let makeStructuralEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = EventType.Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
 
 let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
@@ -94,7 +94,7 @@ let makeQuestionEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
 
 let makeQuestionStructuralEvent (eb : EventBelief) term =
     let now = SystemTime()
@@ -105,7 +105,7 @@ let makeQuestionStructuralEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
 
 
 let makeQuestEvent (eb : EventBelief) term =
@@ -117,4 +117,4 @@ let makeQuestEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.USER_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}

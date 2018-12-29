@@ -28,9 +28,21 @@ open System.Net
 open System.Net.Sockets
 open System.Text
 
-let clientEndPoint = new IPEndPoint(IPAddress.Any, 5000)
-let inSocket = new UdpClient(clientEndPoint)
+let serverAddr = Params.SERVER_ADDR
+let clientAddr = Params.CLIENT_ADDR
+let serverPort = Params.SERVER_PORT
+let clientPort = Params.CLIENT_PORT
+
+let clientEndPoint = new IPEndPoint(IPAddress.Parse(clientAddr), clientPort)
+let outSocket = new UdpClient()
+
+let sendMessageToClient (msg : string) =
+    let data = Encoding.ASCII.GetBytes(msg)
+    outSocket.SendAsync(data, data.Length) |> ignore
+
+let serverEndPoint = new IPEndPoint(IPAddress.Any, serverPort)
+let inSocket = new UdpClient(serverEndPoint)
 
 let getServerMsg(inSocket : UdpClient) =
-    let asyncData = inSocket.Receive(ref clientEndPoint )
+    let asyncData = inSocket.Receive(ref serverEndPoint )
     Encoding.ASCII.GetString(asyncData)

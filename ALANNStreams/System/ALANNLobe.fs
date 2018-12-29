@@ -35,6 +35,30 @@ open Parser
 open ALANNSystem
 open Loggers
 open PriorityBuffer
+open System.Threading
+    
+let valveFlow =    
+    GraphDsl.Create(
+        fun builder ->
+            let valve = builder.Add(Flow.Create<Event>() 
+                                    |> Flow.viaMat (Flow.valve SwitchMode.Open) Keep.right
+                                    |> Flow.mapMatValue (fun valveSwitch -> valveAsync <- valveSwitch))
+
+            FlowShape<Event, Event>(valve.Inlet, valve.Outlet)
+        )
+        
+let resetFlow =    
+    GraphDsl.Create(
+        fun builder ->
+            let partition = builder.Add(Partition(2, (fun _ -> if resetSwitch then 1 else 0)))
+
+            builder
+                .From(partition.Out(1))
+                .To(Sink.ignore)
+                |> ignore
+
+            FlowShape<Event, Event>(partition.In, partition.Out(0))
+        )
 
 let mainSink = 
     GraphDsl.Create(
@@ -42,19 +66,25 @@ let mainSink =
             let mergePref = builder.Add(MergePreferred<Event>(1))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
+            let incrementCycle e = Interlocked.Increment(cycle) |> ignore; e
+            let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(eventsPerSecond) |> ignore; e)
 
             let groupAndDelay =
                     Flow.Create<Event>()
                     |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                     |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.collect (fun events -> events)
-
+                    |> Flow.map incrementCycle
+                    |> Flow.collect (fun events -> events)                   
+                    
             builder
                 .From(inBuffer)
                 .To(mergePref.Preferred)
                 .From(mergePref)
+                .Via(resetFlow)
+                .Via(valveFlow)
                 .Via(termStreams)
                 .Via(eventLogger)
+                .Via(incrementEvents)
                 .Via(attentionBuffer)
                 .Via(groupAndDelay)
                 .To(mergePref.In(0))

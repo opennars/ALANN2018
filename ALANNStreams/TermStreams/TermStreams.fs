@@ -30,7 +30,6 @@ open Akka.Streams
 open Types
 open TermStream
 open TermUtils
-open System
 
 let termStreams =
     GraphDsl.Create(

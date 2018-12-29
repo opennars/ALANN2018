@@ -25,6 +25,7 @@
 open System
 open Controller
 open Reporting
+open ALANNSystem
 
 [<EntryPoint>]
 let main argv = 
@@ -44,7 +45,7 @@ let main argv =
     let controller = new Controller()
 
     controller.Initialise()
-    controller.ParseError.Add (fun e -> printfn "%s" e.Error)
+    controller.ParseError.Add (fun e -> myprintfn (sprintf "%s" e.Error))
     controller.DisplayAnswer.Add (fun e -> displayAnswer e.Answer)
 
     printfn "\tConfiguration complete\n"

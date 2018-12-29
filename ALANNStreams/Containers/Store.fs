@@ -34,25 +34,25 @@ type Store(generalCapacity, temporalCapacity ) =
 
     interface IStore with
         member x.Contains(key) = 
-            if fst key |> isTemporal then
+            if key |> isTemporal then
                 temporalStore.Contains key
             else
                 GeneralStore.Contains key
 
         member x.Insert(key, belief) =
-            if fst key |> isTemporal then
+            if key |> isTemporal then
                 temporalStore.Insert(key, belief)
             else
                 GeneralStore.Insert(key, belief)
 
         member x.Update(key, belief) =
-            if fst key |> isTemporal then
+            if key |> isTemporal then
                 temporalStore.Update(key, belief)
             else
                 GeneralStore.Update(key, belief)
 
         member x.TryGetValue key = 
-            if fst key |> isTemporal then
+            if key |> isTemporal then
                 temporalStore.TryGetValue key
             else
                 GeneralStore.TryGetValue key

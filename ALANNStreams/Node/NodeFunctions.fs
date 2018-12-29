@@ -37,13 +37,13 @@ let makeEventBelief event (belief : Belief) =
      Belief = belief}
 
 let makeAnsweredEventBelief event (belief : Belief) =
-    {Attention = Params.RESTING_POTENTIAL * TruthFunctions.exp(belief.TV)
+    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
      Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI * (1.0f - belief.TV.C)}; Solution = Some belief}
      Belief = belief}
 
 let updateBeliefs state event =    
     let isBetterThan aTV bTV =
-        let cond1 = bTV.C > aTV.C 
+        let cond1 = bTV.C >= aTV.C 
         let cond2 = (bTV.C = aTV.C) && (bTV.F > aTV.F)
         cond1 || cond2
 
@@ -51,11 +51,11 @@ let updateBeliefs state event =
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
         match state.Beliefs.TryGetValue(makeKeyFromEvent event) with
-        | Some(oldBelief) when eTV |> isBetterThan oldBelief.TV -> 
+        | Some oldBelief when eTV |> isBetterThan oldBelief.TV -> 
             state.Beliefs.Update(makeKey newBelief, newBelief)
         | None ->
             state.Beliefs.Insert(makeKey newBelief, newBelief)
-        | _ -> () // exisitng belief has better TV
+        | _ -> () // Not better truth
     | _ -> () // Not a belief
 
 let forget (state : Node) now = 
@@ -65,7 +65,7 @@ let forget (state : Node) now =
 
 let updateAttention state now event =
     let attention = forget state now
-    let sti = _or [attention; event.AV.STI]
+    let sti = max (_or [attention; event.AV.STI]) Params.RESTING_POTENTIAL
     {state with Attention = sti}
 
 let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
