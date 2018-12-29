@@ -93,6 +93,7 @@
     <Compile Include="Node\Node.fs" />
     <Compile Include="TermStreams\TermStream.fs" />
     <Compile Include="TermStreams\TermStreams.fs" />
+    <Compile Include="Commands\CommandUtils.fs" />
     <Compile Include="Commands\CommandProcessor.fs" />
     <Compile Include="System\ALANNLobe.fs" />
     <Compile Include="System\Controller.fs" />
