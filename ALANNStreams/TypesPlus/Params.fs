@@ -60,6 +60,7 @@ let TERM_DEPTH                          = 3             // depth of term separat
 let ATTENTION_BUFFER_SIZE               = 200           // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
 let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
+let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inference samples from main event stream in ms
 let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
 
 // UI related Parameters
@@ -85,4 +86,5 @@ let CLIENT_PORT                         = 5001          // CLient port
 let COMMAND_PREFIX                      = "#"           // Start of command message
 let BELIEF_PREFIX                       = "!"           // Start of belief message
 let ANSWER_PREFIX                       = "?"           // Start of answer message
-let INFERENCE_PREFIX                    = "%"           // Start of inference message
+let INFERENCE_PREFIX                    = "$"           // Start of inference message
+let STATUS_PREFIX                       = ":"           // Start of status message

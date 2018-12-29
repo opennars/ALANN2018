@@ -43,14 +43,14 @@ let displayAnswer answer =
     | _ -> ()
 
 let updateStatus() =
-    myprintfn (sprintf ":Cycle [%d]" !cycle)
-    myprintfn ":Status: ALANN Server Running"
-    myprintfn (sprintf ":Events %d/s" (Interlocked.Exchange(eventsPerSecond, 0L)))            
+    myprintfn (sprintf "%sCycle [%d]" Params.STATUS_PREFIX !cycle)
+    myprintfn (sprintf "%sStatus: ALANN Server Running" Params.STATUS_PREFIX)
+    myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(eventsPerSecond, 0L)))            
 
 
 let showTrace state e =
     let activationType (e : Event) = if isTemporal e.Term then "TEMPORAL" else "GENERAL"
-    let msg1 = sprintf "TRACING NODE '%s': ACTIVATED WITH %s ATTENTION %.2f" (ft state.Term) (activationType e) state.Attention
+    let msg1 = sprintf "%sTRACING NODE '%s': ACTIVATED WITH %s ATTENTION %.2f" Params.COMMAND_PREFIX (ft state.Term) (activationType e) state.Attention
     let msg2 = formatEvent e
     printActor <! PrintMessage msg1
     printActor <! PrintMessage msg2

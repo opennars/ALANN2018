@@ -63,8 +63,8 @@ let log2 e =
     let now = logTimer1.ElapsedMilliseconds
     let duration = now - last
 
-    if duration >= 1000L then
-        myprintfn (sprintf "$%s" (formatEvent e))
+    if duration >= Params.INFERENCE_SAMPLE_FREQUENCY_MS then
+        myprintfn (sprintf "%s%s" Params.INFERENCE_PREFIX (formatEvent e))
         last <- now
     e
 

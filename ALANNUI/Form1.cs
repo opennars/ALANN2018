@@ -58,10 +58,13 @@ namespace ALANNUI
 
             foreach (var line in lines)
             {
-                var data = Encoding.ASCII.GetBytes(line);
+                var trimmedLine = line.Trim();
+                if(trimmedLine == "") return;
+
+                var data = Encoding.ASCII.GetBytes(trimmedLine);
                 outSocket.SendAsync(data, data.Length);
                 Thread.Sleep(10);
-                UpdateMsg(line + "\n");
+                EchoCmd("INPUT: ", trimmedLine);
             }
         }
 
@@ -183,7 +186,7 @@ namespace ALANNUI
             {
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
-                EchoCmd("PERCEIVED: ", str);
+                EchoCmd("INPUT: ", str);
                 Thread.Sleep(10);
             }
         }

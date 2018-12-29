@@ -171,12 +171,15 @@ let pevent_ws = ws >>. pevent
 
 // General Parser entry point
 let Parser(program:string) =
-    match run pevent_ws program with
-    | Success(result, _, _)   -> 
-        [result]
-    | Failure(errorMsg, e, s) -> 
-        raiseParseErrorEvent errorMsg
-        []
+    match program.Trim() with
+    | "" -> []
+    | _ ->
+        match run pevent_ws program with
+        | Success(result, _, _)   -> 
+            [result]
+        | Failure(errorMsg, e, s) -> 
+            raiseParseErrorEvent errorMsg
+            []
 
 // Parser tester
 let testp p str =
