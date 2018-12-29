@@ -25,6 +25,7 @@
 module TermUtils
 
 open Types
+open Evidence
 
 // Get sub terms to a recursive depth of Params.TERM_DEPTH
 let terms term = 
@@ -130,6 +131,8 @@ let reduce = function
 let isSelective t = containsVars t
 
 let isFirstOrder = function | Term(Inh, _) | Term(Sim, _) -> true | _ -> false
+
+let isRevisble (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Stamp.Evidence    
 
 // Helper functions
 let makeKey (b : Belief) = b.Term

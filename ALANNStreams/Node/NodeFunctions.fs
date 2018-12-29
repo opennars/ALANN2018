@@ -53,20 +53,23 @@ let updateBeliefs state event =
             LastUsed = SystemTime()
             UseCount = st1.UseCount + st2.UseCount + 1L}
 
+    let makeRevisedBelief (b1 : Belief) (b2 : Belief) = 
+        let tv = rev(b1.TV, b2.TV)
+        let stamp = updateStamp b2.Stamp b1.Stamp
+        {Term = b1.Term; TV = tv; Stamp = stamp}
+    
     match event with
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
         match state.Beliefs.TryGetValue(makeKeyFromEvent event) with
-        | Some oldBelief when nonOverlap oldBelief.Stamp.Evidence newBelief.Stamp.Evidence ->
-            let tv = rev(oldBelief.TV, newBelief.TV)
-            let stamp = updateStamp newBelief.Stamp oldBelief.Stamp
-            let newBelief' = {Term = newBelief.Term; TV = tv; Stamp = stamp}
-            state.Beliefs.Update(makeKey newBelief', newBelief')
+        | Some oldBelief when isRevisble oldBelief newBelief ->
+            let belief' = makeRevisedBelief oldBelief newBelief
+            state.Beliefs.Update(makeKey belief', belief')
         | Some oldBelief when eTV |> isBetterThan oldBelief.TV -> 
             state.Beliefs.Update(makeKey newBelief, newBelief)
         | None ->
             state.Beliefs.Insert(makeKey newBelief, newBelief)
-        | _ -> () // Not better truth
+        | _ -> () // Exists but not better truth or revisable
     | _ -> () // Not a belief
 
 
