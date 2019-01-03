@@ -25,12 +25,12 @@
 module FileIO
 
 open MBrace.FsPickler
-open Types
 open System.IO
+open SystemState
 
 let ExportGraph filename = 
     let binarySerializer = FsPickler.CreateBinarySerializer()
-    let pickle = binarySerializer.Pickle stores
+    let pickle = binarySerializer.Pickle systemState
     
     use streamWriter = new BinaryWriter(File.Open(filename, FileMode.OpenOrCreate))
     streamWriter.Write pickle
@@ -39,7 +39,7 @@ let LoadGraph filename =
     let binarySerializer = FsPickler.CreateBinarySerializer()
 
     use streamReader = new BinaryReader(File.Open(filename, FileMode.Open))
-    stores <- streamReader.ReadBytes(int(FileInfo(filename).Length)) |> binarySerializer.UnPickle 
+    systemState <- streamReader.ReadBytes(int(FileInfo(filename).Length)) |> binarySerializer.UnPickle 
 
 let createDirectoryIfNotExists path =
     match Directory.Exists path with

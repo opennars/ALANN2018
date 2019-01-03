@@ -32,16 +32,17 @@ open Akka.Streams
 open Types
 open Node
 open InferenceFlow
+open SystemState
 
 let termStream (i) =
     GraphDsl.Create(
         fun builder ->
             let processEvent {Term = t; Event = e} = 
                 try
-                    match stores.[i].TryGetValue(t) with
+                    match systemState.stores.[i].TryGetValue(t) with
                     | (true, node) ->
                         let (node', ebs) = processEvent node e
-                        match stores.[i].TryUpdate(t, node', node) with
+                        match systemState.stores.[i].TryUpdate(t, node', node) with
                         | false -> 
                             failwith "ProcessEvent failed with node update"
                             []
@@ -52,13 +53,13 @@ let termStream (i) =
                 with
                     | ex -> []
 
-            let createNode {Term = t; Event = e} = 
-                match stores.[i].TryAdd(t, createNode (t, e)) with
+            let createNode {Term =  t; Event = e} = 
+                match systemState.stores.[i].TryAdd(t, createNode (t, e)) with
                 | true -> {Term = t; Event = e}
                 | false -> failwith "createNode failed to create node"
 
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
-            let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if stores.[i].ContainsKey(t) then 1 else 0))
+            let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if systemState.stores.[i].ContainsKey(t) then 1 else 0))
             let createableNode = function 
                 | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || exp(e.TV.Value) > Params.MIN_NODE_CREATION_EXP) -> true
                 | _ -> false

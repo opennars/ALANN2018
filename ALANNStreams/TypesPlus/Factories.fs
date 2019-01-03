@@ -27,6 +27,7 @@ module Factories
 open Types
 open Evidence
 open TermUtils
+open SystemState
 
 // Belief factories
 

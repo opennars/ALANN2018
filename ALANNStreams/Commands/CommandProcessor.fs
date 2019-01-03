@@ -31,29 +31,32 @@ open Types
 open CommandParser
 open FileIO
 open TermFormatters
-open System
-open ALANNSystem
 open CommandUtils
+open SystemState
 
 let showGeneralBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_GENERAL_BELIEFS FOR TERM" (ft term)
-        showBeliefs [for b in node.Beliefs.GetGeneralBeliefs() -> b]
+        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetGeneralBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showTemporalBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_TEMPORAL_BELIEFS FOR TERM" (ft term)
-        showBeliefs [for b in node.Beliefs.GetTemporalBeliefs() -> b]
+        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showNode term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_NODE FOR TERM" (ft term)
+        printCommandWithString "TIME NOW = " (SystemTime().ToString())
         printCommand (sprintf "ATTENTION = [%f] TERM = %s" node.Attention (ft node.Term))
+        printCommandWithString "USE COUNT = " (node.UseCount.ToString())
+        printCommandWithString "CREATED = " (node.Created.ToString())
+        printCommandWithString "LAST USED = " (node.LastUsed.ToString())
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
     
 let nodeCount() =
@@ -91,11 +94,11 @@ let loadFile file =
     | true -> 
         printCommandWithString "LOAD FILE" filepath
         pauseFlow()
-        System.Threading.Thread.Sleep(1000)
+        System.Threading.Thread.Sleep(2000)
         FileIO.LoadGraph filepath
+        ResetTime()
         printCommand "FILE LOADED"
         continueFlow()
-        startTime <- DateTime.Now.Ticks
     | _ -> printCommand "ERROR *** FILE DOES NOT EXIST ***"
 
 let saveFile file =
@@ -107,21 +110,22 @@ let saveFile file =
     | false -> 
         printCommandWithString "SAVE FILE" filepath
         pauseFlow()
-        System.Threading.Thread.Sleep(1000)
+        System.Threading.Thread.Sleep(2000)
+        systemState.StartTime <- SystemTime()
         FileIO.ExportGraph filepath
         printCommand "FILE SAVED"
         continueFlow()
-        startTime <- DateTime.Now.Ticks
     | _ -> printCommand "ERROR *** FILE EXISTS ***"
 
 let reset() =
-    printCommand "RESET IN PROGRESS"
+    printCommand "RESET IN PROGRESS..."
     resetSwitch <- true
-    System.Threading.Thread.Sleep(1000)
-    stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]
+    System.Threading.Thread.Sleep(2000)
+    systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]
 
-    cycle := 0L
-    startTime <- DateTime.Now.Ticks
+    //cycle := 0L
+    systemState.StartTime <- 0L
+    ResetTime()
     resetSwitch <- false
     printCommand "RESET COMPLETE"
 

@@ -84,8 +84,9 @@ namespace ALANNUI
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.CycleStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.eventsPerSecondStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ActivationsStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.catBlueSkyTestBtn = new System.Windows.Forms.Button();
             this.catLikeCodTestBtn = new System.Windows.Forms.Button();
@@ -109,6 +110,7 @@ namespace ALANNUI
             // 
             // inputRTB
             // 
+            this.inputRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inputRTB.Location = new System.Drawing.Point(12, 59);
             this.inputRTB.Name = "inputRTB";
             this.inputRTB.Size = new System.Drawing.Size(291, 119);
@@ -135,6 +137,7 @@ namespace ALANNUI
             // 
             // cmdLogRTB
             // 
+            this.cmdLogRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdLogRTB.Location = new System.Drawing.Point(12, 250);
             this.cmdLogRTB.Name = "cmdLogRTB";
             this.cmdLogRTB.Size = new System.Drawing.Size(537, 211);
@@ -190,6 +193,7 @@ namespace ALANNUI
             // 
             // beliefsRTB
             // 
+            this.beliefsRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.beliefsRTB.Location = new System.Drawing.Point(565, 250);
             this.beliefsRTB.Name = "beliefsRTB";
             this.beliefsRTB.Size = new System.Drawing.Size(522, 507);
@@ -199,6 +203,7 @@ namespace ALANNUI
             // 
             // answersRTB
             // 
+            this.answersRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.answersRTB.Location = new System.Drawing.Point(12, 488);
             this.answersRTB.Name = "answersRTB";
             this.answersRTB.Size = new System.Drawing.Size(537, 128);
@@ -413,8 +418,9 @@ namespace ALANNUI
             this.statusStrip1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.statusStrip1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CycleStatus,
+            this.timeStatus,
             this.eventsPerSecondStatus,
+            this.ActivationsStatus,
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 774);
             this.statusStrip1.Name = "statusStrip1";
@@ -422,17 +428,23 @@ namespace ALANNUI
             this.statusStrip1.TabIndex = 28;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // CycleStatus
+            // timeStatus
             // 
-            this.CycleStatus.Name = "CycleStatus";
-            this.CycleStatus.Size = new System.Drawing.Size(54, 17);
-            this.CycleStatus.Text = "Cycle [0]";
+            this.timeStatus.Name = "timeStatus";
+            this.timeStatus.Size = new System.Drawing.Size(105, 17);
+            this.timeStatus.Text = "SystemTime = [0]";
             // 
             // eventsPerSecondStatus
             // 
             this.eventsPerSecondStatus.Name = "eventsPerSecondStatus";
             this.eventsPerSecondStatus.Size = new System.Drawing.Size(88, 17);
             this.eventsPerSecondStatus.Text = "Events: [0]/sec";
+            // 
+            // ActivationsStatus
+            // 
+            this.ActivationsStatus.Name = "ActivationsStatus";
+            this.ActivationsStatus.Size = new System.Drawing.Size(122, 17);
+            this.ActivationsStatus.Text = "Node Activations 0/s";
             // 
             // statusLabel
             // 
@@ -505,6 +517,7 @@ namespace ALANNUI
             // 
             // inferenceRTB
             // 
+            this.inferenceRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inferenceRTB.Location = new System.Drawing.Point(13, 641);
             this.inferenceRTB.Name = "inferenceRTB";
             this.inferenceRTB.Size = new System.Drawing.Size(536, 116);
@@ -609,7 +622,6 @@ namespace ALANNUI
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button nodeInfoBtn;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel CycleStatus;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Button catBlueSkyTestBtn;
         private System.Windows.Forms.Button catLikeCodTestBtn;
@@ -624,6 +636,8 @@ namespace ALANNUI
         private System.Windows.Forms.RichTextBox inferenceRTB;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ToolStripStatusLabel ActivationsStatus;
+        private System.Windows.Forms.ToolStripStatusLabel timeStatus;
     }
 }
 

@@ -24,8 +24,6 @@
 
 module Types
 
-open System
-open System.Threading
 open System.Collections.Concurrent
 open Akka.Streams.Dsl
 open Akkling
@@ -160,6 +158,7 @@ type IStore =
 type Node     = {Term : Term
                  Beliefs : IStore
                  VirtualBelief : Belief
+                 Created : SysTime
                  mutable Attention : float32
                  mutable LastUsed : SysTime
                  mutable UseCount : int64
@@ -182,16 +181,14 @@ type Command = | Show_General_Beliefs of Term
                | Reset
                | Unknown
 
-let Id = ref 0L
-let ID() = Interlocked.Increment(Id)
-
-let mutable startTime = DateTime.Now.Ticks
-let SystemTime() = (DateTime.Now.Ticks - startTime) / 10000L 
-
-let cycle = ref 0L
-let eventsPerSecond = ref 0L
+type SystemState =
+    {
+        Id : int64 ref
+        mutable StartTime : int64
+        SC_Term_ID : int64 ref
+        EventsPerSecond : int ref
+        Activations : int ref
+        mutable stores : ConcurrentDictionary<Term, Node> array
+    }
 
 let mutable valveAsync : Async<IValveSwitch> = Unchecked.defaultof<Async<IValveSwitch>>
-let mutable resetSwitch = false
-
-let mutable stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]

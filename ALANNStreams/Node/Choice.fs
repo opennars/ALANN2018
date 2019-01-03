@@ -62,7 +62,7 @@ let selectiveAnswer state (event : Event) =
     if Seq.isEmpty matches then
         None
     else
-        Some(Seq.maxBy (fun (b : Belief) -> exp b.TV) matches)
+        Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
 
 let isBetterThan aTV bTV =
     let cond1 = bTV.C >= aTV.C 

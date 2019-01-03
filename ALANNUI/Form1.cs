@@ -57,7 +57,6 @@ namespace ALANNUI
             SetTimer();
         }
 
-
         private void SetTimer()
         {
             timer = new System.Timers.Timer(1000.0);
@@ -114,7 +113,10 @@ namespace ALANNUI
 
         private void UpdateRTB(RichTextBox rtb, char prefix, string msg)
         {
-            rtb.Text += msg.TrimStart(prefix) + "\n";
+            var len = Math.Min(rtb.Text.Length, 5000);
+            var start = Math.Max(0, rtb.Text.Length - 5000);
+
+            rtb.Text = rtb.Text.Substring(start, len) + msg.TrimStart(prefix) + "\n";
             rtb.SelectionStart = rtb.Text.Length;
             rtb.ScrollToCaret();
         }
@@ -143,17 +145,26 @@ namespace ALANNUI
         {
             var statusMsg = msg.TrimStart(':');
 
-            if (statusMsg.StartsWith("Cycle"))
-            {
-                CycleStatus.Text = statusMsg;
-            }
-            else if (statusMsg.StartsWith("Status"))
+            //if (statusMsg.StartsWith("Cycle"))
+            //{
+            //    CycleStatus.Text = statusMsg;
+            //}
+            //else 
+            if (statusMsg.StartsWith("Status"))
             {
                 statusLabel.Text = statusMsg;
             }
             else if (statusMsg.StartsWith("Events"))
             {
                 eventsPerSecondStatus.Text = statusMsg;
+            }
+            else if(statusMsg.StartsWith("Node"))
+            {
+                ActivationsStatus.Text = statusMsg;
+            }
+            else if(statusMsg.StartsWith("SystemTime"))
+            {
+                timeStatus.Text = statusMsg;
             }
             ServerLive = true;
         }

@@ -35,8 +35,7 @@ open TermUtils
 open TermFormatters
 
 let firstOrderModules : (InferenceFunction * Postcondition) [] =
-              [|(nal7_temporal_inference, NoSwap)
-                (firstOrderSyllogisitic, Swap)
+              [|(firstOrderSyllogisitic, Swap)
                 (similaritySyllogisitic, Swap)
                 (similarityFromInheritance, NoSwap)
                 (setIntersectionComprehension, NoSwap)

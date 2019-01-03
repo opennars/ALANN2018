@@ -27,6 +27,7 @@ module EventStore
 open C5
 open Types
 open System.Collections.Generic
+open SystemState
 
 type IEventStore =
     abstract GetAll : unit -> Event array

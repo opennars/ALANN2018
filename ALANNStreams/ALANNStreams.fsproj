@@ -58,9 +58,10 @@
     <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
     <Compile Include="TypesPlus\AsyncUtils.fs" />
-    <Compile Include="TypesPlus\Events.fs" />
     <Compile Include="TypesPlus\Params.fs" />
+    <Compile Include="TypesPlus\Events.fs" />
     <Compile Include="TypesPlus\Types.fs" />
+    <Compile Include="TypesPlus\SystemState.fs" />
     <Compile Include="TypesPlus\Evidence.fs" />
     <Compile Include="TypesPlus\ActivePatterns.fs" />
     <Compile Include="TypesPlus\TermUtils.fs" />
@@ -72,6 +73,9 @@
     <Compile Include="IO\Loggers.fs" />
     <Compile Include="IO\Reporting.fs" />
     <Compile Include="IO\FileIO.fs" />
+    <Compile Include="Containers\SubStore.fs" />
+    <Compile Include="Containers\Store.fs" />
+    <Compile Include="Containers\EventStore.fs" />
     <Compile Include="Inference\Unify.fs" />
     <Compile Include="Inference\TruthFunctions.fs" />
     <Compile Include="Inference\InferenceUtils.fs" />
@@ -80,8 +84,8 @@
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
     <Compile Include="Inference\ImmediateInference.fs" />
-    <Compile Include="Containers\SubStore.fs" />
-    <Compile Include="Containers\Store.fs" />
+    <Compile Include="Inference\TemporalInference.fs" />
+    <Compile Include="Inference\Sequencer.fs" />
     <Compile Include="Parser\Parser.fs" />
     <Compile Include="Parser\CommandParser.fs" />
     <Compile Include="Node\Choice.fs" />

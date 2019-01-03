@@ -22,43 +22,27 @@
  * THE SOFTWARE.
  *)
 
-module CommandUtils
+module SystemState
 
+open System.Collections.Concurrent
+open System.Threading
+open System.Diagnostics
 open Types
-open ALANNSystem
-open TermFormatters
-open SystemState
 
-let getNodeFromTerm term =
-    let numStreams = Params.NUM_TERM_STREAMS 
-    let hashRoute numStreams t = abs(t.GetHashCode() % numStreams )
-    let i = hashRoute numStreams term
+let mutable systemState = 
+    {
+        Id = ref 0L
+        StartTime = 0L
+        SC_Term_ID = ref 0L
+        EventsPerSecond = ref 0
+        Activations = ref 0
+        stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.MINOR_BLOCK_SIZE)|]
+    }
 
-    systemState.stores.[i].TryGetValue(term)
+let ID() = Interlocked.Increment(systemState.Id)
 
-let getNodeCount() =
-    let rec loop acc n =
-        match n with
-        | 0 -> acc + systemState.stores.[n].Count
-        | _ -> loop (acc + systemState.stores.[n].Count) (n - 1)
+let timer = Stopwatch.StartNew()
+let SystemTime() = timer.ElapsedMilliseconds + systemState.StartTime 
+let ResetTime() = timer.Restart()
 
-    loop 0 (systemState.stores.GetLength(0) - 1)
-
-let printCommandWithString str str2 =
-     myprintfn (sprintf "%sCOMMAND: %s '%s'" Params.COMMAND_PREFIX str str2)
-
-let printCommand str =
-     myprintfn (sprintf "%sCOMMAND: %s" Params.COMMAND_PREFIX str)
-
-let printBeliefStr str =
-    myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)
-
-let showBeliefs beliefs =
-    beliefs
-    |> List.iter (fun b -> printBeliefStr (formatBelief b))
-    match beliefs with
-    | [] -> ()
-    | _ ->
-        beliefs
-        |> List.averageBy (fun b -> b.TV.C)
-        |> (fun avg -> printBeliefStr (sprintf "AVERAGE CONF = %f" avg))
+let mutable resetSwitch = false

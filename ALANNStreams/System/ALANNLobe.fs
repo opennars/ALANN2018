@@ -36,7 +36,9 @@ open ALANNSystem
 open Loggers
 open PriorityBuffer
 open System.Threading
-    
+open Sequencer
+open SystemState
+
 let valveFlow =    
     GraphDsl.Create(
         fun builder ->
@@ -66,14 +68,12 @@ let mainSink =
             let mergePref = builder.Add(MergePreferred<Event>(1))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
-            let incrementCycle e = Interlocked.Increment(cycle) |> ignore; e
-            let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(eventsPerSecond) |> ignore; e)
+            let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
 
             let groupAndDelay =
                     Flow.Create<Event>()
                     |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                     |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.map incrementCycle
                     |> Flow.collect (fun events -> events)                   
                     
             builder

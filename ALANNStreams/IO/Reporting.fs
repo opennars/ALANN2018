@@ -31,6 +31,7 @@ open Types
 open Akkling
 open TermUtils
 open TermFormatters
+open SystemState
 
 let answerDict = ConcurrentDictionary<string, string>()
 
@@ -43,10 +44,10 @@ let displayAnswer answer =
     | _ -> ()
 
 let updateStatus() =
-    myprintfn (sprintf "%sCycle [%d]" Params.STATUS_PREFIX !cycle)
+    myprintfn (sprintf "%sSystemTime [%d]" Params.STATUS_PREFIX (SystemTime()))
     myprintfn (sprintf "%sStatus: ALANN Server Running" Params.STATUS_PREFIX)
-    myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(eventsPerSecond, 0L)))            
-
+    myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.EventsPerSecond, 0)))  
+    myprintfn (sprintf "%sNode Activations %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.Activations, 0)))  
 
 let showTrace state e =
     let activationType (e : Event) = if isTemporal e.Term then "TEMPORAL" else "GENERAL"

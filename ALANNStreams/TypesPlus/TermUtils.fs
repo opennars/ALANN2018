@@ -26,6 +26,8 @@ module TermUtils
 
 open Types
 open Evidence
+open System.Threading
+open SystemState
 
 // Get sub terms to a recursive depth of Params.TERM_DEPTH
 let terms term = 
@@ -107,9 +109,9 @@ let intersection a b = Set.toList <| Set.intersect (Set.ofList a) (Set.ofList b)
 let difference a b = Set.toList <| Set.difference (Set.ofList a) (Set.ofList b)
 let isMember s lst = Set.contains s (Set.ofList lst)
 let listLess s lst = Set.toList <| Set.difference (Set.ofList lst) (Set.ofList [s])
-let isBefore s p = s.Created < p.Created && abs(s.Created - p.Created) < 1000L
-let isConcurrent s p = abs (p.Created - s.Created) < Params.CONCURRENCY_DURATION
-let isAfter s p = s.Created > p.Created && abs(s.Created - p.Created) < 1000L
+let isBefore (s : Stamp) (p : Stamp) = s.Created < p.Created && abs(s.Created - p.Created) < Params.PAST_TENSE_OFFSET
+let isConcurrent (s : Stamp) (p : Stamp) = abs (p.Created - s.Created) < Params.CONCURRENCY_DURATION
+let isAfter (s : Stamp) (p : Stamp) = s.Created > p.Created && abs(s.Created - p.Created) < Params.FUTURE_TENSE_OFFSET
 let isQuoted = function | Word s -> s.Chars(s.Length - 1) = ''' | _ -> false
 let isBelief e = e.EventType = EventType.Belief
  
@@ -137,6 +139,3 @@ let isRevisble (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Sta
 // Helper functions
 let makeKey (b : Belief) = b.Term
 let makeKeyFromEvent (e : Event) = e.Term
-
-
-

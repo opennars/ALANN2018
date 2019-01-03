@@ -28,6 +28,7 @@ open FParsec
 open Types
 open Events
 open TermUtils
+open SystemState
 
 // utilities
 let sort lst = lst |> List.sort

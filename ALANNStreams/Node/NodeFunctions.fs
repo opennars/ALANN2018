@@ -30,7 +30,7 @@ open Factories
 open TruthFunctions
 open TermUtils
 open Evidence
-open TermFormatters
+open SystemState
 
 let makeEventBelief event (belief : Belief) =
     {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
@@ -38,7 +38,7 @@ let makeEventBelief event (belief : Belief) =
      Belief = belief}
 
 let makeAnsweredEventBelief event (belief : Belief) =
-    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
+    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV) 
      Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI * (1.0f - belief.TV.C)}; Solution = Some belief}
      Belief = belief}
 

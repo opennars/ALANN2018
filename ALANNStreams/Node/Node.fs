@@ -34,6 +34,8 @@ open ProcessQuestion
 open ProcessGoal
 open ProcessQuest
 open Reporting
+open System.Threading
+open SystemState
 
 let processEvent state (event : Event) =
 
@@ -51,6 +53,7 @@ let processEvent state (event : Event) =
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
     | true ->
         if state.Trace then showTrace state event
+        Interlocked.Increment(systemState.Activations) |> ignore
 
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
 
@@ -77,7 +80,8 @@ let processEvent state (event : Event) =
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 
 let initState term =
-    {Term = term
+    {Created = SystemTime()
+     Term = term
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL

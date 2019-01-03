@@ -26,7 +26,6 @@ module SubStore
 
 open C5
 open Types
-open TruthFunctions
 open TermUtils
 
 type ISubStore =
