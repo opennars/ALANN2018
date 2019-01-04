@@ -37,7 +37,7 @@ event ::== [attention] sentence
 sentence ::== belief | question | goal | quest 
 belief ::== statement ‘.’ [truth]
 goal ::== statement ‘!’  [desire] 
-Question ::== statement ‘?’
+question ::== statement ‘?’
 statement ::== ‘<’ term copula term ‘>’
 compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
 term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
