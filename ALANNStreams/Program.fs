@@ -51,7 +51,25 @@ let main argv =
     printfn "\tConfiguration complete\n"
     printfn "\tReady to accept commands\n"
 
+    printfn "\tListening on:"
+    printfn "\tIP: %s" Params.SERVER_ADDR
+    printfn "\tPort: %d" Params.SERVER_PORT
 
-    Console.ReadLine() |> ignore
+    printfn ""
+    printfn "\tSending on:"
+    printfn "\tIP: %s" Params.CLIENT_ADDR
+    printfn "\tPort: %d" Params.CLIENT_PORT
+
+    printfn "\n\tEnter STOP to exit server"
+
+    let posX = Console.CursorLeft + 8
+    let posY = Console.CursorTop + 1
+
+    Console.SetCursorPosition(posX, posY)
+
+    while Console.ReadLine().Trim() <> "STOP" do 
+        Console.SetCursorPosition(posX, posY)
+        Console.Write(String(' ', 20))
+        Console.SetCursorPosition(posX, posY)
 
     0 // return ok here
