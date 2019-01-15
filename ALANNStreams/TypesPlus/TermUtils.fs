@@ -117,9 +117,8 @@ let isBelief e = e.EventType = EventType.Belief
  
 let rec containsVars = function
     | Var(_, _) -> true
-    | Term(_, hd::tl) when tl = [] -> containsVars hd
-    | Term(_, lst) -> List.exists containsVars lst
     | Word _ -> false
+    | Term(_, lst) -> List.exists containsVars lst
 
 let reduce = function
     | Term(IntInt, hd::tl) when tl = [] ->  hd

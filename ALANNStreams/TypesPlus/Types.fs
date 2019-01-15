@@ -67,6 +67,8 @@ type Stamp = {Created : int64
               UseCount : int64
               Source : Source}
 
+type SearchDepth = Deep | Shallow 
+
 let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f // to avoid forward reference
 
 [<CustomComparison>]
@@ -125,6 +127,7 @@ type TermEvent =
 [<CustomEquality>]
 type EventBelief =
     {Attention : float32
+     Depth : SearchDepth
      Event : Event
      Belief : Belief}
     interface System.IComparable<EventBelief> with

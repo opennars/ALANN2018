@@ -49,6 +49,8 @@ let makeVirtualBelief term =
 
 // EventBelief factories
 
+let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
+
 let makeInferredEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
     let stamp2 = eb.Belief.Stamp
@@ -60,7 +62,7 @@ let makeInferredEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeInferredFromQuestionEvent eb (term, tv) =
     let stamp2 = eb.Belief.Stamp
@@ -72,7 +74,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeStructuralEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp
@@ -84,7 +86,7 @@ let makeStructuralEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
@@ -95,7 +97,7 @@ let makeQuestionEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeQuestionStructuralEvent (eb : EventBelief) term =
     let now = SystemTime()
@@ -106,7 +108,7 @@ let makeQuestionStructuralEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 
 let makeQuestEvent (eb : EventBelief) term =
@@ -118,4 +120,4 @@ let makeQuestEvent (eb : EventBelief) term =
                  UseCount = 0L
                  Source = Derived}
 
-    {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = Params.DERIVED_LTI}; Stamp = stamp; Solution = None}
+    {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}

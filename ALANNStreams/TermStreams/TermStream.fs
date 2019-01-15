@@ -41,7 +41,7 @@ let termStream (i) =
                 try
                     match systemState.stores.[i].TryGetValue(t) with
                     | (true, node) ->
-                        let (node', ebs) = processEvent node e
+                        let (node', ebs) = processNode node e
                         match systemState.stores.[i].TryUpdate(t, node', node) with
                         | false -> 
                             failwith "ProcessEvent failed with node update"
@@ -79,7 +79,7 @@ let termStream (i) =
 
             let groupAndDelay =
                 Flow.Create<TermEvent>()
-                |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
+                |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                 |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
                 |> Flow.collect (fun termEvents -> termEvents)
 

@@ -29,20 +29,11 @@ open Choice
 open NodeFunctions
 open TermUtils
 
-let (|HostConcept|_|) host t = if t = host then Some t else None
-let (|Selective|_|) t = if isSelective t then Some t else None
+let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
 
 let processQuestion state (event : Event) =
-    match event.Term with
-    | HostConcept state.Term t ->                                      
-        match bestAnswer state event with
-        | Some belief -> 
-            tryPrintAnswer event belief
-            [makeAnsweredEventBelief event belief]
-        | None -> 
-            getInferenceBeliefs state event
-    
-    | Selective t ->
+    match event.Term with    
+    | Selective ->
         match selectiveAnswer state event with
         | Some belief ->
             tryPrintAnswer event belief
@@ -50,9 +41,10 @@ let processQuestion state (event : Event) =
         | None -> 
             getInferenceBeliefs state event
 
-    | _ ->                                      
+    | NonSelective ->                                      
         match bestAnswer state event with
         | Some belief -> 
+            tryPrintAnswer event belief
             [makeAnsweredEventBelief event belief]
         | None -> 
             getInferenceBeliefs state event

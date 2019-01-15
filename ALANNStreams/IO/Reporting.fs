@@ -35,10 +35,11 @@ open SystemState
 
 let answerDict = ConcurrentDictionary<string, string>()
 
-let displayAnswer answer =    
-    match answerDict.ContainsKey answer with
+let displayAnswer (answer : string) =    
+    let answer' = answer.Substring(7)
+    match answerDict.ContainsKey answer' with
     | false ->
-        match answerDict.TryAdd(answer, answer) with
+        match answerDict.TryAdd(answer', answer') with
         | true -> printActor <! PrintMessage (sprintf "?%s" answer)
         | _ -> ()
     | _ -> ()

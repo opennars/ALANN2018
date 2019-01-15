@@ -28,14 +28,15 @@ open Types
 open Factories
 open TruthFunctions
 open TermUtils
+open ActivePatterns
 
 let immediate = function
-    | {Belief.Term = Term(Inh, [s; p]); TV = tv; Stamp = stamp} when s <> p -> Some {Term = Term(Inh, [p; s]); TV = cnv(tv, tv); Stamp = stamp} 
+    | {Belief.Term = Inh(s, p); TV = tv; Stamp = stamp} when s <> p -> Some {Term = Term(Inh, [p; s]); TV = cnv(tv, tv); Stamp = stamp} 
     | _ -> None
 
 let immediateInference state (event : Event) =
     match event with
-    | {EventType = Belief} when event.Term <> state.Term ->
+    | {EventType = Belief; Term = term} when term <> state.Term ->
         let belief = makeBeliefFromEvent event
         match immediate belief with
         | Some b -> 

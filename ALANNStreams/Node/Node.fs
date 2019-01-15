@@ -37,8 +37,8 @@ open Reporting
 open System.Threading
 open SystemState
 
-let processEvent state (event : Event) =
-
+let processNode state (event : Event) =
+    
     immediateInference state event
     let oldBelief = updateBeliefs state event
 
@@ -49,13 +49,10 @@ let processEvent state (event : Event) =
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
+          
+    let processEvent(event) =
         
-    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
-    | true ->
         if state.Trace then showTrace state event
-        Interlocked.Increment(systemState.Activations) |> ignore
-
-        let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
 
         let createEventBeliefs state = function
             | {Event.EventType = Question} as event -> processQuestion state event
@@ -74,8 +71,14 @@ let processEvent state (event : Event) =
         match event.EventType with
         | Belief | Question ->
             let veb = makeEventBelief event state.VirtualBelief    // add virtual EventBelief for structural Inference
-            (state, veb::eventBeliefs)               
-        | _ -> (state, [])
+            veb::eventBeliefs              
+        | _ -> []
+
+    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
+    | true ->  
+        let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
+        Interlocked.Increment(systemState.Activations) |> ignore
+        (state, processEvent event)
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 

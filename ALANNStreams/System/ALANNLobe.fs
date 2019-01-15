@@ -73,9 +73,9 @@ let mainSink =
             let groupAndDelay =
                     Flow.Create<Event>()
                     |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.collect (fun events -> events)                   
-                    
+                    |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
+                    |> Flow.collect (fun events -> events)   
+                                        
             builder
                 .From(inBuffer)
                 .To(mergePref.Preferred)

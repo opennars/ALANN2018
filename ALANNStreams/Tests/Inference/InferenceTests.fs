@@ -47,7 +47,7 @@ let parseEvent str =
     | None -> failwith "Parsing Term error"
 
 let makeTestEventBelief e b =
-    {Attention = 1.0f; Event = e; Belief = makeBeliefFromEvent b}
+    {Attention = 1.0f; Depth = SearchDepth.Deep; Event = e; Belief = makeBeliefFromEvent b}
 
 let testInfFunc (f : InferenceFunction) (e1 : Event) (e2 : Event) =
     let matcher = function

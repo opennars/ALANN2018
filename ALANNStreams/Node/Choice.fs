@@ -73,6 +73,6 @@ let tryPrintAnswer (e : Event) (b : Belief) =
     let bBetter = e.Solution = None || Option.exists (fun (solution : Belief) -> b.TV |> isBetterThan solution.TV) e.Solution
 
     if e.Stamp.Source = User && bBetter then
-        let msg =  sprintf "Unifies %s %s %s %s %s " (ft e.Term) (Trail e.Stamp.Evidence) (ft b.Term) (truth b.TV) (Trail b.Stamp.Evidence)
+        let msg =  sprintf "[%5d]Unifies %s %s %s %s " (SystemState.SystemTime() - e.Stamp.Created) (ft e.Term) (Trail e.Stamp.Evidence) (ft b.Term) (truth b.TV) //(Trail b.Stamp.Evidence)
         raiseDisplayAnswerEvent msg
     
