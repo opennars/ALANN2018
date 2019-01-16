@@ -55,12 +55,14 @@ type SubStore(n : int) =
         | false -> failwith "ConceptStore.Insert() : failed to remove on maxSize"    
         !h
 
+    let rank (belief : Belief) = exp belief.TV / float32(belief.Stamp.SC)
+
     interface ISubStore with
         member x.Contains(key) = d.Contains key
 
         member x.Insert(key, belief) =
             if d.Count >= maxSize then
-                if exp(belief.TV) >= exp(q.FindMin().TV) then 
+                if rank(belief) >= rank(q.FindMin()) then                     
                     ref <| deleteMinBelief()
                     |> addBelief key belief
             else
@@ -72,8 +74,8 @@ type SubStore(n : int) =
             let h = d.[key]
             q.[h] <- belief
 
-        member x.TryGetValue key = 
-            
+        member x.TryGetValue key =    
+        
             if d.Contains(key) then Some(q.[d.[key]])
             else None
 
