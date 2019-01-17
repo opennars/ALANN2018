@@ -76,7 +76,6 @@
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
     <Compile Include="Containers\EventStore.fs" />
-    <Compile Include="Containers\TaskStore.fs" />
     <Compile Include="Inference\Unify.fs" />
     <Compile Include="Inference\TruthFunctions.fs" />
     <Compile Include="Inference\InferenceUtils.fs" />
@@ -95,7 +94,6 @@
     <Compile Include="Node\ProcessBelief.fs" />
     <Compile Include="Node\ProcessGoal.fs" />
     <Compile Include="Node\ProcessQuest.fs" />
-    <Compile Include="Node\NodeCommands.fs" />
     <Compile Include="Node\Node.fs" />
     <Compile Include="TermStreams\TermStream.fs" />
     <Compile Include="TermStreams\TermStreams.fs" />

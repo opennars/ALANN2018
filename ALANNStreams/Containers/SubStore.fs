@@ -55,7 +55,7 @@ type SubStore(n : int) =
         | false -> failwith "ConceptStore.Insert() : failed to remove on maxSize"    
         !h
 
-    let rank (belief : Belief) = exp belief.TV / float32(belief.Stamp.SC)
+    let rank (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
 
     interface ISubStore with
         member x.Contains(key) = d.Contains key

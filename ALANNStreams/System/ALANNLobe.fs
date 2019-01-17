@@ -69,12 +69,6 @@ let mainSink =
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
-
-            let groupAndDelay =
-                    Flow.Create<Event>()
-                    |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                    |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
-                    |> Flow.collect (fun events -> events)   
                                         
             builder
                 .From(inBuffer)
@@ -86,7 +80,6 @@ let mainSink =
                 .Via(eventLogger)
                 .Via(incrementEvents)
                 .Via(attentionBuffer)
-                .Via(groupAndDelay)
                 .To(mergePref.In(0))
                 |> ignore
 

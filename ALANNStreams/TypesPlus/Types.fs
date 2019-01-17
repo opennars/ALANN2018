@@ -77,7 +77,7 @@ type Belief =
     {Term : Term; TV : TV; Stamp : Stamp }
     interface System.IComparable<Belief> with
         member this.CompareTo other =
-            let rank belief = exp belief.TV / float32(belief.Stamp.SC)
+            let rank belief = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
             (rank this).CompareTo(rank other)
 
     override this.Equals(other) =

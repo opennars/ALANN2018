@@ -68,4 +68,12 @@ let test1 =
             let t1 = Var(QVar, "what")
             let expected = []
             Expect.equal expected (terms t1) "Incorrect subterms"
+
+        testCase "SubtermTest6" <| fun () ->
+            let t1 = Term(Inh, [Term(ExtSet, [Word "tash"]); Word "human"])
+            let expected = [Term(Inh, [Term(ExtSet, [Word "tash"]); Word "human"])
+                            Term(ExtSet, [Word "tash"])
+                            Word "tash"
+                            Word "human"]
+            Expect.equal expected (terms t1) "Incorrect subterms"
     ]

@@ -38,7 +38,7 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
     let groupAndDedupe =
         builder.Add(
             Flow.Create<Event>()
-            |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
+            |> Flow.groupedWithin (Params.GROUP_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
             |> Flow.map Seq.distinct
             |> Flow.collect (fun events -> events))    
 

@@ -36,6 +36,7 @@ open ProcessQuest
 open Reporting
 open System.Threading
 open SystemState
+open TermFormatters
 
 let processNode state (event : Event) =
     

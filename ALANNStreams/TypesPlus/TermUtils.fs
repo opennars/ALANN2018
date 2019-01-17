@@ -26,8 +26,6 @@ module TermUtils
 
 open Types
 open Evidence
-open System.Threading
-open SystemState
 
 // Get sub terms to a recursive depth of Params.TERM_DEPTH
 let terms term = 

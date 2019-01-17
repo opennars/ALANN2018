@@ -35,7 +35,8 @@ open TermUtils
 open TermFormatters
 
 let firstOrderModules : (InferenceFunction * Postcondition) [] =
-              [|(firstOrderSyllogisitic, Swap)
+              [|(answerToQuestion, NoSwap)
+                (firstOrderSyllogisitic, Swap)
                 (similaritySyllogisitic, Swap)
                 (similarityFromInheritance, NoSwap)
                 (setIntersectionComprehension, NoSwap)
@@ -83,6 +84,9 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         | {Event.Term = term; Event.Stamp = {SC = sc}} when isTemporal term && sc < Params.MAX_TEMPORAL_SC -> true
         | {Event.Stamp = {SC = sc}} when sc < Params.MAX_GENERAL_SC -> true
         | _ -> false
+    let validTermFilter = function
+        | {Event.Term = Term(_, [s; p])} when s = p -> false
+        | _ -> true
 
     for j in 0..(numModules - 1) do 
         let flow =
@@ -92,6 +96,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
             |> Flow.collect (fun eb -> eb)
             |> Flow.filter truthFilter
             |> Flow.filter complexityFilter
+            |> Flow.filter validTermFilter
 
         builder                    
             .From(broadcast.Out(j))

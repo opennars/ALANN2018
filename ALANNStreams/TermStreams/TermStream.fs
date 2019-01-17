@@ -51,7 +51,7 @@ let termStream (i) =
                         failwith "ProcessEvent failed with node get"
                         []
                 with
-                    | ex -> []
+                    | ex -> printfn "processEvent failed %s" ex.Message; []
 
             let createNode {Term =  t; Event = e} = 
                 match systemState.stores.[i].TryAdd(t, createNode (t, e)) with
@@ -79,7 +79,7 @@ let termStream (i) =
 
             let groupAndDelay =
                 Flow.Create<TermEvent>()
-                |> Flow.groupedWithin (Params.MINOR_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
+                |> Flow.groupedWithin (Params.GROUP_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                 |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
                 |> Flow.collect (fun termEvents -> termEvents)
 

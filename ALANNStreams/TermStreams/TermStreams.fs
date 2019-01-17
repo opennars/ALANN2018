@@ -35,7 +35,7 @@ let termStreams =
     GraphDsl.Create(
         fun builder ->
             let numStreams = Params.NUM_TERM_STREAMS 
-            let hashRoute numStreams t = abs(t.GetHashCode() % numStreams )
+            let hashRoute numStreams t = abs(t.GetHashCode()) % numStreams
             let partition = builder.Add(Partition<TermEvent>(numStreams, fun {Term = t} -> hashRoute numStreams t))
             let merge = builder.Add(Merge<Event>(numStreams))
             

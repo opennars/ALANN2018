@@ -26,11 +26,13 @@ open System
 open Controller
 open Reporting
 open ALANNSystem
+open Expecto
 
 [<EntryPoint>]
 let main argv = 
 
-    // runTestsInAssembly defaultConfig argv |> ignore
+    //runTestsInAssembly defaultConfig argv |> ignore
+    //Console.ReadLine() |> ignore
 
     printfn ""
     printfn "\t********************************"

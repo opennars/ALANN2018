@@ -29,7 +29,13 @@ open TruthFunctions
 open TermUtils
 open ActivePatterns
 open InferenceUtils
+open Unify
 
+let answerToQuestion = function
+    | a, b when a = b -> [(b, identity, None, [BeliefFromQuestion])]
+    | a, b when isSelective b && unifies a b -> [(b, identity, None, [BeliefFromQuestion])]
+    | _ -> []
+    
 let firstOrderSyllogisitic = function
     | Inh(a, b1), Inh(b2, c) when b1 = b2 && a <> c && noCommonSubterm a c -> [(Term(Inh, [a; c]), ded, Some strong, [AllowBackward; Swap])
                                                                                (Term(Inh, [c; a]), exe, Some weak, [AllowBackward; Swap])]
