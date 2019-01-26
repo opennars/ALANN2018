@@ -30,10 +30,11 @@ open Akka.Streams
 open Akkling.Streams
 open Types
 open InferenceFlowModules
+open Factories
 
 let inferenceFlow = GraphDsl.Create(fun builder ->
-    let broadcast = builder.Add(Broadcast<EventBelief>(2))
-    let merge = builder.Add(Merge<Event>(2))
+    let broadcast = builder.Add(Broadcast<EventBelief>(3))
+    let merge = builder.Add(Merge<Event>(3))
 
     let groupAndDedupe =
         builder.Add(
@@ -42,6 +43,11 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
             |> Flow.map Seq.distinct
             |> Flow.collect (fun events -> events))    
 
+    let extractAnswerEvents =
+        Flow.Create<EventBelief>()
+        |> Flow.filter (fun eb -> Option.isSome eb.Event.Solution)
+        |> Flow.map (fun eb -> makeEventFromBelief eb)
+
     builder
         .From(broadcast.Out(0))
         .Via((inferenceFlowModules firstOrderModules).Async())
@@ -49,6 +55,9 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
         .From(broadcast.Out(1))
         .Via((inferenceFlowModules higherOrderModules).Async())
         .To(merge.In(1))
+        .From(broadcast.Out(2))
+        .Via(extractAnswerEvents)
+        .To(merge.In(2))
         .From(merge)
         .To(groupAndDedupe)
         |> ignore

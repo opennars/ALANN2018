@@ -51,7 +51,9 @@ let termStream (i) =
                         failwith "ProcessEvent failed with node get"
                         []
                 with
-                    | ex -> printfn "processEvent failed %s" ex.Message; []
+                    | ex -> 
+                        //printfn "processEvent failed %s" ex.Message
+                        []
 
             let createNode {Term =  t; Event = e} = 
                 match systemState.stores.[i].TryAdd(t, createNode (t, e)) with

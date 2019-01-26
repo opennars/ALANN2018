@@ -29,6 +29,14 @@ open Evidence
 open TermUtils
 open SystemState
 
+let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
+
+// Event factories
+let makeEventFromBelief eb =
+    let stamp = {eb.Belief.Stamp with Created = SystemTime()}
+
+    {EventType = Belief; Term = eb.Belief.Term; TV = Some eb.Belief.TV; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
+
 // Belief factories
 
 let makeBeliefFromEvent (e : Event) =
@@ -48,8 +56,6 @@ let makeVirtualBelief term =
     {Term = term; TV = {F = 0.0f; C = 0.5f}; Stamp = stamp}    
 
 // EventBelief factories
-
-let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
 
 let makeInferredEvent eb (term, tv) =
     let stamp1 = eb.Event.Stamp

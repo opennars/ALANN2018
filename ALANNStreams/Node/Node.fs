@@ -64,15 +64,13 @@ let processNode state (event : Event) =
         let eventBeliefs = createEventBeliefs state event
 
         // add eventBelief for oldBelief (if it existed) so overlap does not filter out
-        let eventBeliefs =
-            match oldBelief with
+        let eventBeliefsPlus = function
             | Some belief -> (makeEventBelief event belief)::eventBeliefs
             | None -> eventBeliefs
 
         match event.EventType with
         | Belief | Question ->
-            let veb = makeEventBelief event state.VirtualBelief    // add virtual EventBelief for structural Inference
-            veb::eventBeliefs              
+            (makeEventBelief event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
         | _ -> []
 
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with

@@ -48,6 +48,7 @@ namespace ALANNUI
 
         private static System.Timers.Timer timer;
         private bool ServerLive = false;
+        const int TextBufferSize = 50000;
 
         public Form1()
         {
@@ -113,8 +114,8 @@ namespace ALANNUI
 
         private void UpdateRTB(RichTextBox rtb, char prefix, string msg)
         {
-            var len = Math.Min(rtb.Text.Length, 5000);
-            var start = Math.Max(0, rtb.Text.Length - 5000);
+            var len = Math.Min(rtb.Text.Length, TextBufferSize);
+            var start = Math.Max(0, rtb.Text.Length - TextBufferSize);
 
             rtb.Text = rtb.Text.Substring(start, len) + msg.TrimStart(prefix) + "\n";
             rtb.SelectionStart = rtb.Text.Length;

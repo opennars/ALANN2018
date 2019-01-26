@@ -29,15 +29,15 @@ let HORIZON                             = 1.0f          // System Personality Fa
 let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
                                                         
 // Node Related Parameters                              
-let ACTIVATION_THRESHOLD                = 0.60f         // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
-let ACTION_POTENTIAL                    = 0.75f         // When node is fired this is the attention level used
+let ACTION_POTENTIAL                    = 0.85f         // When node is fired this is the attention level used
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
 let GENERAL_BELIEF_CAPACITY             = 10            // Max number of general beliefs per node
 let TEMPORAL_BELIEF_CAPACITY            = 50            // Max number of temporal beliefs per node
 let MIN_NODE_CREATION_EXP               = 0.66f         // Minimum node creation expectation threshold
-let BELIEF_RANK_POW                     = 0.25          // exp/sc^n where n is this parameter
+let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
 let CONCURRENCY_DURATION                = 50L           // Period when two occurence times are deemed concurrent
@@ -53,7 +53,7 @@ let MINIMUM_CONFIDENCE                  = 0.10f         // don't accept inferenc
 let MINIMUM_STI                         = 0.05f         // filter STI below this threhold
 let USER_STI                            = 1.00f         // Short Term Importance default Value for user entered events AKA priority
 let USER_LTI                            = 0.90f         // long Term Importance default Value for user entered events AKA duration
-let SHALLOW_LTI                         = 0.25f         // long Term Importance value for derived shallow events AKA duration
+let SHALLOW_LTI                         = 0.50f         // long Term Importance value for derived shallow events AKA duration
 let DEEP_LTI                            = 0.75f         // long Term Importance value for derived deep events AKA duration
 let TRAIL_LENGTH                        = 15            // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20            // Maximum syntactic complexity of general terms
@@ -71,7 +71,7 @@ let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inferenc
 let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
 
 //Streams related Parameters  
-let NUM_TERM_STREAMS                    = 30            // Number of Term streams
+let NUM_TERM_STREAMS                    = 100           // Number of Term streams
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 1_000         // Number of events to form a minor stream block

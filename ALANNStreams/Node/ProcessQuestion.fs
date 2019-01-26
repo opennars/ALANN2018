@@ -28,7 +28,6 @@ open Types
 open Choice
 open NodeFunctions
 open TermUtils
-open Factories
 
 let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
 
