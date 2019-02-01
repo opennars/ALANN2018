@@ -1,4 +1,4 @@
-# Adaptive Logic and Neural Network (ALANN) 2018
+<img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANN_Logo.png"
 
 ## Overview
 ALANN is an alternative control theory and design for implementing a NARS style General Machine Intelligence (GMI).  The overall goal of ALANN was to significantly simplify the control design whilst providing a platform for improved performance, distribution across nodes and arguably a better attention mechanism.
