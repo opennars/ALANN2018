@@ -33,20 +33,22 @@ type TemporalInferenceFunction = (Term * Term) * Stamp * Stamp -> (Term * (TV * 
 
 let inf (f, swap) eb =
     let concurrency() = 
-        match eb.Event.Stamp.LastUsed, eb.Belief.Stamp.LastUsed with
+        match eb.Event.Stamp.Created, eb.Belief.Stamp.Created with
         | o1, o2 when abs(o1 - o2) < Params.CONCURRENCY_DURATION -> IsConcurrent
         | o1, o2 when o1 < o2 -> IsBefore
         | o1, o2 when o1 > o2 -> IsAfter
         | _ -> NotTemporal
 
     let swappable swap eb = eb.Event.EventType = Belief && swap = Swap
+    let temporalCondition = function | IsConcurrent | IsBefore | IsAfter -> true | _ -> false
+    let containsTemporalCond lst = List.exists temporalCondition lst
         
     let matchToEvent = function
         | (term, tf1, tf2, conds) ->
             match eb.Event.EventType with
             | Belief when List.contains (concurrency()) conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
             | Belief when List.contains Structural conds -> [makeStructuralEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Belief when not(List.contains QuestionOnly conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
+            | Belief when not(List.contains QuestionOnly conds) && not(containsTemporalCond conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
             | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
             | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
             | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]

@@ -96,8 +96,12 @@ let isImp = function | Term(Imp, _) | Term(PreImp, _) | Term(ConImp, _) | Term(R
 let isEqu = function | Term(Equ, _) | Term(PreEqu, _) | Term(ConEqu, _) -> true | _ -> false
 let isTemporal = function | Term(ConEqu, _) | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isPredictiveTemporal = function | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) -> true | _ -> false
+let isImplicationOp = function Imp |ConImp | RetImp -> true | _ -> false
+let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
 let isSequenceable = function | Term(Inh, [Word _; Word _]) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isCopula = function | Inh | Sim | Imp | Equ | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
+let isSuperTerm term = function | Term(op, [t1; t2]) when (term = t1 && isImplicationOp op) || (term = t2 && isImplicationOp op) -> true | _ -> false
+
 let isNotImpOrEqu s = not(isImp s || isEqu s)
 let isVar = function | Var(_) -> true | _ -> false
 let notSet a = not (isExtSet a || isIntSet a)
@@ -118,6 +122,12 @@ let rec containsVars = function
     | Word _ -> false
     | Term(_, lst) -> List.exists containsVars lst
 
+let rec containsQueryVars = function
+    | Var(QVar, _) -> true
+    | Var(_, _) -> false
+    | Word _ -> false
+    | Term(_, lst) -> List.exists containsQueryVars lst
+
 let reduce = function
     | Term(IntInt, hd::tl) when tl = [] ->  hd
     | Term(ExtInt, hd::tl) when tl = [] ->  hd
@@ -127,7 +137,7 @@ let reduce = function
     | Term(Par, hd::tl) when tl = [] -> hd
     | term -> term
 
-let isSelective t = containsVars t
+let isSelective t = containsQueryVars t
 
 let isFirstOrder = function | Term(Inh, _) | Term(Sim, _) -> true | _ -> false
 

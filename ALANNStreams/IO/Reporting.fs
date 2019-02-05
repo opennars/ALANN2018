@@ -36,7 +36,7 @@ open SystemState
 let answerDict = ConcurrentDictionary<string, string>()
 
 let displayAnswer (answer : string) =    
-    let answer' = answer.Substring(7)
+    let answer' = answer.Substring(9)
     match answerDict.ContainsKey answer' with
     | false ->
         match answerDict.TryAdd(answer', answer') with

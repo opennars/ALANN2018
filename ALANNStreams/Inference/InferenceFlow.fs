@@ -43,20 +43,20 @@ let inferenceFlow = GraphDsl.Create(fun builder ->
             |> Flow.map Seq.distinct
             |> Flow.collect (fun events -> events))    
 
-    let extractAnswerEvents =
+    let extractAnswer =
         Flow.Create<EventBelief>()
-        |> Flow.filter (fun eb -> Option.isSome eb.Event.Solution)
+        |> Flow.filter (fun eb -> eb.Answer)
         |> Flow.map (fun eb -> makeEventFromBelief eb)
 
     builder
         .From(broadcast.Out(0))
-        .Via((inferenceFlowModules firstOrderModules).Async())
+        .Via((inferenceFlowModules firstOrderModules))
         .To(merge.In(0))
         .From(broadcast.Out(1))
-        .Via((inferenceFlowModules higherOrderModules).Async())
+        .Via((inferenceFlowModules higherOrderModules))
         .To(merge.In(1))
         .From(broadcast.Out(2))
-        .Via(extractAnswerEvents)
+        .Via(extractAnswer)
         .To(merge.In(2))
         .From(merge)
         .To(groupAndDedupe)

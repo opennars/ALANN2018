@@ -31,17 +31,17 @@ let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth
 // Node Related Parameters                              
 let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
-let ACTION_POTENTIAL                    = 0.85f         // When node is fired this is the attention level used
+let ACTION_POTENTIAL                    = 0.75f         // When node is fired this is the attention level used ** 0.85f prevents multitasking
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 10            // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 50            // Max number of temporal beliefs per node
-let MIN_NODE_CREATION_EXP               = 0.66f         // Minimum node creation expectation threshold
-let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
+let GENERAL_BELIEF_CAPACITY             = 25            // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 25            // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 25            // Max number of Pre and Post condition beliefs per node
+let MIN_NODE_CREATION_EXP               = 0.60f         // Minimum node creation expectation threshold
+let BELIEF_RANK_POW                     = 0.20          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
-let CONCURRENCY_DURATION                = 50L           // Period when two occurence times are deemed concurrent
-let TEMPORAL_DISCOUNT                   = 0.5f          // Used by deriver to discount temporal truth function 0.9 = 10% discount
+let CONCURRENCY_DURATION                = 80L           // Period when two occurence times are deemed concurrent
 let PAST_TENSE_OFFSET                   = 100L          // Time before now when past tense occured (ms)
 let FUTURE_TENSE_OFFSET                 = 100L          // Time after now when future tense occured (ms)
 let ASSUMPTION_OF_FAILURE_PENALTY       = 0.1f          // Amount to reduce predictive hypotheses conf by
@@ -57,21 +57,22 @@ let SHALLOW_LTI                         = 0.50f         // long Term Importance 
 let DEEP_LTI                            = 0.75f         // long Term Importance value for derived deep events AKA duration
 let TRAIL_LENGTH                        = 15            // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20            // Maximum syntactic complexity of general terms
-let MAX_TEMPORAL_SC                     = 30            // Maximum syntactic complexity of temporal terms
+let MAX_TEMPORAL_SC                     = 100           // Maximum syntactic complexity of temporal terms
 let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve slope of the priority buffer selection
 let TERM_DEPTH                          = 3             // depth of term separation
 let ATTENTION_BUFFER_SIZE               = 10            // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
 let MAX_CONCEPTS                        = 10_000        // Maximum number of concepts
+let ANSWER_ATTENTION_SCALING            = 1.0           // Scale answer attention by STI * (1 - C^n) where n is this parameter
 
 // UI related Parameters
 let EVENTS_PROCESSED_MOD                = 100_000L      // Frequency of display of selected events 
 let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
-let INFERENCE_SAMPLE_FREQUENCY_MS       = 500L          // Frequency of inference samples from main event stream in ms
+let INFERENCE_SAMPLE_FREQUENCY_MS       = 300L          // Frequency of inference samples from main event stream in ms
 let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
 
 //Streams related Parameters  
-let NUM_TERM_STREAMS                    = 100           // Number of Term streams
+let NUM_TERM_STREAMS                    = 30            // Number of Term streams
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 1_000         // Number of events to form a minor stream block

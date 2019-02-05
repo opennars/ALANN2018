@@ -48,7 +48,7 @@ namespace ALANNUI
 
         private static System.Timers.Timer timer;
         private bool ServerLive = false;
-        const int TextBufferSize = 50000;
+        const int TextBufferSize = 75000;
 
         public Form1()
         {
@@ -264,6 +264,11 @@ namespace ALANNUI
             SendCmdToServer("#STB ", termNameTB.Text);
         }
 
+        private void ShowSuperBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SSB ", termNameTB.Text);
+        }
+
         private void EnableTraceBtn_Click(object sender, EventArgs e)
         {
             SendCmdToServer("#ET ", termNameTB.Text);
@@ -399,9 +404,10 @@ namespace ALANNUI
          "<cat --> [meows purrs]>.",
          "<cat --> [furry meows]>.",
          "<cat --> [purrs]>.",
-         "<[cat dog] --> animal>.",
-         "<[meows purrs] --> cat>.",
-         "<[furry meows] --> cat>.",
+         "<cat --> animal>.",
+         "<dog --> animal>.",
+         "<cat --> [meows purrs]>.",
+         "<cat --> [furry meows]>.",
          "<{tom} --> cat>.",
          "<tree --> plant>.",
          "<orange --> fruit>.",
@@ -423,7 +429,9 @@ namespace ALANNUI
          "<({lexie} * hair) --> [brown]>.",
          "<plant --> genus>.",
          "<human --> genus>.",
-         "<{john tom alan} --> boys>.",
+         "<{john tom alan} --> boy>.",
+         "<{rex} --> dog>.",
+         "<{fido} --> dog>.",
          "<cat --> (eats / _ fish)>.",
          "<a --> b>.",
          "<b --> c>.",
@@ -535,7 +543,6 @@ namespace ALANNUI
          "<<($1 * $2) --> on> ==> <($2 * $1) --> under>>.",
          "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>."
             };
-
     }
 }
 

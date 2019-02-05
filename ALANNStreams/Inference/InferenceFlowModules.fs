@@ -85,7 +85,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         | {Event.Stamp = {SC = sc}} when sc < Params.MAX_GENERAL_SC -> true
         | _ -> false
     let validTermFilter = function
-        | {Event.Term = Term(_, [s; p])} when s = p -> false
+        | {Event.Term = Term(op, [s; p])} when isTemporalOp op || s <> p -> true
         | _ -> true
 
     for j in 0..(numModules - 1) do 
@@ -93,7 +93,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
             Flow.Create<EventBelief>() 
             |> Flow.filter (fun eb -> eb.Attention > Params.MINIMUM_STI && eb.Event.AV.STI > Params.MINIMUM_STI)
             |> Flow.map (fun eb -> eb.Event::(inf modules.[j] eb))  // add event to inference results
-            |> Flow.collect (fun eb -> eb)
+            |> Flow.collect (fun e -> e)
             |> Flow.filter truthFilter
             |> Flow.filter complexityFilter
             |> Flow.filter validTermFilter

@@ -61,4 +61,4 @@ let showBeliefs beliefs =
     | _ ->
         beliefs
         |> List.averageBy (fun b -> b.TV.C)
-        |> (fun avg -> printBeliefStr (sprintf "AVERAGE CONF = %f" avg))
+        |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f" (List.length beliefs) avg))

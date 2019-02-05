@@ -155,14 +155,14 @@ module TruthFunctions
     //Temporal truth functions
     let inline temporal_abd ({F=f1; C=c1}, {F=f2; C=c2}) = 
         let f, c = w2c( _and [f1; f2; c1; c2], _and [f1; c1; c2])
-        {F = f; C = c * Params.TEMPORAL_DISCOUNT}
+        {F = f; C = c}
 
     let inline temporal_ind ({F=f1; C=c1}, {F=f2; C=c2}) = 
         let f,c = w2c( _and [f1; f2; c1; c2], _and [f2; c1; c2])
-        {F = f; C = c * Params.TEMPORAL_DISCOUNT}
+        {F = f; C = c}
 
     let inline temporal_com ({F=f1; C=c1}, {F=f2; C=c2}) = 
         let f, c = w2c( _and [f1; f2; c1; c2], _and [_or [f1; f2]; c1; c2])
-        {F = f; C = c * Params.TEMPORAL_DISCOUNT}
+        {F = f; C = c}
 
-    let inline temporal_int ({F=f1; C=c1}, {F=f2; C=c2}) = {F = _and [f1; f2]; C = _and [c1; c2] * Params.TEMPORAL_DISCOUNT}
+    let inline temporal_int ({F=f1; C=c1}, {F=f2; C=c2}) = {F = _and [f1; f2]; C = _and [c1; c2]}

@@ -35,13 +35,15 @@ open SystemState
 let makeEventBelief event (belief : Belief) =
     {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Shallow
+     Answer = false
      Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI}}
      Belief = belief}
 
 let makeAnsweredEventBelief event (belief : Belief) =
-    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV) 
+    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Deep
-     Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
+     Answer = true
+     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
      Belief = belief}
 
 let updateBeliefs state event =    
@@ -91,7 +93,7 @@ let updateAttention state now event =
 
 let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
     let inline reduceC {F = f; C = c} = 
-        {F = f; C = max 0.0f (c - ((1.0f - c) * Params.ASSUMPTION_OF_FAILURE_PENALTY))}
+        {F = max 0.0f (f - ((1.0f - f) * Params.ASSUMPTION_OF_FAILURE_PENALTY)); C = c}
 
     match e.EventType with
     | Belief when isPredictiveTemporal b.Term -> 
@@ -101,15 +103,17 @@ let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
     | _ -> b
 
 let getInferenceBeliefs state event = 
-    // Check for non overlapping evidence, apply assumption of failure, make event belief pair for deriver
-    List.append
-        (state.Beliefs.GetGeneralBeliefs()
+    // Check for non overlapping evidence, make event belief pair for deriver
+    let makeInferenceEventBeliefs (s : seq<Belief>) =
+         s
          |> Seq.toList
          |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
-         |> List.map (makeEventBelief event))
+         |> List.map (tryUpdatePredictiveTemporalbelief state event)
+         |> List.map (makeEventBelief event)
 
-        (state.Beliefs.GetTemporalBeliefs()
-         |> Seq.toList
-         |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
-         |> List.map (fun belief -> tryUpdatePredictiveTemporalbelief state event belief)
-         |> List.map (makeEventBelief event))
+    List.append
+        (makeInferenceEventBeliefs (state.Beliefs.GetGeneralBeliefs()))
+        (makeInferenceEventBeliefs (state.Beliefs.GetTemporalBeliefs()))
+
+    |> List.append
+        (makeInferenceEventBeliefs (state.Beliefs.GetSuperBeliefs()))

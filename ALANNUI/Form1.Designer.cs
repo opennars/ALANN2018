@@ -82,6 +82,7 @@ namespace ALANNUI
             this.nodeInfoBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.ShowSuperBtn = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.timeStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -100,6 +101,7 @@ namespace ALANNUI
             this.inferenceRTB = new System.Windows.Forms.RichTextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.LoadtoolTip = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -322,7 +324,8 @@ namespace ALANNUI
             this.loadDataBtn.Name = "loadDataBtn";
             this.loadDataBtn.Size = new System.Drawing.Size(99, 23);
             this.loadDataBtn.TabIndex = 20;
-            this.loadDataBtn.Text = "Load Data";
+            this.loadDataBtn.Text = "Load Memory";
+            this.LoadtoolTip.SetToolTip(this.loadDataBtn, "Overwrite exisitng memory with file contents\r\n");
             this.loadDataBtn.UseVisualStyleBackColor = true;
             this.loadDataBtn.Click += new System.EventHandler(this.LoadDataBtn_Click);
             // 
@@ -332,7 +335,7 @@ namespace ALANNUI
             this.saveDataBtn.Name = "saveDataBtn";
             this.saveDataBtn.Size = new System.Drawing.Size(99, 23);
             this.saveDataBtn.TabIndex = 21;
-            this.saveDataBtn.Text = "Save Data";
+            this.saveDataBtn.Text = "Save Memory";
             this.saveDataBtn.UseVisualStyleBackColor = true;
             this.saveDataBtn.Click += new System.EventHandler(this.SaveDataBtn_Click);
             // 
@@ -391,14 +394,25 @@ namespace ALANNUI
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.ShowSuperBtn);
             this.groupBox3.Controls.Add(this.showGeneralBtn);
             this.groupBox3.Controls.Add(this.showTemporalBtn);
             this.groupBox3.Location = new System.Drawing.Point(6, 57);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(121, 84);
+            this.groupBox3.Size = new System.Drawing.Size(121, 109);
             this.groupBox3.TabIndex = 26;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Belief Commands";
+            // 
+            // ShowSuperBtn
+            // 
+            this.ShowSuperBtn.Location = new System.Drawing.Point(10, 77);
+            this.ShowSuperBtn.Name = "ShowSuperBtn";
+            this.ShowSuperBtn.Size = new System.Drawing.Size(98, 23);
+            this.ShowSuperBtn.TabIndex = 10;
+            this.ShowSuperBtn.Text = "Show Pre/Post";
+            this.ShowSuperBtn.UseVisualStyleBackColor = true;
+            this.ShowSuperBtn.Click += new System.EventHandler(this.ShowSuperBtn_Click);
             // 
             // groupBox4
             // 
@@ -408,7 +422,7 @@ namespace ALANNUI
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Location = new System.Drawing.Point(632, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(365, 147);
+            this.groupBox4.Size = new System.Drawing.Size(365, 170);
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Commands Requiring a Node";
@@ -638,6 +652,8 @@ namespace ALANNUI
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ToolStripStatusLabel ActivationsStatus;
         private System.Windows.Forms.ToolStripStatusLabel timeStatus;
+        private System.Windows.Forms.ToolTip LoadtoolTip;
+        private System.Windows.Forms.Button ShowSuperBtn;
     }
 }
 

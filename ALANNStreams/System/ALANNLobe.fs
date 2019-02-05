@@ -24,7 +24,6 @@
 
 module ALANNLobe
 
-open System
 open Akka.Streams.Dsl
 open Akka.Streams
 open Akkling
@@ -36,7 +35,6 @@ open ALANNSystem
 open Loggers
 open PriorityBuffer
 open System.Threading
-open Sequencer
 open SystemState
 
 let valveFlow =    
@@ -67,7 +65,7 @@ let mainSink =
         fun builder-> 
             let mergePref = builder.Add(MergePreferred<Event>(1))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
-            let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE))
+            let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
                                         
             builder

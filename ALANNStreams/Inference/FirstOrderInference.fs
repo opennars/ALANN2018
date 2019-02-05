@@ -157,32 +157,6 @@ let structuralInference2 = function
     | Inh(a, c1), Inh(b, IntSet([c2])) when c1 = c2 && a <> b && a <> c1  -> [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [c1; Term(IntSet, [c2])])]), int, None, [])]
     | _ -> []
 
-let nal6_variable_introduction = function
-    | Inh(s, m1), Inh(p, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), abd, None, [BeliefOnly])
-                                                        (Term(Imp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), ind, None, [BeliefOnly])
-                                                        (Term(Equ, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), com, None, [BeliefOnly])
-                                                        (Term(And, [Term(Inh, [p; Var(DVar, "Y")]); Term(Inh, [s; Var(DVar, "Y")])]), int, None, [BeliefOnly])
-                                                        
-                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), abd, None, [BeliefOnly])
-                                                        (Term(ConImp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), ind, None, [BeliefOnly])
-                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), ind, None, [BeliefOnly])
-                                                        (Term(ConEqu, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), com, None, [BeliefOnly])
-                                                        (Term(Par, [Term(Inh, [p; Var(DVar, "Y")]); Term(Inh, [s; Var(DVar, "Y")])]), int, None, [BeliefOnly])]
-
-                                                        // interval variants ommitted here as not required
-
-    | Inh(m1, s), Inh(m2, p) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly])
-                                                        (Term(Imp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly])
-                                                        (Term(Equ, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), com, None, [BeliefOnly])
-                                                        (Term(And, [Term(Inh, [Var(DVar, "Y"); s]); Term(Inh, [Var(DVar, "Y"); p])]), int, None, [BeliefOnly])
-                                                        
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly])
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly])
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly])
-                                                        (Term(ConEqu, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), com, None, [BeliefOnly])
-                                                        (Term(Par, [Term(Inh, [Var(DVar, "Y"); s]); Term(Inh, [Var(DVar, "Y"); p])]), int, None, [BeliefOnly])]
-    | _ -> []
-
 let backwardDrivenForwardInference = function
     | Inh(Prod(b1, p), z), Inh(b2, a) when b1 = b2 && a <> z && not(isVar p) -> [(Term(Inh, [Term(Prod, [b1; p]); Term(Prod, [a; p])]), beliefStructuralDed, None, [BeliefFromQuestion])]
     | Inh(Prod(p, b1), z), Inh(b2, a) when b1 = b2 && a <> z && not(isVar p) -> [(Term(Inh, [Term(Prod, [p; b1]); Term(Prod, [p; a])]), beliefStructuralDed, None, [BeliefFromQuestion])]
@@ -190,6 +164,21 @@ let backwardDrivenForwardInference = function
     | Sim(Prod(p, b1), z), Sim(b2, a) when b1 = b2 && a <> z && not(isVar p) -> [(Term(Sim, [Term(Prod, [p; b1]); Term(Prod, [p; a])]), beliefStructuralDed, None, [BeliefFromQuestion])]
     | Inh(IntImg(n1, a, Word "_"), z), Inh(n2, r) when n1 = n2 && z <> r && not(isVar a) -> [(Term(Inh, [Term(IntImg, [n1; a; Word "_"]); Term(IntImg, [r; a; Word "_"])]), beliefStructuralDed, None, [BeliefFromQuestion])]
     | Inh(ExtImg(n, Word "_", b1), z), Inh(s, b2) when b1 = b2 && z <> s && not(isVar n) -> [(Term(Inh, [Term(ExtImg, [n; Word "_"; b1]); Term(ExtImg, [n; Word "_"; s])]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    
+    // Backward driven forward set decomposition
+    | Inh(s, m1), Inh(IntInt(lst), m2) when m1 = m2 && isMember s lst && listLess s lst <> [] -> [(Term(Inh, [reduce(Term(IntInt, listLess s lst)); m1]), beliefStructuralDed, None, [BeliefFromQuestion])
+                                                                                                  (Term(Inh, [s; m1]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(s, m1), Inh(ExtInt(lst), m2) when m1 = m2 && isMember s lst && listLess s lst <> [] -> [(Term(Inh, [reduce(Term(ExtInt, listLess s lst)); m1]), beliefStructuralDed, None, [BeliefFromQuestion])
+                                                                                                  (Term(Inh, [s; m1]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(s1, m1), Inh(IntDif(s2, p), m2) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [p; m1]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(s1, m1), Inh(IntDif(p, s2), m2) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [p; m1]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(m1, s), Inh(m2, ExtInt(lst)) when m1 = m2 && isMember s lst && listLess s lst <> [] -> [(Term(Inh, [m1; reduce(Term(ExtInt, listLess s lst))]), beliefStructuralDed, None, [BeliefFromQuestion])
+                                                                                                  (Term(Inh, [m1; s]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(m1, s), Inh(m2, IntInt(lst)) when m1 = m2 && isMember s lst && listLess s lst <> [] -> [(Term(Inh, [m1; reduce(Term(IntInt, listLess s lst))]), beliefStructuralDed, None, [BeliefFromQuestion])
+                                                                                                  (Term(Inh, [m1; s]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(m1, s1), Inh(m2, ExtDif(s2, p)) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [m1; p]), beliefStructuralDed, None, [BeliefFromQuestion])]
+    | Inh(m1, s1), Inh(m2, ExtDif(p, s2)) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [m1; p]), beliefStructuralDed, None, [BeliefFromQuestion])]
+
     | _ -> []
     
 let backwardOnlyInference = function

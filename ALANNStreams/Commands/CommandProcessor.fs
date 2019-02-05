@@ -48,6 +48,13 @@ let showTemporalBeliefs term =
         showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
+let showSuperBeliefs term =
+    match getNodeFromTerm term with
+    | (true, node) ->
+        printCommandWithString "SHOW_PRE/POST_BELIEFS FOR TERM" (ft term)
+        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetSuperBeliefs() -> b])
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+
 let showNode term =
     match getNodeFromTerm term with
     | (true, node) ->
@@ -133,6 +140,7 @@ let processCommand (cmd : string) =
     match commandParser cmd' with
     | Show_General_Beliefs(term) -> showGeneralBeliefs term
     | Show_Temporal_Beliefs(term) -> showTemporalBeliefs term
+    | Show_Super_Beliefs(term) -> showSuperBeliefs term
     | Show_Node(term) -> showNode(term)
     | Node_Count -> nodeCount()
     | Enable_Trace(term) -> enableTrace term

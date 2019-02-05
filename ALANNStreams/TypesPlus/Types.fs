@@ -128,6 +128,7 @@ type TermEvent =
 type EventBelief =
     {Attention : float32
      Depth : SearchDepth
+     Answer : bool
      Event : Event
      Belief : Belief}
     interface System.IComparable<EventBelief> with
@@ -155,6 +156,7 @@ type IStore =
     abstract Clear : unit -> unit
     abstract Count : int
     abstract GetBeliefs : unit -> seq<Belief>
+    abstract GetSuperBeliefs : unit -> seq<Belief>
     abstract GetTemporalBeliefs : unit -> seq<Belief>
     abstract GetGeneralBeliefs : unit -> seq<Belief>
 
@@ -173,6 +175,7 @@ type Message = | ProcessEvent of Event
 
 type Command = | Show_General_Beliefs of Term
                | Show_Temporal_Beliefs of Term
+               | Show_Super_Beliefs of Term
                | Show_Node of Term
                | Node_Count
                | Enable_Trace of Term

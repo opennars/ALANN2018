@@ -36,7 +36,7 @@ open ProcessQuest
 open Reporting
 open System.Threading
 open SystemState
-open TermFormatters
+open Evidence
 
 let processNode state (event : Event) =
     
@@ -64,14 +64,18 @@ let processNode state (event : Event) =
         let eventBeliefs = createEventBeliefs state event
 
         // add eventBelief for oldBelief (if it existed) so overlap does not filter out
-        let eventBeliefsPlus = function
-            | Some belief -> (makeEventBelief event belief)::eventBeliefs
-            | None -> eventBeliefs
+        let eventBeliefsPlus (belief : Belief option) = 
+            match belief with
+            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> (makeEventBelief event belief)::eventBeliefs
+            | _ -> eventBeliefs
 
         match event.EventType with
         | Belief | Question ->
             (makeEventBelief event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
+        | Goal ->
+            eventBeliefsPlus oldBelief
         | _ -> []
+
 
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
     | true ->  
@@ -84,7 +88,7 @@ let processNode state (event : Event) =
 let initState term =
     {Created = SystemTime()
      Term = term
-     Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY) :> IStore
+     Beliefs = Store(term, Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL
      LastUsed = SystemTime()

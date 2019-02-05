@@ -24,6 +24,7 @@
 
 module Factories
 
+open System
 open Types
 open Evidence
 open TermUtils
@@ -34,6 +35,7 @@ let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params
 // Event factories
 let makeEventFromBelief eb =
     let stamp = {eb.Belief.Stamp with Created = SystemTime()}
+    //let stamp = eb.Belief.Stamp
 
     {EventType = Belief; Term = eb.Belief.Term; TV = Some eb.Belief.TV; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
@@ -58,6 +60,12 @@ let makeVirtualBelief term =
 // EventBelief factories
 
 let makeInferredEvent eb (term, tv) =
+    let temporalDistanceDiscount eb = 
+        let t1 = eb.Event.Stamp.Created
+        let t2 = eb.Belief.Stamp.Created
+        let d = abs(t1 - t2)
+        float32(Math.Pow(0.999, float(d)))
+
     let stamp1 = eb.Event.Stamp
     let stamp2 = eb.Belief.Stamp
     let now = SystemTime()
@@ -68,14 +76,15 @@ let makeInferredEvent eb (term, tv) =
                  UseCount = 0L
                  Source = Derived}
 
+    let tv = if term|> isTemporal then {tv with C = tv.C * temporalDistanceDiscount eb} else tv
+
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeInferredFromQuestionEvent eb (term, tv) =
-    let stamp2 = eb.Belief.Stamp
     let now = SystemTime()
     let stamp = {Created = now
                  SC = syntacticComplexity term 
-                 Evidence = stamp2.Evidence
+                 Evidence = eb.Belief.Stamp.Evidence
                  LastUsed = now
                  UseCount = 0L
                  Source = Derived}
@@ -83,11 +92,10 @@ let makeInferredFromQuestionEvent eb (term, tv) =
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeStructuralEvent eb (term, tv) =
-    let stamp1 = eb.Event.Stamp
     let now = SystemTime()
     let stamp = {Created = now
                  SC = syntacticComplexity term 
-                 Evidence = stamp1.Evidence
+                 Evidence = eb.Event.Stamp.Evidence
                  LastUsed = now
                  UseCount = 0L
                  Source = Derived}

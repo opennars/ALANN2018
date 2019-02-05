@@ -44,7 +44,8 @@ let processQuestion state (event : Event) =
     | NonSelective ->                                      
         match bestAnswer state event with
         | Some belief -> 
-            tryPrintAnswer event belief
+            if state.Term = event.Term then
+                tryPrintAnswer event belief
             [makeAnsweredEventBelief event belief]
         | None -> 
             getInferenceBeliefs state event

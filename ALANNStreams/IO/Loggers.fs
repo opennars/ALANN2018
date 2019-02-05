@@ -29,7 +29,6 @@ open Akkling.Streams
 open Types
 open System.Diagnostics
 open TermFormatters
-open System
 open PrintUtils
 open ALANNSystem
 

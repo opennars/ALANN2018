@@ -34,6 +34,7 @@ let term_ws = pterm
 
 let show_general_beliefs = (str_ws "SHOW_GENERAL_BELIEFS" <|> str_ws "SGB") >>. term_ws |>> fun t -> Show_General_Beliefs(t)
 let show_temporal_beliefs = (str_ws "SHOW_TEMPORAL_BELIEFS" <|> str_ws "STB") >>. term_ws |>> fun t -> Show_Temporal_Beliefs(t)
+let show_super_beliefs = (str_ws "SHOW_SUPER_BELIEFS" <|> str_ws "SSB") >>. term_ws |>> fun t -> Show_Super_Beliefs(t)
 let show_node = (str_ws "SHOW_NODE" <|> str_ws "SN") >>. term_ws |>> fun t -> Show_Node(t)
 
 let node_count = (str_ws "NODE_COUNT" <|> str_ws "NC") |>> fun _ -> Node_Count
@@ -47,6 +48,7 @@ let reset = (str_ws "RESET" <|> str_ws "R") |>> fun _ -> Reset
 
 let pcmd = show_general_beliefs 
            <|> show_temporal_beliefs 
+           <|> show_super_beliefs
            <|> show_node 
            <|> node_count 
            <|> enable_trace 
