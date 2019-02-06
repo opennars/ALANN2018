@@ -51,37 +51,37 @@ let processNode state (event : Event) =
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
           
-    let processEvent(event) =
+    let processEvent attention event =
         
         if state.Trace then showTrace state event
 
         let createEventBeliefs state = function
-            | {Event.EventType = Question} as event -> processQuestion state event
-            | {Event.EventType = Belief} as event   -> processBelief state event
-            | {Event.EventType = Goal} as event     -> processGoal state event
-            | {Event.EventType = Quest} as event    -> processQuest state event
+            | {Event.EventType = Question} as event -> processQuestion attention state event
+            | {Event.EventType = Belief} as event   -> processBelief attention state event
+            | {Event.EventType = Goal} as event     -> processGoal attention state event
+            | {Event.EventType = Quest} as event    -> processQuest attention state event
 
         let eventBeliefs = createEventBeliefs state event
 
         // add eventBelief for oldBelief (if it existed) so overlap does not filter out
         let eventBeliefsPlus (belief : Belief option) = 
             match belief with
-            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> (makeEventBelief event belief)::eventBeliefs
+            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> (makeEventBelief attention event belief)::eventBeliefs
             | _ -> eventBeliefs
 
         match event.EventType with
         | Belief | Question ->
-            (makeEventBelief event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
+            (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
         | Goal ->
             eventBeliefsPlus oldBelief
         | _ -> []
 
-
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
     | true ->  
+        let attention = state.Attention
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
         Interlocked.Increment(systemState.Activations) |> ignore
-        (state, processEvent event)
+        (state, processEvent attention event)
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 

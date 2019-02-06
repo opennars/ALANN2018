@@ -31,21 +31,21 @@ open TermUtils
 
 let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
 
-let processQuestion state (event : Event) =
+let processQuestion attention state (event : Event) =
     match event.Term with    
     | Selective ->
         match selectiveAnswer state event with
         | Some belief ->
             tryPrintAnswer event belief
-            [makeAnsweredEventBelief event belief]
+            [makeAnsweredEventBelief attention event belief]
         | None -> 
-            getInferenceBeliefs state event
+            getInferenceBeliefs attention state event
 
     | NonSelective ->                                      
         match bestAnswer state event with
         | Some belief -> 
             if state.Term = event.Term then
                 tryPrintAnswer event belief
-            [makeAnsweredEventBelief event belief]
+            [makeAnsweredEventBelief attention event belief]
         | None -> 
-            getInferenceBeliefs state event
+            getInferenceBeliefs attention state event

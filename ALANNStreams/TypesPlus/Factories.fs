@@ -43,7 +43,7 @@ let makeEventFromBelief eb =
 
 let makeBeliefFromEvent (e : Event) =
     match e with
-    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with LastUsed = SystemTime(); UseCount = e.Stamp.UseCount + 1L}}
+    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with LastUsed = SystemTime(); UseCount = e.Stamp.UseCount + 1}}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeVirtualBelief term =
@@ -52,7 +52,7 @@ let makeVirtualBelief term =
                  SC = 1
                  Evidence = []
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Virtual}
 
     {Term = term; TV = {F = 0.0f; C = 0.5f}; Stamp = stamp}    
@@ -73,7 +73,7 @@ let makeInferredEvent eb (term, tv) =
                  SC = syntacticComplexity term 
                  Evidence = merge stamp1.Evidence stamp2.Evidence
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     let tv = if term|> isTemporal then {tv with C = tv.C * temporalDistanceDiscount eb} else tv
@@ -86,7 +86,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
                  SC = syntacticComplexity term 
                  Evidence = eb.Belief.Stamp.Evidence
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -97,7 +97,7 @@ let makeStructuralEvent eb (term, tv) =
                  SC = syntacticComplexity term 
                  Evidence = eb.Event.Stamp.Evidence
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -108,7 +108,7 @@ let makeQuestionEvent (eb : EventBelief) term =
                  SC = syntacticComplexity term 
                  Evidence = []
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -119,7 +119,7 @@ let makeQuestionStructuralEvent (eb : EventBelief) term =
                  SC = syntacticComplexity term 
                  Evidence = []
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -131,7 +131,7 @@ let makeQuestEvent (eb : EventBelief) term =
                  SC = syntacticComplexity term 
                  Evidence = []
                  LastUsed = now
-                 UseCount = 0L
+                 UseCount = 0
                  Source = Derived}
 
     {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}

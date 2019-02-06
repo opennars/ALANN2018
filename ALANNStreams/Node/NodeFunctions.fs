@@ -32,15 +32,15 @@ open TermUtils
 open Evidence
 open SystemState
 
-let makeEventBelief event (belief : Belief) =
-    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
+let makeEventBelief attention event (belief : Belief) =
+    {Attention = attention * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Shallow
      Answer = false
      Event = {event with AV = {event.AV with STI = event.AV.STI * event.AV.LTI}}
      Belief = belief}
 
-let makeAnsweredEventBelief event (belief : Belief) =
-    {Attention = Params.ACTION_POTENTIAL * TruthFunctions.exp(belief.TV)
+let makeAnsweredEventBelief attention event (belief : Belief) =
+    {Attention = attention * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Deep
      Answer = true
      Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
@@ -56,7 +56,7 @@ let updateBeliefs state event =
         {st1 with 
             Evidence = merge st1.Evidence st2.Evidence
             LastUsed = SystemTime()
-            UseCount = st1.UseCount + st2.UseCount + 1L}
+            UseCount = st1.UseCount + st2.UseCount + 1}
 
     let makeRevisedBelief (b1 : Belief) (b2 : Belief) = 
         let tv = rev(b1.TV, b2.TV)
@@ -102,14 +102,14 @@ let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
         b'
     | _ -> b
 
-let getInferenceBeliefs state event = 
+let getInferenceBeliefs attention state event = 
     // Check for non overlapping evidence, make event belief pair for deriver
     let makeInferenceEventBeliefs (s : seq<Belief>) =
          s
          |> Seq.toList
          |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
          |> List.map (tryUpdatePredictiveTemporalbelief state event)
-         |> List.map (makeEventBelief event)
+         |> List.map (makeEventBelief attention event)
 
     List.append
         (makeInferenceEventBeliefs (state.Beliefs.GetGeneralBeliefs()))

@@ -24,6 +24,51 @@
 
 module ProcessGoal
 
-open Types
 
-let processGoal state (event : Event) = []
+open Types
+open Choice
+open NodeFunctions
+open TermUtils
+open Unify
+open TermFormatters
+open Events
+
+let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
+
+// find max choice (unifies ? =/> G)
+let postCondition = function | Term(op, [_; postCondition]) when op |> isImplicationOp -> postCondition | term -> term
+
+let satisfyingBelief state (event : Event) =
+    let matches = 
+        state.Beliefs.GetBeliefs()
+        |> Seq.map (fun b -> printfn "%s %s" (ft (postCondition b.Term)) (ft event.Term); b)
+        |> Seq.filter (fun b -> (postCondition b.Term) = event.Term)
+
+    if Seq.isEmpty matches then
+        None
+    else
+        Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
+
+
+let processGoal attention state (event : Event) =
+    match satisfyingBelief state event with
+    | Some belief ->
+        tryPrintAnswer event belief
+        // if host concept and solution exists then
+        let event =
+            if state.Term = event.Term then
+                if exp(belief.TV) > Params.DECISION_THRESHOLD then
+                    raiseDisplayAnswerEvent (sprintf "Executing solution for %s!" (ft event.Term))
+                    // update goal dv based on degree of satisfaction
+                    let tv = event.TV.Value
+                    let satisfaction = exp(belief.TV)
+                    {event with TV = Some {F = tv.F; C = tv.C * satisfaction}}
+                else
+                    event
+            else    
+                event
+        [makeAnsweredEventBelief attention event belief]
+    | None -> 
+        getInferenceBeliefs attention state event
+
+    

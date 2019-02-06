@@ -26,4 +26,4 @@ module ProcessQuest
 
 open Types
 
-let processQuest state (event : Event) = []
+let processQuest attention state (event : Event) = []

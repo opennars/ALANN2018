@@ -64,7 +64,7 @@ type Stamp = {Created : int64
               SC : int
               Evidence : Evidence
               LastUsed : SysTime
-              UseCount : int64
+              UseCount : int
               Source : Source}
 
 type SearchDepth = Deep | Shallow 
@@ -82,7 +82,7 @@ type Belief =
 
     override this.Equals(other) =
         match other with
-        | :? Belief as y -> this.Term = y.Term && List.sort this.Stamp.Evidence = List.sort y.Stamp.Evidence
+        | :? Belief as y -> this.Term = y.Term
         | _ -> false
 
     override this.GetHashCode() = this.Term.GetHashCode()

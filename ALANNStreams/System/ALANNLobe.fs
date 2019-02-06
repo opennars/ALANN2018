@@ -67,7 +67,7 @@ let mainSink =
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
-                                        
+                     
             builder
                 .From(inBuffer)
                 .To(mergePref.Preferred)

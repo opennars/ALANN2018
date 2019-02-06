@@ -163,8 +163,8 @@ let psentence_ws = psentence .>> ws
 
 let makeStamp eType term = 
     match eType with
-    | Belief | Goal -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0L; Source = User}
-    | Question | Quest -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0L; Source = User}
+    | Belief | Goal -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0; Source = User}
+    | Question | Quest -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; LastUsed = SystemTime(); UseCount = 0; Source = User}
 
 // Event parser
 let pevent          = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType;  TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
