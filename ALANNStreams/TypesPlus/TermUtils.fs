@@ -30,7 +30,7 @@ open Evidence
 // Get sub terms to a recursive depth of Params.TERM_DEPTH
 let terms term = 
     let rec loop level term = seq {
-        if level <= Params.TERM_DEPTH then
+        if level < Params.TERM_DEPTH then
             match term with
             | Var(_, _) | Word "_" -> 
                 ()
@@ -46,7 +46,7 @@ let terms term =
             ()
     }
 
-    loop 1 term |> Seq.toList |> List.distinct
+    loop 0 term |> Seq.toList |> List.distinct
 
 let rec syntacticComplexity st =
     match st with
@@ -100,7 +100,7 @@ let isImplicationOp = function Imp |ConImp | RetImp -> true | _ -> false
 let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
 let isSequenceable = function | Term(Inh, [Word _; Word _]) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isCopula = function | Inh | Sim | Imp | Equ | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
-let isSuperTerm term = function | Term(op, [t1; t2]) when (term = t1 && isImplicationOp op) || (term = t2 && isImplicationOp op) -> true | _ -> false
+let isSuperTerm term = function | Term(op, [t1; t2]) when (term = t1 || term = t2) && isImplicationOp op -> true | _ -> false
 
 let isNotImpOrEqu s = not(isImp s || isEqu s)
 let isVar = function | Var(_) -> true | _ -> false

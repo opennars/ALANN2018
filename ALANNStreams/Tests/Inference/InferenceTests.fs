@@ -47,7 +47,7 @@ let parseEvent str =
     | None -> failwith "Parsing Term error"
 
 let makeTestEventBelief e b =
-    {Attention = 1.0f; Depth = SearchDepth.Deep; Event = e; Belief = makeBeliefFromEvent b}
+    {Attention = 1.0f; Depth = SearchDepth.Deep; Answer = false; Event = e; Belief = makeBeliefFromEvent b}
 
 let testInfFunc (f : InferenceFunction) (e1 : Event) (e2 : Event) =
     let matcher = function
@@ -1837,16 +1837,6 @@ let test1 =
         //                    ("<p <+> s>", Some <| com(tv1, tv2))
         //                    ("(p , s)", Some <| int(tv1, tv2))]
         //    Expect.equal (testTemporalInfFunc t2 t1)  expected "nal7_temporal_inference: 2 failed"
-
-        testCase "nal7_temporal_sequence: 1" <| fun () ->   
-            let tv1 = {F = 1.0f; C = 0.9f}
-            let tv2 = {F = 1.0f; C = 0.9f}
-            let t1 = parseEvent <| "(C ; A)." + truth tv1
-            let t2 = parseEvent <| "(C ; B)." + truth tv2
-            let expected = [("(C ; (A ; B))", Some <| temporal_int(tv1, tv2))
-                            ("(C ; (A , B))", Some <| temporal_int(tv1, tv2))
-                            ("(C ; (B , A))", Some <| temporal_int(tv1, tv2))]
-            Expect.equal (testInfFunc nal7_temporal_conjunction t1 t2)  expected "nal7_temporal_sequence: 1 failed"
 
 ]
 

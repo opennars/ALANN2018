@@ -376,23 +376,6 @@ let nal6_variable_introduction = function
                                                         //(Term(Par, [Term(Inh, [Var(DVar, "Y"); s]); Term(Inh, [Var(DVar, "Y"); p])]), int, None, [BeliefOnly])]
     | _ -> []
 
-let nal7_temporal_conjunction = function
-    | Par([c1; a]), Par([c2; b]) when c1 = c2 && a <> b -> [(Term(Par, [c1; Term(Par, [a; b])]), temporal_int, None, [IsConcurrent])
-                                                            (Term(Par, [c1; Term(Seq, [a; b])]), temporal_int, None, [IsBefore])
-                                                            (Term(Par, [c1; Term(Seq, [b; a])]), temporal_int, None, [IsAfter])]
-    | Par([a; c1]), Par([c2; b]) when c1 = c2 && a <> b -> [(Term(Par, [c1; Term(Par, [a; b])]), temporal_int, None, [IsConcurrent])
-                                                            (Term(Par, [c1; Term(Seq, [a; b])]), temporal_int, None, [IsBefore])
-                                                            (Term(Par, [c1; Term(Seq, [b; a])]), temporal_int, None, [IsAfter])]
-
-    | Seq([c1; a]), Par([c2; b]) when c1 = c2 && a <> b -> [(Term(Seq, [c1; Term(Par, [a; b])]), temporal_int, None, [IsConcurrent])
-                                                            (Term(Seq, [c1; Term(Seq, [a; b])]), temporal_int, None, [IsBefore])
-                                                            (Term(Seq, [c1; Term(Seq, [b; a])]), temporal_int, None, [IsAfter])]
-    | Seq([a; c1]), Par([c2; b]) when c1 = c2 && a <> b -> [(Term(Seq, [c1; Term(Par, [a; b])]), temporal_int, None, [IsConcurrent])
-                                                            (Term(Seq, [c1; Term(Seq, [a; b])]), temporal_int, None, [IsBefore])
-                                                            (Term(Seq, [c1; Term(Seq, [b; a])]), temporal_int, None, [IsAfter])]
-
-    // TODO Missing case goes here Par(), Seq()
-    | _ -> []
 
 let nal7_temporal_inference  = function
     | s, p when isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(ConImp, [s; p]), temporal_ind, None, [IsConcurrent])

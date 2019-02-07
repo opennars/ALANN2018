@@ -37,6 +37,7 @@ open Reporting
 open System.Threading
 open SystemState
 open Evidence
+open TermFormatters
 
 let processNode state (event : Event) =
     
@@ -51,7 +52,7 @@ let processNode state (event : Event) =
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
           
-    let processEvent attention event =
+    let processEvent attention oldBelief event =
         
         if state.Trace then showTrace state event
 
@@ -66,7 +67,9 @@ let processNode state (event : Event) =
         // add eventBelief for oldBelief (if it existed) so overlap does not filter out
         let eventBeliefsPlus (belief : Belief option) = 
             match belief with
-            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> (makeEventBelief attention event belief)::eventBeliefs
+            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
+                //printfn "Old belief in %s" (ft state.Term)
+                (makeEventBelief attention event belief)::eventBeliefs
             | _ -> eventBeliefs
 
         match event.EventType with
@@ -81,7 +84,7 @@ let processNode state (event : Event) =
         let attention = state.Attention
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
         Interlocked.Increment(systemState.Activations) |> ignore
-        (state, processEvent attention event)
+        (state, processEvent attention oldBelief event)
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 

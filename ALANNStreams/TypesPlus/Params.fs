@@ -29,7 +29,7 @@ let HORIZON                             = 1.0f          // System Personality Fa
 let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
                                                         
 // Node Related Parameters                              
-let ACTIVATION_THRESHOLD                = 0.80f         // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.75f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let ACTION_POTENTIAL                    = 0.75f         // When node is fired this is the attention level used ** 0.85f prevents multitasking
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
@@ -37,7 +37,7 @@ let LATENCY_PERIOD                      = 1L            // Concept latency perio
 let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
 let TEMPORAL_BELIEF_CAPACITY            = 15            // Max number of temporal beliefs per node
 let PRE_POST_BELIEF_CAPACITY            = 15            // Max number of Pre and Post condition beliefs per node
-let MIN_NODE_CREATION_EXP               = 0.66f         // Minimum node creation expectation threshold
+let MIN_NODE_CREATION_EXP               = 0.00f         // Minimum node creation expectation threshold
 let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters

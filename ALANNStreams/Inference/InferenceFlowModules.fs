@@ -56,7 +56,6 @@ let firstOrderModules : (InferenceFunction * Postcondition) [] =
 
 let higherOrderModules : (InferenceFunction * Postcondition) [] = 
               [|(nal7_temporal_inference, NoSwap)
-                (nal7_temporal_conjunction, NoSwap)               
                 (Nal5_conversion_contrapostion_negation, NoSwap)
                 (nal_5_implication_based_syllogism_Imp, NoSwap)
                 (nal_5_implication_based_syllogism_Equ1, NoSwap)

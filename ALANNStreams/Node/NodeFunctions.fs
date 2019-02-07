@@ -57,7 +57,7 @@ let updateBeliefs state event =
             Evidence = merge st1.Evidence st2.Evidence
             LastUsed = SystemTime()
             UseCount = st1.UseCount + st2.UseCount + 1}
-
+                
     let makeRevisedBelief (b1 : Belief) (b2 : Belief) = 
         let tv = rev(b1.TV, b2.TV)
         let stamp = updateStamp b2.Stamp b1.Stamp
@@ -76,7 +76,7 @@ let updateBeliefs state event =
             Some oldBelief
         | None ->
             state.Beliefs.Insert(makeKey newBelief, newBelief)
-            None
+            Some (makeBeliefFromEvent event)
         | _ -> None // Exists but not better truth or revisable
     | _ -> None // Not a belief
 

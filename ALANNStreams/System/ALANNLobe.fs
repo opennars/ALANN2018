@@ -36,6 +36,7 @@ open Loggers
 open PriorityBuffer
 open System.Threading
 open SystemState
+open TermFormatters
 
 let valveFlow =    
     GraphDsl.Create(
@@ -68,6 +69,10 @@ let mainSink =
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
                      
+            let showEvents =
+                Flow.Create<Event>()
+                |> Flow.map (fun e -> printfn "%s" (formatEvent e); e)
+
             builder
                 .From(inBuffer)
                 .To(mergePref.Preferred)
@@ -76,6 +81,7 @@ let mainSink =
                 .Via(valveFlow)
                 .Via(termStreams)
                 .Via(eventLogger)
+                //.Via(showEvents)
                 .Via(incrementEvents)
                 .Via(attentionBuffer)
                 .To(mergePref.In(0))
