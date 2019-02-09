@@ -42,6 +42,7 @@ let terms term =
                 yield term
                 for t in x do
                     yield! loop (level + 1) t
+            | _ -> failwith "Unexpected Temporal term in terms()"
         else
             ()
     }
@@ -53,6 +54,7 @@ let rec syntacticComplexity st =
     | Term(_, lst) -> 1 + List.fold (fun sum t -> sum + syntacticComplexity(t)) 0 lst
     | Var( _) -> 2
     | Word _ -> 1
+    | _ -> failwith "Unexpected Temporal term in syntacticComplexity()"
 
 let noCommonSubterm s p =    
     let rec flatten acc term =
@@ -121,12 +123,14 @@ let rec containsVars = function
     | Var(_, _) -> true
     | Word _ -> false
     | Term(_, lst) -> List.exists containsVars lst
+    | _ -> failwith "Unexpected Temporal term in containsVars()"
 
 let rec containsQueryVars = function
     | Var(QVar, _) -> true
     | Var(_, _) -> false
     | Word _ -> false
     | Term(_, lst) -> List.exists containsQueryVars lst
+    | _ -> failwith "Unexpected Temporal term in containsQueryVars()"
 
 let reduce = function
     | Term(IntInt, hd::tl) when tl = [] ->  hd

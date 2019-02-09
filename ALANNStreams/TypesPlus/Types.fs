@@ -45,6 +45,7 @@ type VarCode   = | QVar | DVar | IVar
 type Term      = | Word of string 
                  | Var of VarCode * string 
                  | Term of OpCode * Term list
+                 | Temporal of int64
 
 type TV = {F : float32; C : float32}    // Acts as DV for goals
 type AV = {STI : float32; LTI : float32}

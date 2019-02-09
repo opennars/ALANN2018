@@ -51,11 +51,10 @@ let firstOrderModules : (InferenceFunction * Postcondition) [] =
                 (structuralInference, NoSwap)
                 (backwardDrivenForwardInference, NoSwap)
                 (backwardOnlyInference, NoSwap)  
-                (nal6_variable_introduction, NoSwap)
               |]
 
 let higherOrderModules : (InferenceFunction * Postcondition) [] = 
-              [|(nal7_temporal_inference, NoSwap)
+              [|
                 (Nal5_conversion_contrapostion_negation, NoSwap)
                 (nal_5_implication_based_syllogism_Imp, NoSwap)
                 (nal_5_implication_based_syllogism_Equ1, NoSwap)
@@ -70,8 +69,10 @@ let higherOrderModules : (InferenceFunction * Postcondition) [] =
                 (nal5_nal8_implication_based_decomposition6, NoSwap)
                 (nal5_nal8_implication_based_decomposition7, NoSwap)
                 (nal5_nal8_implication_based_decomposition8, NoSwap)
+                (nal6_variable_introduction, NoSwap)
                 (nal6_variable_syllogisms, NoSwap)
                 (nal6_variable_elimination, NoSwap)
+                (nal7_temporal_inference, NoSwap)
               |]
 
 let inferenceFlowModules modules = GraphDsl.Create(fun builder ->

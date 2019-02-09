@@ -31,13 +31,11 @@ let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth
 // Node Related Parameters                              
 let ACTIVATION_THRESHOLD                = 0.75f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
-let ACTION_POTENTIAL                    = 0.75f         // When node is fired this is the attention level used ** 0.85f prevents multitasking
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
 let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
 let TEMPORAL_BELIEF_CAPACITY            = 15            // Max number of temporal beliefs per node
 let PRE_POST_BELIEF_CAPACITY            = 15            // Max number of Pre and Post condition beliefs per node
-let MIN_NODE_CREATION_EXP               = 0.00f         // Minimum node creation expectation threshold
 let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
@@ -71,6 +69,7 @@ let EVENTS_PROCESSED_MOD                = 100_000L      // Frequency of display 
 let STORAGE_PATH                        = "DATA"        // Folder to save and load data to
 let INFERENCE_SAMPLE_FREQUENCY_MS       = 300L          // Frequency of inference samples from main event stream in ms
 let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for status update in ms
+let NOISE_LEVEL                         = 0.75f         // exp(tv) to cut off event print to console
 
 //Streams related Parameters  
 let NUM_TERM_STREAMS                    = 30            // Number of Term streams

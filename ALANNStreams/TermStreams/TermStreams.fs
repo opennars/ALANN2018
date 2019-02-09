@@ -42,7 +42,7 @@ let termStreams =
             let separateTerms = 
                 builder.Add(
                     (Flow.Create<Event>()
-                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)).Async())
+                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| Temporal(e.Stamp.Created)::(terms e.Term))).Async())
 
             builder
                 .From(separateTerms)

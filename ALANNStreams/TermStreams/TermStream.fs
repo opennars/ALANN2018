@@ -63,7 +63,8 @@ let termStream (i) =
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if systemState.stores.[i].ContainsKey(t) then 1 else 0))
             let createableNode = function 
-                | {Term = _; Event = e} when e.EventType = Belief && (e.Stamp.Source = User || exp(e.TV.Value) > Params.MIN_NODE_CREATION_EXP) -> true
+                | {TermEvent.Term = Temporal(_)} -> true
+                | {Term = _; Event = e} when e.EventType = Belief -> true
                 | _ -> false
             
             let create = 

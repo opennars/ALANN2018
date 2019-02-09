@@ -74,7 +74,9 @@ let processNode state (event : Event) =
 
         match event.EventType with
         | Belief | Question ->
-            (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
+            match state.Term with
+            | Temporal(_) -> eventBeliefsPlus oldBelief // No virtual term for Temporal concepts
+            | _ -> (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
         | Goal ->
             eventBeliefsPlus oldBelief
         | _ -> []

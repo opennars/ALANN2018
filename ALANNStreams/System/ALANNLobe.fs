@@ -71,7 +71,12 @@ let mainSink =
                      
             let showEvents =
                 Flow.Create<Event>()
-                |> Flow.map (fun e -> printfn "%s" (formatEvent e); e)
+                |> Flow.map (fun e -> 
+                    match e with
+                    | {EventType = Belief; TV = Some tv} when exp(tv) > Params.NOISE_LEVEL -> printfn "%s" (formatEvent e) 
+                    | {EventType = Question} -> printfn "%s" (formatEvent e)
+                    | _ -> ()
+                    e)
 
             builder
                 .From(inBuffer)

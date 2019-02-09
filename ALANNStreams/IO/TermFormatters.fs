@@ -72,8 +72,9 @@ let rec ft t =
     | Var(IVar, c) -> "$" + c
     | Var(DVar, c) -> "#" + c
     | Var(QVar, c) -> "?" + c
+    | Temporal(n) -> "Temporal(" + n.ToString() + ")"
     | _ -> "Unknown type Error"
 
 let formatEvent e = sprintf "%A %s %s %s %s" e.EventType (av e.AV) (match e.TV with | Some tv -> truth tv | _ -> "None") (ft e.Term) (Trail e.Stamp.Evidence)
 
-let formatBelief (b : Belief) = sprintf "%s %s %s @%d" (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) (b.Stamp.LastUsed)
+let formatBelief (b : Belief) = sprintf "%s %s %s @%d" (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) (b.Stamp.Created)
