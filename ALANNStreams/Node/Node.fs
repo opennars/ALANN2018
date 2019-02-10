@@ -51,6 +51,7 @@ let processNode state (event : Event) =
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
+    let cond3 = match state.Term with | Temporal _ -> true | _ -> false
           
     let processEvent attention oldBelief event =
         
@@ -81,7 +82,7 @@ let processNode state (event : Event) =
             eventBeliefsPlus oldBelief
         | _ -> []
 
-    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2) with
+    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2 || cond3) with
     | true ->  
         let attention = state.Attention
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
