@@ -31,7 +31,8 @@ open System.Text
 let serverAddr = Params.SERVER_ADDR
 let clientAddr = Params.CLIENT_ADDR
 let serverPort = Params.SERVER_PORT
-let clientPort = Params.CLIENT_PORT
+let clientPort = Params.GUI_CLIENT_PORT
+let pongPort = Params.PONG_CLIENT_PORT
 
 let clientEndPoint = new IPEndPoint(IPAddress.Parse(clientAddr), clientPort)
 let outSocket = new UdpClient()
@@ -46,3 +47,12 @@ let inSocket = new UdpClient(serverEndPoint)
 let getServerMsg(inSocket : UdpClient) =
     let asyncData = inSocket.Receive(ref serverEndPoint )
     Encoding.ASCII.GetString(asyncData)
+
+let pongEndPoint = new IPEndPoint(IPAddress.Parse(clientAddr), pongPort)
+let pongOutSocket = new UdpClient()
+
+pongOutSocket.Connect(pongEndPoint)
+
+let sendMessageToPong (msg : string) =
+    let data = Encoding.ASCII.GetBytes(msg)
+    pongOutSocket.SendAsync(data, data.Length) |> ignore
