@@ -60,9 +60,11 @@ let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve 
 let TERM_DEPTH                          = 3             // depth of term separation
 let ATTENTION_BUFFER_SIZE               = 10            // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
-let MAX_CONCEPTS                        = 10_000        // Maximum number of concepts
+let MAX_CONCEPTS                        = 100_000       // Maximum number of concepts
 let ANSWER_ATTENTION_SCALING            = 3.0           // Scale answer attention by STI * (1 - C^n) where n is this parameter
 let DECISION_THRESHOLD                  = 0.50f         // Decision threshold for goal driven operation execution
+let GC_TEMPORAL_NODES_INTERVAL          = 2000.0        // Freq of temporal concept gc in ms
+let GC_TEMPORAL_NODES_DURATION          = 1000L         // Duration of temporal concepts before gc is allowed
 
 // UI related Parameters
 let EVENTS_PROCESSED_MOD                = 100_000L      // Frequency of display of selected events 
@@ -81,7 +83,8 @@ let GROUP_BLOCK_SIZE                    = 1_000         // Number of events to f
 let SERVER_ADDR                         = "127.0.0.1"   // ALANN Server IP address (local host by default)
 let CLIENT_ADDR                         = "127.0.0.1"   // ALANN GUI Client IP address (local host by default)
 let SERVER_PORT                         = 5000          // Port for server
-let CLIENT_PORT                         = 5001          // CLient port
+let GUI_CLIENT_PORT                     = 5001          // CLient port for GUI
+let PONG_CLIENT_PORT                    = 5002          // CLient port for pong
 
 //Command related prefixes
 let COMMAND_PREFIX                      = "#"           // Start of command message

@@ -54,6 +54,7 @@ let rec syntacticComplexity st =
     | Term(_, lst) -> 1 + List.fold (fun sum t -> sum + syntacticComplexity(t)) 0 lst
     | Var( _) -> 2
     | Word _ -> 1
+    | Temporal _ -> 1
     | _ -> failwith "Unexpected Temporal term in syntacticComplexity()"
 
 let noCommonSubterm s p =    
@@ -149,4 +150,3 @@ let isRevisble (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Sta
 
 // Helper functions
 let makeKey (b : Belief) = b.Term
-let makeKeyFromEvent (e : Event) = e.Term

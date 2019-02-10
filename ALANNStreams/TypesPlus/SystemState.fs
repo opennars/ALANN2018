@@ -28,6 +28,7 @@ open System.Collections.Concurrent
 open System.Threading
 open System.Diagnostics
 open Types
+open TermUtils
 
 let mutable systemState = 
     {
@@ -46,3 +47,45 @@ let SystemTime() = timer.ElapsedMilliseconds + systemState.StartTime
 let ResetTime() = timer.Restart()
 
 let mutable resetSwitch = false
+
+let GCTemporalNodes() =
+    let mutable deleted = 0
+    try
+        for store in systemState.stores do
+            for key in store.Keys do
+                match key with
+                | Temporal(n) when n < SystemTime() - Params.GC_TEMPORAL_NODES_DURATION -> 
+                    store.TryRemove(key) |> ignore
+                    deleted <- deleted + 1
+                | _ -> ()
+
+        printfn "\tGC Temporal Concepts - removed %d nodes" deleted
+    with 
+    | ex -> printfn "Error in GCTemporalNodes %s" ex.Message
+
+
+let GCGeneralNodes() =
+    let mutable deleted = 0
+    let maxNodesPerStream = Params.MAX_CONCEPTS / Params.NUM_TERM_STREAMS
+    let usefullness n = 
+        //let age = max (SystemTime() - n.Created) 1L
+        //let recency = max (SystemTime() - n.LastUsed) 1L
+        //n.UseCount / age
+        n.LastUsed * int64(syntacticComplexity n.Term)
+
+    try
+        for store in systemState.stores do
+            let numToDelete = store.Count - maxNodesPerStream
+            if numToDelete > 0 then
+                let nodesToDelete =
+                    [for node in store.Values -> node]
+                    |> List.sortBy usefullness
+                    |> List.take numToDelete
+
+                for node in nodesToDelete do
+                    store.TryRemove(node.Term) |> ignore
+                    deleted <- deleted + 1
+
+        printfn "\tGC General Concepts - removed %d nodes" deleted
+    with 
+    | ex -> printfn "Error in GCGenerlNodes %s" ex.Message
