@@ -33,6 +33,8 @@ open ALANNLobe
 open Network
 open Reporting
 open CommandProcessor
+open SystemState
+open System
 
 type Controller() =
 
@@ -65,5 +67,35 @@ type Controller() =
             return! statusLoop()
         }
 
+        let GCtimer = new System.Timers.Timer(Params.GC_TEMPORAL_NODES_INTERVAL, Enabled = true)
+        GCtimer.AutoReset <- true
+
+        let rec GCNodesLoop() = async {
+            let! _ = Async.AwaitEvent GCtimer.Elapsed
+            GCTemporalNodes()
+            GCGeneralNodes()
+
+            return! GCNodesLoop() 
+        }
+
+        let moveTimer = new System.Timers.Timer(200.0, Enabled = true)
+        moveTimer.AutoReset <- true
+
+        let rnd = new Random()
+        let rec moveLoop() = async {
+            let! _ = Async.AwaitEvent moveTimer.Elapsed
+
+            if rnd.NextDouble() < 0.5 then
+                sendMessageToPong("left")
+            else
+                sendMessageToPong("right")
+
+            return! moveLoop() 
+        }
+
+
         loop() |> Async.Start           // start main message loop
         statusLoop() |> Async.Start     // start status update loop
+        //GCNodesLoop() |> Async.Start    // start gc loop
+
+        moveLoop() |> Async.Start
