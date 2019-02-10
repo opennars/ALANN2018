@@ -60,7 +60,7 @@ let main argv =
     printfn ""
     printfn "\tSending on:"
     printfn "\tIP: %s" Params.CLIENT_ADDR
-    printfn "\tPort: %d" Params.CLIENT_PORT
+    printfn "\tPort: %d" Params.GUI_CLIENT_PORT
 
     printfn "\n\tEnter STOP to exit server"
 
