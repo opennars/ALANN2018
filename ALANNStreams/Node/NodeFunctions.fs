@@ -66,7 +66,7 @@ let updateBeliefs state event =
     match event with
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
-        match state.Beliefs.TryGetValue(makeKeyFromEvent event) with
+        match state.Beliefs.TryGetValue(makeKey newBelief) with
         | Some oldBelief when isRevisble oldBelief newBelief ->
             let belief' = makeRevisedBelief oldBelief newBelief
             state.Beliefs.Update(makeKey belief', belief')

@@ -29,7 +29,7 @@ let HORIZON                             = 1.0f          // System Personality Fa
 let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
                                                         
 // Node Related Parameters                              
-let ACTIVATION_THRESHOLD                = 0.75f         // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
