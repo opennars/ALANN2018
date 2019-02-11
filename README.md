@@ -14,8 +14,8 @@ Adaptive Logic And Neural Network (ALANN) is an alternative control theory and d
 5. Build solution
 
 ## How To Run
-1. Run ALLANStreams in a console
-2. Run the ALLANUI in Windows (accept the Firewall access to port 5000)
+1. Run ALANNStreams in a console
+2. Run the ALANNUI in Windows (accept the Firewall access to port 5000)
 3. Enter Narsese statements into 'Input' windows and click 'Input' button
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/ALANNGUI.png">
   
