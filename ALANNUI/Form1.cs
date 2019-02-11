@@ -82,12 +82,11 @@ namespace ALANNUI
             foreach (var line in lines)
             {
                 var trimmedLine = line.Trim();
-                if(trimmedLine == "") return;
+                if (trimmedLine == "") return;
 
                 var data = Encoding.ASCII.GetBytes(trimmedLine);
                 outSocket.SendAsync(data, data.Length);
-                Thread.Sleep(10);
-                EchoCmd("INPUT: ", trimmedLine);
+                EchoCmd("", trimmedLine);
             }
         }
 
@@ -102,12 +101,13 @@ namespace ALANNUI
 
         private async void Listening()
         {
+            UpdateText updateMsg = UpdateMsg;
+
             while (true)
             {
                 var result = await inSocket.ReceiveAsync();
                 var data = result.Buffer;
                 string msg = Encoding.ASCII.GetString(data, 0, data.Length);
-                UpdateText updateMsg = UpdateMsg;
                 this.Invoke(updateMsg, msg);
             }
         }
@@ -159,11 +159,11 @@ namespace ALANNUI
             {
                 eventsPerSecondStatus.Text = statusMsg;
             }
-            else if(statusMsg.StartsWith("Node"))
+            else if (statusMsg.StartsWith("Node"))
             {
                 ActivationsStatus.Text = statusMsg;
             }
-            else if(statusMsg.StartsWith("SystemTime"))
+            else if (statusMsg.StartsWith("SystemTime"))
             {
                 timeStatus.Text = statusMsg;
             }
@@ -174,7 +174,7 @@ namespace ALANNUI
         {
             var msgType = msg.Substring(0, 1);
 
-            switch(msgType)
+            switch (msgType)
             {
                 case "?":
                     ProcessAnswerMsg(msg);
@@ -212,6 +212,8 @@ namespace ALANNUI
             {
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
+                EchoCmd("", str);
+                Thread.Sleep(10);
             }
             EchoCmd("SAMPLE LOADED", "");
         }
@@ -222,7 +224,7 @@ namespace ALANNUI
             {
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
-                EchoCmd("INPUT: ", str);
+                EchoCmd("", str);
                 Thread.Sleep(10);
             }
         }
@@ -348,7 +350,8 @@ namespace ALANNUI
             "<{tom} --> cat>.",
             "<(cat * fish) --> eats>.",
             "<cod --> fish>.",
-            "<{tom} --> (eats / _ cod)>?"
+            "<{tom} --> (eats / _ cod)>?",
+            "<[living] --> (eats / _ cod)>?"
             };
 
         string[] ChainingTest =
@@ -541,7 +544,17 @@ namespace ALANNUI
          "<<($1 * $2) --> inside> ==> <($2 * $1) --> contains>>.",
          "<<($1 * $2) --> contains> ==> <($1 * $2) --> larger>>.",
          "<<($1 * $2) --> on> ==> <($2 * $1) --> under>>.",
-         "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>."
+         "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>.",
+         "<{tom} --> [living]>?",
+         "<{tash} --> [living]>?",
+         "<{lexie} --> [living]>?",
+         "<{tweety} --> [living]>?",
+         "<{tom} --> (eats / _ fish)>?",
+         "<{tash} --> (eats / _ food)>?",
+         "<{lexie} --> (eats / _ fruit)>?",
+         "<{tweety} --> (eats / _ fish)>?",
+         "<(bird * seed) --> eats>.",
+         "<{tweety} --> (eats / _ seed)>?"
             };
     }
 }
