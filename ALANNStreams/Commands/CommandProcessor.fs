@@ -128,7 +128,7 @@ let reset() =
     printCommand "RESET IN PROGRESS..."
     resetSwitch <- true
     System.Threading.Thread.Sleep(2000)
-    systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.GROUP_BLOCK_SIZE)|]
+    systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
     //systemState.Id := 0L
     systemState.StartTime <- 0L
     ResetTime()
