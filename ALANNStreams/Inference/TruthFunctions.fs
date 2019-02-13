@@ -25,6 +25,7 @@
 module TruthFunctions
 
     open Types
+    open MBrace.FsPickler.Hashing
 
     //personality factor 
     let k = Params.HORIZON
@@ -55,10 +56,8 @@ module TruthFunctions
     let inline neg ({F=f; C=c}, _) = {F = 1.0f - f; C = c}
     let inline cnv ({F=f; C=c}, _) = {F = 1.0f; C = f * c / (f * c + k)} // w2c(_and [f; c], _and [f; c]) // wminus = 0 so w = wplus
     let inline cnt ({F=f; C=c}, _) = 
-        //let f, c = w2c(0.0f, _and [_not f; c ])
-        //{F = f; C = c} // wplus = 0 so w = wminus
-        let w = _and [f - 1.0f; c]
-        {F = 0.0f; C = w / (w + k)}
+        let w = _and[_not f; c]
+        {F = 0.0f / w; C = w / (w + 1.0f)}
     
     // Strong syllogism
     let inline ded ({F=f1; C=c1}, {F=f2; C=c2}) = {F = _and[f1; f2]; C = _and[f1; f2; c1; c2]}
@@ -134,8 +133,8 @@ module TruthFunctions
     
     let inline beliefId (tv, _) = (tv)
     
-    let beliefStructuralDif (tv, _) = 
-        ded (tv, {F = 1.0f; C = 0.9f})
+    let beliefStructuralDif ({F = f1; C = c1}, _) = 
+         {F = 1.0f - f1; C = _and [f1; 1.0f; c1; 0.9f]}
 
     // Desire truth functions
     let inline desire_structural_strong (tv, _) =
