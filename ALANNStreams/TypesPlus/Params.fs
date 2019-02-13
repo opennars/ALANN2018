@@ -33,9 +33,9 @@ let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI f
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 15            // Max number of temporal beliefs per node
-let PRE_POST_BELIEF_CAPACITY            = 15            // Max number of Pre and Post condition beliefs per node
+let GENERAL_BELIEF_CAPACITY             = 10            // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 10            // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 10            // Max number of Pre and Post condition beliefs per node
 let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
@@ -58,7 +58,7 @@ let MAX_GENERAL_SC                      = 20            // Maximum syntactic com
 let MAX_TEMPORAL_SC                     = 100           // Maximum syntactic complexity of temporal terms
 let BUFFER_SELECTION_FACTOR             = 0.3f          // Determines the curve slope of the priority buffer selection
 let TERM_DEPTH                          = 3             // depth of term separation
-let ATTENTION_BUFFER_SIZE               = 10            // Maximum number of events in Attention buffer
+let ATTENTION_BUFFER_SIZE               = 5             // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 1_000         // Maximum number of events in input buffer
 let MAX_CONCEPTS                        = 100_000       // Maximum number of concepts
 let ANSWER_ATTENTION_SCALING            = 3.0           // Scale answer attention by STI * (1 - C^n) where n is this parameter
@@ -75,6 +75,7 @@ let NOISE_LEVEL                         = 0.75f         // exp(tv) to cut off ev
 
 //Streams related Parameters  
 let NUM_TERM_STREAMS                    = 30            // Number of Term streams
+let STREAM_NODE_MEMORY                  = 10_000        // Initial number of nodes to allocate per stream store
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 1_000         // Number of events to form a minor stream block
