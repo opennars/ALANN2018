@@ -96,6 +96,6 @@ type Controller() =
 
         loop() |> Async.Start           // start main message loop
         statusLoop() |> Async.Start     // start status update loop
-        //GCNodesLoop() |> Async.Start    // start gc loop
+        GCNodesLoop() |> Async.Start    // start gc loop
 
         moveLoop() |> Async.Start
