@@ -370,6 +370,7 @@ namespace ALANNUI
 
         string[] ShapeWorldTest =
         {
+        // Hypotheses
         "<<($1 * $2) --> larger> ==> <($2 * $1) --> smaller>>.",
         "<<($1 * $2) --> smaller> ==> <($2 * $1) --> larger>>.",
         "<<($1 * $2) --> next_to> <=> <($2 * $1) --> next_to>>.",
@@ -379,21 +380,23 @@ namespace ALANNUI
         "<<($1 * $2) --> inside> ==> <($2 * $1) --> contains>>.",
         "<<($1 * $2) --> contains> ==> <($1 * $2) --> larger>>. ",
         "<<($1 * $2) --> on> ==> <($2 * $1) --> under>>.",
-        "<<({$1} * {$2}) --> inside> ==> <({$2} * {$1}) --> contains>>.",
-        "<({box} * floor) --> on>.",
+        "<<($1 * $2) --> inside> ==> <($2 * $1) --> contains>>.",
+        "<(<#Y --> (on / $1 _)> && <#Y --> (on / _ $2)>) ==> <$1 --> (on / _ (on / _ $2))>>.",
+
+        // Facts
+        "<{toy} --> [red]>.",
+        "<({box} * {floor}) --> on>.",
         "<({toy} * {box}) --> inside>.",
         "<({ball} * {box}) --> on>.",
-        "<<$1 --> (inside / _ $2)> ==> <$2 --> (contains / _ $1)>>.",
-        "<<$1 --> (contains / _ $2)> ==> <$1 --> (larger / _ $2)>>.",
-        "<<$1 --> (smaller / _ $2)> ==> <$2 --> (larger / _ $1)>>.",
-        "<<$1 --> (larger / _ $2)> ==> <$2 --> (smaller / _ $1)>>.",
-        "<{?1} --> (on / _ floor)>?",
+
+        // Questions
+        "<{?1} --> (on / _ {floor})>?",
         "<{?1} --> (on / {ball} _)>?",
         "<{?1} --> (under / _ {ball})>?",
         "<{?1} --> (contains / _ {toy})>?",
         "<{box} --> (larger / _ {toy})>?",
         "<{toy} --> (smaller / _ {box})>?",
-        "<?1 --> (on / _(on / _ floor))>?"
+        "<{ball} --> (on / _(on / _ {floor}))>?"
         };
 
         string[] Samples =
