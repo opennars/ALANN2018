@@ -124,7 +124,7 @@ namespace Pong2
                 //dx = 3;
             }
 
-            if(y < 0)
+            if (y < 0)
             {
                 y = 0;
                 //dy = 2;
@@ -162,12 +162,12 @@ namespace Pong2
             b_dx = -b_dx;
             b_x += b_dx;
 
-            //sb.Clear();
-            //sb.AppendFormat("<[left] --> action>.");
-            //SendStatement(sb.ToString());
-            //sb.Clear();
-            //sb.AppendFormat("<[left] --> percept>.");
-            //SendStatement(sb.ToString());
+            sb.Clear();
+            sb.AppendFormat("<[left] --> action>.");
+            SendStatement(sb.ToString());
+            sb.Clear();
+            sb.AppendFormat("<[left] --> percept>.");
+            SendStatement(sb.ToString());
         }
 
         private void MoveRight()
@@ -176,12 +176,12 @@ namespace Pong2
 
             b_x += b_dx;
 
-            //sb.Clear();
-            //sb.AppendFormat("<[right] --> action>.");
-            //SendStatement(sb.ToString());
-            //sb.Clear();
-            //sb.AppendFormat("<[right] --> percept>.");
-            //SendStatement(sb.ToString());
+            sb.Clear();
+            sb.AppendFormat("<[right] --> action>.");
+            SendStatement(sb.ToString());
+            sb.Clear();
+            sb.AppendFormat("<[right] --> percept>.");
+            SendStatement(sb.ToString());
         }
 
 
@@ -208,7 +208,11 @@ namespace Pong2
             if (tickCount % 10 == 0)
             {
                 sb.Clear();
-                sb.AppendFormat("<X_{0} --> (ballpos / Y_{1} _)>.", x / 10, y / 10);
+                sb.AppendFormat("<X_{0} --> ballposX>.", x / 10);
+                SendStatement(sb.ToString());
+
+                sb.Clear();
+                sb.AppendFormat("<Y_{0} --> ballposY>.", y / 10);
                 SendStatement(sb.ToString());
 
                 sb.Clear();
