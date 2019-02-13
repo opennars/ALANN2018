@@ -62,7 +62,7 @@ let updateBeliefs state event =
         let tv = rev(b1.TV, b2.TV)
         let stamp = updateStamp b2.Stamp b1.Stamp
         {Term = b1.Term; TV = tv; Stamp = stamp}
-    
+
     match event with
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
