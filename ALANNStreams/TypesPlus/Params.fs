@@ -33,9 +33,9 @@ let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI f
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let DECAY_RATE                          = 1.00f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 10            // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 10            // Max number of temporal beliefs per node
-let PRE_POST_BELIEF_CAPACITY            = 10            // Max number of Pre and Post condition beliefs per node
+let GENERAL_BELIEF_CAPACITY             = 15            // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 15            // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 15            // Max number of Pre and Post condition beliefs per node
 let BELIEF_RANK_POW                     = 0.30          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
