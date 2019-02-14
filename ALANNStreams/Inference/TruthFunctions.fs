@@ -57,7 +57,7 @@ module TruthFunctions
     let inline cnv ({F=f; C=c}, _) = {F = 1.0f; C = f * c / (f * c + k)} // w2c(_and [f; c], _and [f; c]) // wminus = 0 so w = wplus
     let inline cnt ({F=f; C=c}, _) = 
         let w = _and[_not f; c]
-        {F = 0.0f / w; C = w / (w + 1.0f)}
+        {F = 0.0f; C = w / (w + 1.0f)}
     
     // Strong syllogism
     let inline ded ({F=f1; C=c1}, {F=f2; C=c2}) = {F = _and[f1; f2]; C = _and[f1; f2; c1; c2]}
