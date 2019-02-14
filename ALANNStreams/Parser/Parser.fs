@@ -57,7 +57,7 @@ let pfloat_ws = pfloat .>> ws
 // Word Parser
 let pstringliteral =
     let isIdentifierFirstChar c = isLetter c || c = '_' || c = '"' || isDigit c || c = '''
-    let isIdentifierChar c = isLetter c || isDigit c || c = '_' || c = ''' || c = '"' || c = '.'
+    let isIdentifierChar c = isLetter c || isDigit c || c = '_' || c = ''' || c = '"'
     many1Satisfy2 isIdentifierFirstChar isIdentifierChar 
     |>> fun i -> Word(i)
 
@@ -192,6 +192,7 @@ let Parser(program:string) =
 
 // Parser tester
 let testp p str =
+    vNum <- 0; vMap.Clear(); 
     match run (ws >>. p) str with    
     | Success(result, _, _) -> Some result
     | Failure(errorMsg, _, _) -> None
