@@ -103,13 +103,14 @@ let nal_5_implication_based_syllogism_Equ1 : InferenceFunction = function
 
     // Equivalence based syllogism
     | Imp(p, m1), Imp(s, m2) when m1 = m2 && s <> p -> [(Term(Equ, [s; p]), com, None, [AllowBackward; Swap])]
-    | PreImp(p, m1), PreImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), ind, None, [AllowBackward; Swap])
-                                                              (Term(PreEqu, [s; p]), ind, None, [AllowBackward; Swap])
-                                                              (Term(PreEqu, [p; s]), ind, None, [AllowBackward; Swap])]
-    | ConImp(p, m1), ConImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), ind, None, [AllowBackward; Swap])]
-    | RetImp(p, m1), RetImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), ind, None, [AllowBackward; Swap])
-                                                              (Term(PreEqu, [s; p]), ind, None, [AllowBackward; Swap])
-                                                              (Term(PreEqu, [p; s]), ind, None, [AllowBackward; Swap])]
+    | PreImp(p, m1), PreImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), com, None, [AllowBackward; Swap])
+                                                              (Term(PreEqu, [s; p]), com, None, [AllowBackward; Swap])
+                                                              (Term(PreEqu, [p; s]), com, None, [AllowBackward; Swap])]
+
+    | ConImp(p, m1), ConImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), com, None, [AllowBackward; Swap])]
+    | RetImp(p, m1), RetImp(s, m2) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), com, None, [AllowBackward; Swap])
+                                                              (Term(PreEqu, [s; p]), com, None, [AllowBackward; Swap])
+                                                              (Term(PreEqu, [p; s]), com, None, [AllowBackward; Swap])]
 
     | Imp(m1, p), Imp(m2, s) when m1 = m2 && s <> p -> [(Term(Equ, [s; p]), com, None, [AllowBackward; Swap])]
     | PreImp(m1, p), PreImp(m2, s) when m1 = m2 && s <> p -> [(Term(ConEqu, [s; p]), com, None, [AllowBackward; Swap])
@@ -314,10 +315,6 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
     | RetImp(Seq(m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b    -> [(substUnify m a b, abd, None, [])]
     | RetImp(Seq(_::m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b -> [(substUnify m a b, abd, None, [])]
 
-    | Imp(And([m; u]), a), Imp(w, b) when a <> b && w = u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
-
-    | Imp(a, c), m when a <> c && c <> m && isNotImpOrEqu m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
-
     | Equ(a, m1), Imp(And(m2::[tl]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, a::[tl]); c]), ana, None, [])]
     | Equ(a, m1), Imp(And(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, hd::[a]); c]), ana, None, [])]
     
@@ -334,6 +331,11 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
     | ConImp(a, m1), ConImp(Seq(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, a::hd::[m1]); c]), ded, None, [IsConcurrent])]
     | RetImp(a, m1), RetImp(Seq(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(RetImp, [Term(Seq, a::m1::tl); c]), ded, None, [])]
     | RetImp(a, m1), RetImp(Seq(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(RetImp, [Term(Seq, [a; hd; m1]); c]), ded, None, [])]
+
+    | Imp(And([m; u]), a), Imp(w, b) when a <> b && w = u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
+    | Imp(And(lst), c), m when c <> m && isNotImpOrEqu m && not (isMember m lst) -> [(Term(Imp, [Term(And, m::lst); c]), ind, None, [])]
+    | Imp(a, c), m when a <> c && c <> m && isNotImpOrEqu m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
+
     | _ -> []
 
 let nal6_variable_introduction = function
