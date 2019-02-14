@@ -316,7 +316,7 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
 
     | Imp(And([m; u]), a), Imp(w, b) when a <> b && w = u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
 
-    | Imp(a, c), m when a <> c && c <> m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
+    | Imp(a, c), m when a <> c && c <> m && isNotImpOrEqu m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
 
     | Equ(a, m1), Imp(And(m2::[tl]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, a::[tl]); c]), ana, None, [])]
     | Equ(a, m1), Imp(And(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, hd::[a]); c]), ana, None, [])]

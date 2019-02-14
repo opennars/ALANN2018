@@ -31,6 +31,7 @@ open TruthFunctions
 open TermUtils
 open Evidence
 open SystemState
+open Unify
 
 let makeEventBelief attention event (belief : Belief) =
     {Attention = attention * TruthFunctions.exp(belief.TV)
@@ -40,7 +41,7 @@ let makeEventBelief attention event (belief : Belief) =
      Belief = belief}
 
 let makeAnsweredEventBelief attention event (belief : Belief) =
-    {Attention = attention * TruthFunctions.exp(belief.TV)
+    {Attention = attention //* TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Deep
      Answer = true
      Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
@@ -67,11 +68,11 @@ let updateBeliefs state event =
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
         match state.Beliefs.TryGetValue(makeKey newBelief) with
-        | Some oldBelief when isRevisble oldBelief newBelief ->
+        | Some oldBelief when unifies newBelief.Term oldBelief.Term && isRevisble oldBelief newBelief ->
             let belief' = makeRevisedBelief oldBelief newBelief
             state.Beliefs.Update(makeKey belief', belief')
             Some oldBelief
-        | Some oldBelief when eTV |> isBetterThan oldBelief.TV -> 
+        | Some oldBelief when unifies newBelief.Term oldBelief.Term && eTV |> isBetterThan oldBelief.TV -> 
             state.Beliefs.Update(makeKey newBelief, newBelief)
             Some oldBelief
         | None ->
@@ -111,9 +112,11 @@ let getInferenceBeliefs attention state event =
          |> List.map (tryUpdatePredictiveTemporalbelief state event)
          |> List.map (makeEventBelief attention event)
 
-    List.append
-        (makeInferenceEventBeliefs (state.Beliefs.GetGeneralBeliefs()))
-        (makeInferenceEventBeliefs (state.Beliefs.GetTemporalBeliefs()))
+    //List.append
+    //    (makeInferenceEventBeliefs (state.Beliefs.GetGeneralBeliefs()))
+    //    (makeInferenceEventBeliefs (state.Beliefs.GetTemporalBeliefs()))
 
-    |> List.append
-        (makeInferenceEventBeliefs (state.Beliefs.GetSuperBeliefs()))
+    //|> List.append
+    //    (makeInferenceEventBeliefs (state.Beliefs.GetSuperBeliefs()))
+
+    makeInferenceEventBeliefs (state.Beliefs.GetBeliefs())
