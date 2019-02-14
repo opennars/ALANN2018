@@ -29,6 +29,12 @@ open Types
 open Events
 open TermUtils
 open SystemState
+open System.Collections.Generic
+
+// Map for normalising var names
+let vMap = new Dictionary<string, int>()
+let mutable vNum = 0
+let renameVar v = if vMap.ContainsKey(v) then (vMap.[v]).ToString() else vNum <- vNum + 1; vMap.Add(v, vNum); vNum.ToString()
 
 // utilities
 let sort lst = lst |> List.sort
@@ -73,10 +79,11 @@ let varname =
 
 let varname_ws = varname .>> ws
 
-let pivar = str_ws "$" >>. varname_ws |>> fun a -> Var(IVar, a.ToUpper()) 
-let pdvar = str_ws "#" >>. varname_ws |>> fun a -> Var(DVar , a.ToUpper())
-let pqvar = str_ws "?" >>. varname_ws |>> fun a -> Var(QVar , a.ToUpper())
+let pivar = str_ws "$" >>. varname_ws |>> fun a -> Var(IVar, (renameVar (a.ToUpper())))
+let pdvar = str_ws "#" >>. varname_ws |>> fun a -> Var(DVar , (renameVar (a.ToUpper())))
+let pqvar = str_ws "?" >>. varname_ws |>> fun a -> Var(QVar , (renameVar (a.ToUpper())))
 let pvariable_ws = pivar <|> pdvar <|> pqvar .>> ws
+
 
 // Set parser
 let setBetweenStrings sOpen sClose pElement f =
@@ -172,6 +179,7 @@ let pevent_ws = ws >>. pevent
 
 // General Parser entry point
 let Parser(program:string) =
+    vNum <- 0; vMap.Clear(); 
     match program.Trim() with
     | "" -> []
     | _ ->
