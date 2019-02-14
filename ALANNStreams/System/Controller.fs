@@ -49,12 +49,12 @@ type Controller() =
     member this.Initialise() =
 
         // main message loop
-        let rec loop() = async {
+        let rec mainLoop() = async {
             let msg = getServerMsg(inSocket)
             match msg.StartsWith(Params.COMMAND_PREFIX) with
             | true -> processCommand(msg)
             | false -> UDPreceiver <! msg
-            return! loop()
+            return! mainLoop()
         }
 
         // status update loop
@@ -67,6 +67,7 @@ type Controller() =
             return! statusLoop()
         }
 
+        // Garbage collection loop to maintain Node capcity limit
         let GCtimer = new System.Timers.Timer(Params.GC_TEMPORAL_NODES_INTERVAL, Enabled = true)
         GCtimer.AutoReset <- true
 
@@ -78,6 +79,7 @@ type Controller() =
             return! GCNodesLoop() 
         }
 
+        // Pong random action generator *** Experimental ***
         let moveTimer = new System.Timers.Timer(200.0, Enabled = true)
         moveTimer.AutoReset <- true
 
@@ -93,9 +95,8 @@ type Controller() =
             return! moveLoop() 
         }
 
-
-        loop() |> Async.Start           // start main message loop
+        mainLoop() |> Async.Start       // start main message loop
         statusLoop() |> Async.Start     // start status update loop
         GCNodesLoop() |> Async.Start    // start gc loop
 
-        moveLoop() |> Async.Start
+        moveLoop() |> Async.Start       // Random actions for Pong development *** Experimental ***
