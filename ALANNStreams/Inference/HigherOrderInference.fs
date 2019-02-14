@@ -39,14 +39,14 @@ let Nal5_conversion_contrapostion_negation : InferenceFunction = function
     | PreImp(p1, s1), RetImp(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(PreImp, [p1; s1]), cnv, None, [BeliefFromQuestion])]
 
     // contraposition
-    | Imp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Imp, [Term(Not, [p1]); s]), cnt, None, [Structural])]
-    | Imp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(Imp, [Term(Not, [p]); s1]), cnt, None, [Structural])]
-    | ConImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(ConImp, [Term(Not, [p1]); s]), cnt, None, [Structural])]
-    | ConImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(ConImp, [Term(Not, [p]); s1]), cnt, None, [Structural])]
-    | PreImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(RetImp, [Term(Not, [p1]); s]), cnt, None, [Structural])]
+    | Imp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Imp, [Term(Not, [p1]); s]), cnt, None, [AllowBackward; Structural])]
+    | Imp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(Imp, [Term(Not, [p]); s1]), cnt, None, [AllowBackward; Structural])]
+    | ConImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(ConImp, [Term(Not, [p1]); s]), cnt, None, [AllowBackward; Structural])]
+    | ConImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(ConImp, [Term(Not, [p]); s1]), cnt, None, [AllowBackward; Structural])]
+    | PreImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(RetImp, [Term(Not, [p1]); s]), cnt, None, [AllowBackward; Structural])]
     | PreImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(RetImp, [Term(Not, [p]); s1]), cnt, None, [Structural])]
-    | RetImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(PreImp, [Term(Not, [p1]); s]), cnt, None, [Structural])]
-    | RetImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(PreImp, [Term(Not, [p]); s1]), cnt, None, [Structural])]
+    | RetImp(Not(s), p1), p2 when p1 = p2 && s <> p1 -> [(Term(PreImp, [Term(Not, [p1]); s]), cnt, None, [AllowBackward; Structural])]
+    | RetImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(PreImp, [Term(Not, [p]); s1]), cnt, None, [AllowBackward; Structural])]
 
     // negation
     | Inh(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Inh, [a1; b])]), neg, Some d_neg, [Structural])]
@@ -252,7 +252,7 @@ let nal5_nal8_implication_based_decomposition6 = function
     | _ -> []
 
 let nal5_nal8_implication_based_decomposition7 = function
-    // propositional decomposition on epremise
+    // propositional decomposition on one premise
     | Seq([a; b]), _ -> [(a, structuralDed, None, [])
                          (b, structuralDed, None, [])]
 
@@ -275,32 +275,37 @@ let nal5_nal8_implication_based_decomposition8 = function
     | _ -> []
 
 let nal5_multi_conditional_syllogism : InferenceFunction = function
+    // conditional deduction
     | Imp(a, m1), Imp(And(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(Imp, [Term(And, a::tl); c]), ded, None, [])]
     | Imp(a, m1), Imp(And(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, [a; hd]); c]), ded, None, [])]
 
-    | y, Equ(And1(x::z::_) as c, b)  when x <> b && unifies y x -> [(Term(Equ, [z; b]), ded, None, [])]
-    | y, Equ(b, (And(x::z::_) as c)) when x <> b && unifies y x -> [(Term(Equ, [b; z]), ded, None, [])]
-    | y, Equ(And(z::x::_) as c, b)   when x <> b && unifies y x -> [(Term(Equ, [z; b]), ded, None, [])]
-    | y, Equ(b, (And(z::x::_) as c)) when x <> b && unifies y x -> [(Term(Equ, [b; z]), ded, None, [])]
+    // conditional abduction
+    | Imp(m1, c1), Imp(And(m2::[tl]), c2) when m1 = m2 && c1 = c2 -> [(tl, abd, None, [])]
+    | Imp(m1, c1), Imp(And(hd::[m2]), c2) when m1 = m2 && c1 = c2 -> [(hd, abd, None, [])]
 
-    | y, ConEqu((Par(x::z::_) as c), b) when x <> b && unifies y x -> [(Term(ConEqu, [z; b]), ded, None, [IsConcurrent])]
-    | y, ConEqu((Par(z::x::_) as c), b) when x <> b && unifies y x -> [(Term(ConEqu, [z; b]), ded, None, [IsConcurrent])]
-    | y, PreEqu(Par(x::z::_) as c, b)   when x <> b && unifies y x -> [(Term(PreEqu, [z; b]), ded, None, [IsConcurrent])]
-    | y, PreEqu(Par(z::x::_) as c, b)   when x <> b && unifies y x -> [(Term(PreEqu, [z; b]), ded, None, [IsConcurrent])]
-    | y, PreEqu(b, (Par(x::z::_) as c)) when x <> b && unifies y x -> [(Term(PreEqu, [b; z]), ded, None, [IsConcurrent])]
-    | y, PreEqu(b, (Par(z::x::_) as c)) when x <> b && unifies y x -> [(Term(PreEqu, [b; z]), ded, None, [IsConcurrent])]
+    | y, Equ(And1(x::z::_), b)  when x <> b && unifies y x -> [(Term(Equ, [z; b]), ded, None, [])]
+    | y, Equ(b, (And(x::z::_))) when x <> b && unifies y x -> [(Term(Equ, [b; z]), ded, None, [])]
+    | y, Equ(And(z::x::_), b)   when x <> b && unifies y x -> [(Term(Equ, [z; b]), ded, None, [])]
+    | y, Equ(b, (And(z::x::_))) when x <> b && unifies y x -> [(Term(Equ, [b; z]), ded, None, [])]
 
-    | y, Imp(And(x::z::_) as c, b) when x <> b && unifies y x    -> [(Term(Imp,    [z; b]), ded, None, [])]
-    | y, Imp(And(z::x::_) as c, b) when x <> b && unifies y x    -> [(Term(Imp,    [z; b]), ded, None, [])]
-    | y, PreImp(Seq(x::z::_) as c, b) when x <> b && unifies y x -> [(Term(PreImp, [z; b]), ded, None, [IsConcurrent])]
-    | y, PreImp(Seq(z::x::_) as c, b) when x <> b && unifies y x -> [(Term(PreImp, [z; b]), ded, None, [IsConcurrent])]
-    | y, ConImp(Par(x::z::_) as c, b) when x <> b && unifies y x -> [(Term(ConImp, [z; b]), ded, None, [IsConcurrent])]
-    | y, ConImp(Par(z::x::_) as c, b) when x <> b && unifies y x -> [(Term(ConImp, [z; b]), ded, None, [IsConcurrent])]
-    | y, RetImp(Seq(x::z::_) as c, b) when x <> b && unifies y x -> [(Term(RetImp, [z; b]), ded, None, [IsConcurrent])]
-    | y, RetImp(Seq(z::x::_) as c, b) when x <> b && unifies y x -> [(Term(RetImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, ConEqu((Par(x::z::_)), b) when x <> b && unifies y x -> [(Term(ConEqu, [z; b]), ded, None, [IsConcurrent])]
+    | y, ConEqu((Par(z::x::_)), b) when x <> b && unifies y x -> [(Term(ConEqu, [z; b]), ded, None, [IsConcurrent])]
+    | y, PreEqu(Par(x::z::_), b)   when x <> b && unifies y x -> [(Term(PreEqu, [z; b]), ded, None, [IsConcurrent])]
+    | y, PreEqu(Par(z::x::_), b)   when x <> b && unifies y x -> [(Term(PreEqu, [z; b]), ded, None, [IsConcurrent])]
+    | y, PreEqu(b, (Par(x::z::_))) when x <> b && unifies y x -> [(Term(PreEqu, [b; z]), ded, None, [IsConcurrent])]
+    | y, PreEqu(b, (Par(z::x::_))) when x <> b && unifies y x -> [(Term(PreEqu, [b; z]), ded, None, [IsConcurrent])]
+
+    | y, Imp(And(x::z::_), b) when x <> b && unifies y x    -> [(Term(Imp,    [z; b]), ded, None, [])]
+    | y, Imp(And(z::x::_), b) when x <> b && unifies y x    -> [(Term(Imp,    [z; b]), ded, None, [])]
+    | y, PreImp(Seq(x::z::_), b) when x <> b && unifies y x -> [(Term(PreImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, PreImp(Seq(z::x::_), b) when x <> b && unifies y x -> [(Term(PreImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, ConImp(Par(x::z::_), b) when x <> b && unifies y x -> [(Term(ConImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, ConImp(Par(z::x::_), b) when x <> b && unifies y x -> [(Term(ConImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, RetImp(Seq(x::z::_), b) when x <> b && unifies y x -> [(Term(RetImp, [z; b]), ded, None, [IsConcurrent])]
+    | y, RetImp(Seq(z::x::_), b) when x <> b && unifies y x -> [(Term(RetImp, [z; b]), ded, None, [IsConcurrent])]
     
-    | Imp(And(m1::a1::_), c1), Imp(And(lst), c2) when isMember m1 lst && c1 = c2 -> [(Term(Imp, [a1; from m1 lst]), ind, None, [])]
-    | Imp(And(a1::m1::_), c1), Imp(And(lst), c2) when isMember m1 lst && c1 = c2 -> [(Term(Imp, [a1; from m1 lst]), ind, None, [])]
+    | Imp(And(m1::a1::_), c1), Imp(And([e1; e2] as lst), c2) when e1 <> e2 && isMember m1 lst && c1 = c2 -> [(Term(Imp, [a1; from m1 lst]), ind, None, [])]
+    | Imp(And(a1::m1::_), c1), Imp(And([e1; e2] as lst), c2) when e1 <> e2 && isMember m1 lst && c1 = c2 -> [(Term(Imp, [a1; from m1 lst]), ind, None, [])]
 
     | PreImp(Seq(m::_) as a, c1), PreImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b    -> [(substUnify m a b, abd, None, [])]
     | PreImp(Seq(_::m::_) as a, c1), PreImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b -> [(substUnify m a b, abd, None, [])]
@@ -309,15 +314,7 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
     | RetImp(Seq(m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b    -> [(substUnify m a b, abd, None, [])]
     | RetImp(Seq(_::m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b -> [(substUnify m a b, abd, None, [])]
 
-
-
-
     | Imp(And([m; u]), a), Imp(w, b) when a <> b && w = u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
-
-
-
-
-    | Imp(And(_) as t, c), m when c <> m -> [(Term(Imp, [Term(And, [m; t]); c]), ind, None, [])]
 
     | Imp(a, c), m when a <> c && c <> m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
 
