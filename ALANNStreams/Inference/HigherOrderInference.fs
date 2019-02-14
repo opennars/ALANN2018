@@ -339,64 +339,64 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
     | _ -> []
 
 let nal6_variable_introduction = function
-    | Inh(s, m1), Inh(p, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), abd, None, [BeliefOnly])
-                                                        (Term(Imp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), ind, None, [BeliefOnly])
-                                                        (Term(Equ, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), com, None, [BeliefOnly])
-                                                        (Term(And, [Term(Inh, [p; Var(DVar, "Y")]); Term(Inh, [s; Var(DVar, "Y")])]), int, None, [BeliefOnly])
+    | Inh(s, m1), Inh(p, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), abd, None, [BeliefOnly])
+                                                        (Term(Imp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), ind, None, [BeliefOnly])
+                                                        (Term(Equ, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), com, None, [BeliefOnly])
+                                                        (Term(And, [Term(Inh, [p; Var(DVar, "1")]); Term(Inh, [s; Var(DVar, "1")])]), int, None, [BeliefOnly])
                                                         
-                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), abd, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), ind, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), ind, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(Par, [Term(Inh, [p; Var(DVar, "Y")]); Term(Inh, [s; Var(DVar, "Y")])]), int, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), abd, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(Par, [Term(Inh, [p; Var(DVar, "1")]); Term(Inh, [s; Var(DVar, "")])]), int, None, [BeliefOnly; IsConcurrent])
 
-                                                        (Term(PreImp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), abd, None, [BeliefOnly; IsBefore])
-                                                        (Term(RetImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), ind, None, [BeliefOnly; IsBefore])
-                                                        (Term(Seq, [Term(Inh, [s; Var(DVar, "Y")]); Term(Inh, [p; Var(DVar, "Y")])]), int, None, [BeliefOnly; IsBefore])
+                                                        (Term(PreImp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), abd, None, [BeliefOnly; IsBefore])
+                                                        (Term(RetImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsBefore])
+                                                        (Term(Seq, [Term(Inh, [s; Var(DVar, "1")]); Term(Inh, [p; Var(DVar, "1")])]), int, None, [BeliefOnly; IsBefore])
 
-                                                        (Term(PreImp, [Term(Inh, [s; Var(IVar, "X")]); Term(Inh, [p; Var(IVar, "X")])]), abd, None, [BeliefOnly; IsAfter])
-                                                        (Term(RetImp, [Term(Inh, [p; Var(IVar, "X")]); Term(Inh, [s; Var(IVar, "X")])]), ind, None, [BeliefOnly; IsAfter])
-                                                        (Term(Seq, [Term(Inh, [s; Var(DVar, "Y")]); Term(Inh, [p; Var(DVar, "Y")])]), int, None, [BeliefOnly; IsAfter])]
+                                                        (Term(PreImp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), abd, None, [BeliefOnly; IsAfter])
+                                                        (Term(RetImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsAfter])
+                                                        (Term(Seq, [Term(Inh, [s; Var(DVar, "1")]); Term(Inh, [p; Var(DVar, "1")])]), int, None, [BeliefOnly; IsAfter])]
 
 
 
                                                         // interval variants ommitted here as not required
 
-    | Inh(m1, s), Inh(m2, p) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly])
-                                                        (Term(Imp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly])
-                                                        (Term(Equ, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), com, None, [BeliefOnly])
-                                                        (Term(And, [Term(Inh, [Var(DVar, "Y"); s]); Term(Inh, [Var(DVar, "Y"); p])]), int, None, [BeliefOnly])
+    | Inh(m1, s), Inh(m2, p) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly])
+                                                        (Term(Imp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly])
+                                                        (Term(Equ, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), com, None, [BeliefOnly])
+                                                        (Term(And, [Term(Inh, [Var(DVar, "1"); s]); Term(Inh, [Var(DVar, "1"); p])]), int, None, [BeliefOnly])
                                                         
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConEqu, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), com, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(Par, [Term(Inh, [Var(DVar, "Y"); s]); Term(Inh, [Var(DVar, "Y"); p])]), int, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConEqu, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), com, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(Par, [Term(Inh, [Var(DVar, "1"); s]); Term(Inh, [Var(DVar, "1"); p])]), int, None, [BeliefOnly; IsConcurrent])
 
-                                                        (Term(PreImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsBefore])
-                                                        (Term(RetImp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly; IsBefore])
-                                                        (Term(Seq, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsBefore])
+                                                        (Term(PreImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsBefore])
+                                                        (Term(RetImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsBefore])
+                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsBefore])
 
-                                                        (Term(PreImp, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsAfter])
-                                                        (Term(RetImp, [Term(Inh, [Var(IVar, "X"); p]); Term(Inh, [Var(IVar, "X"); s])]), abd, None, [BeliefOnly; IsAfter])
-                                                        (Term(Seq, [Term(Inh, [Var(IVar, "X"); s]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [BeliefOnly; IsAfter])]
+                                                        (Term(PreImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsAfter])
+                                                        (Term(RetImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsAfter])
+                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsAfter])]
 
 
     | _ -> []
 
 let nal6_variable_syllogisms = function
-    | Imp(Inh(a, r1), z1), Imp(And([Inh(Var(DVar, "Y"), b); Inh(Var(DVar, "Y"), r2)]), z2) when r1 = r2 && z1 = z2 && a <> b -> [Term(Inh, [a; b]), abd, None, []]  
-    | Imp(Inh(a, r1), z1), Imp(And([Inh(Var(DVar, "Y"), r2); Inh(Var(DVar, "Y"), b)]), z2) when r1 = r2 && z1 = z2 && a <> b -> [Term(Inh, [a; b]), abd, None, []]  
+    | Imp(Inh(a, r1), z1), Imp(And([Inh(Var(DVar, "1"), b); Inh(Var(DVar, "1"), r2)]), z2) when r1 = r2 && z1 = z2 && a <> b -> [Term(Inh, [a; b]), abd, None, []]  
+    | Imp(Inh(a, r1), z1), Imp(And([Inh(Var(DVar, "1"), r2); Inh(Var(DVar, "1"), b)]), z2) when r1 = r2 && z1 = z2 && a <> b -> [Term(Inh, [a; b]), abd, None, []]  
 
-    | Inh(u, l1), Imp(And([Inh(Var(DVar, "Y"), l2); Inh(Var(DVar, "Y"), r)]), z) when l1 = l2 && u <> z && z <> l1 -> [(Term(Imp, [Term(Inh, [u; r]); z]), ded, None, [])]
-    | Inh(u, l1), Imp(And([Inh(Var(DVar, "Y"), r); Inh(Var(DVar, "Y"), l2)]), z) when l1 = l2 && u <> z && z <> l1 -> [(Term(Imp, [Term(Inh, [u; r]); z]), ded, None, [])]
+    | Inh(u, l1), Imp(And([Inh(Var(DVar, "1"), l2); Inh(Var(DVar, "1"), r)]), z) when l1 = l2 && u <> z && z <> l1 -> [(Term(Imp, [Term(Inh, [u; r]); z]), ded, None, [])]
+    | Inh(u, l1), Imp(And([Inh(Var(DVar, "1"), r); Inh(Var(DVar, "1"), l2)]), z) when l1 = l2 && u <> z && z <> l1 -> [(Term(Imp, [Term(Inh, [u; r]); z]), ded, None, [])]
 
     | _ -> []
 
 let nal6_multiple_variable_introduction = function
-    | Imp(a, Inh(m1, p)), Inh(m2, s) when m1 = m2 && s <> p && a <> Term(Inh, [m1; s]) -> [(Term(Imp, [Term(And, [a; Term(Inh, [Var(IVar, "X"); s])]); Term(Inh, [Var(IVar, "X"); p])]), ind, None, [])
-                                                                                           (Term(And, [Term(Imp, [a; Term(Inh, [Var(DVar, "Y"); p])]); Term(Inh, [Var(DVar, "Y"); s])]), int, None, [])]
-    | And(Inh(m1, p)::lst), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "Y"); s]); Term(And, Term(Inh, [Var(IVar, "Y"); p])::lst)]), ind, None, [])
-                                                                  (Term(And, Term(Inh, [Var(DVar, "Y"); s])::Term(Inh, [Var(DVar, "Y"); p])::lst), ind, None, [])]
+    | Imp(a, Inh(m1, p)), Inh(m2, s) when m1 = m2 && s <> p && a <> Term(Inh, [m1; s]) -> [(Term(Imp, [Term(And, [a; Term(Inh, [Var(IVar, "1"); s])]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [])
+                                                                                           (Term(And, [Term(Imp, [a; Term(Inh, [Var(DVar, "1"); p])]); Term(Inh, [Var(DVar, "1"); s])]), int, None, [])]
+    | And(Inh(m1, p)::lst), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "1"); s]); Term(And, Term(Inh, [Var(IVar, "1"); p])::lst)]), ind, None, [])
+                                                                  (Term(And, Term(Inh, [Var(DVar, "1"); s])::Term(Inh, [Var(DVar, "1"); p])::lst), ind, None, [])]
     | _ -> []
 
 let nal6_variable_elimination = function

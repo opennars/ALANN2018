@@ -91,4 +91,11 @@ let test1 =
             let q1 = parseTerm "<?what ==> <d --> e>>"
             let expected = true
             Expect.equal  (unifies t1 q1) expected "Incorrect format"
+
+        testCase "FormatTest10" <| fun () ->   
+            let t1 = parseTerm "<<$x --> bird> ==> <$x --> flyer>>"
+            let q1 = parseTerm "<<$y --> bird> ==> <$y --> flyer>>. {0.00 0.70} "
+            let expected = true
+            Expect.equal  (unifies t1 q1) expected "Incorrect format"
+
     ]

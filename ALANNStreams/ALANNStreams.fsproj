@@ -101,9 +101,11 @@
     <Compile Include="System\Controller.fs" />
     <Compile Include="Tests\TermFormatters\TermFormattersTests.fs" />
     <Compile Include="Tests\Unify\UniifyTests.fs" />
-    <Compile Include="Tests\Inference\InferenceTests.fs" />
+    <Compile Include="Tests\Inference\FirstOrderInfernceTests.fs" />
+    <Compile Include="Tests\Inference\HigherOrderInferenceTests.fs" />
     <Compile Include="Tests\Evidence\EvidenceTests.fs" />
     <Compile Include="Tests\TermUtils\TermUtilsTests.fs" />
+    <Compile Include="Tests\Parser\ParserTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

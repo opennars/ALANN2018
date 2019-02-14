@@ -33,11 +33,14 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
     let temporalStore = new SubStore(temporalCapacity) :> ISubStore
     let GeneralStore = new SubStore(generalCapacity) :> ISubStore
     let superStore = new SubStore(superCapacity) :> ISubStore
+    let variableStore = new SubStore(superCapacity) :> ISubStore
 
     interface IStore with
         member x.Contains(key) = 
             if key |> isSuperTerm hostTerm then
                 superStore.Contains key
+            else if key |> containsVars then
+                variableStore.Contains key
             else if key |> isTemporal then
                 temporalStore.Contains key
             else 
@@ -46,6 +49,8 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
         member x.Insert(key, belief) =
             if key |> isSuperTerm hostTerm then
                 superStore.Insert(key, belief)
+            else if key |> containsVars then
+                variableStore.Insert(key, belief)
             else if key |> isTemporal then
                 temporalStore.Insert(key, belief)
             else
@@ -54,6 +59,8 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
         member x.Update(key, belief) =
             if key |> isSuperTerm hostTerm then
                 superStore.Update(key, belief)
+            else if key |> containsVars then
+                variableStore.Update(key, belief)
             else if key |> isTemporal then
                 temporalStore.Update(key, belief)
             else
@@ -62,6 +69,8 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
         member x.TryGetValue key = 
             if key |> isSuperTerm hostTerm then
                 superStore.TryGetValue key
+            else if key |> containsVars then
+                variableStore.TryGetValue key
             else if key |> isTemporal then
                 temporalStore.TryGetValue key
             else
@@ -71,8 +80,9 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
             superStore.Clear()
             temporalStore.Clear()
             GeneralStore.Clear()
+            variableStore.Clear()
 
-        member x.Count = temporalStore.Count + GeneralStore.Count
+        member x.Count = temporalStore.Count + GeneralStore.Count + superStore.Count + variableStore.Count
 
         member x.GetBeliefs() =           
             Seq.append
@@ -80,10 +90,14 @@ type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
                 (temporalStore.GetBeliefs())
             |> Seq.append
                 (GeneralStore.GetBeliefs())
+            |> Seq.append
+                (variableStore.GetBeliefs())
 
         member x.GetSuperBeliefs() = superStore.GetBeliefs()
 
         member x.GetTemporalBeliefs() = temporalStore.GetBeliefs()
            
         member x.GetGeneralBeliefs() = GeneralStore.GetBeliefs() 
+
+        member x.GetVariableBeliefs() = variableStore.GetBeliefs()
 

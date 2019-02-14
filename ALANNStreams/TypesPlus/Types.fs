@@ -160,6 +160,7 @@ type IStore =
     abstract GetSuperBeliefs : unit -> seq<Belief>
     abstract GetTemporalBeliefs : unit -> seq<Belief>
     abstract GetGeneralBeliefs : unit -> seq<Belief>
+    abstract GetVariableBeliefs : unit -> seq<Belief>
 
 type Node     = {Term : Term
                  Beliefs : IStore
@@ -177,6 +178,7 @@ type Message = | ProcessEvent of Event
 type Command = | Show_General_Beliefs of Term
                | Show_Temporal_Beliefs of Term
                | Show_Super_Beliefs of Term
+               | Show_Variable_Beliefs of Term
                | Show_Node of Term
                | Node_Count
                | Enable_Trace of Term
