@@ -37,7 +37,7 @@ type ISubStore =
     abstract Count : int
     abstract GetBeliefs : unit -> seq<Belief>
 
-type SubStore(n : int) =
+type SubStore(n : int, ranking : Belief -> float32) =
     let q = IntervalHeap<Belief>(n) :> IPriorityQueue<Belief>
     let d = HashDictionary<Key, IPriorityQueueHandle<Belief>>() :>IDictionary<Key, IPriorityQueueHandle<Belief>>
 
@@ -55,14 +55,12 @@ type SubStore(n : int) =
         | false -> failwith "ConceptStore.Insert() : failed to remove on maxSize"    
         !h
 
-    let rank (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
-
     interface ISubStore with
         member x.Contains(key) = d.Contains key
 
         member x.Insert(key, belief) =
             if d.Count >= maxSize then
-                if rank(belief) >= rank(q.FindMin()) then                     
+                if ranking(belief) >= ranking(q.FindMin()) then                     
                     ref <| deleteMinBelief()
                     |> addBelief key belief
             else

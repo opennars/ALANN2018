@@ -82,6 +82,7 @@ namespace ALANNUI
             this.nodeInfoBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.showVariableBtn = new System.Windows.Forms.Button();
             this.ShowSuperBtn = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -93,6 +94,8 @@ namespace ALANNUI
             this.catLikeCodTestBtn = new System.Windows.Forms.Button();
             this.chainingTestBtn = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.shapeWorldTestBtn = new System.Windows.Forms.Button();
             this.resetTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.pauseTooltip = new System.Windows.Forms.ToolTip(this.components);
@@ -115,7 +118,7 @@ namespace ALANNUI
             this.inputRTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inputRTB.Location = new System.Drawing.Point(12, 59);
             this.inputRTB.Name = "inputRTB";
-            this.inputRTB.Size = new System.Drawing.Size(291, 119);
+            this.inputRTB.Size = new System.Drawing.Size(412, 162);
             this.inputRTB.TabIndex = 0;
             this.inputRTB.Text = "";
             // 
@@ -129,9 +132,9 @@ namespace ALANNUI
             // 
             // enterBtn
             // 
-            this.enterBtn.Location = new System.Drawing.Point(228, 184);
+            this.enterBtn.Location = new System.Drawing.Point(309, 15);
             this.enterBtn.Name = "enterBtn";
-            this.enterBtn.Size = new System.Drawing.Size(75, 23);
+            this.enterBtn.Size = new System.Drawing.Size(115, 36);
             this.enterBtn.TabIndex = 2;
             this.enterBtn.Text = "Input";
             this.enterBtn.UseVisualStyleBackColor = true;
@@ -175,19 +178,19 @@ namespace ALANNUI
             // 
             // showGeneralBtn
             // 
-            this.showGeneralBtn.Location = new System.Drawing.Point(9, 18);
+            this.showGeneralBtn.Location = new System.Drawing.Point(10, 20);
             this.showGeneralBtn.Name = "showGeneralBtn";
-            this.showGeneralBtn.Size = new System.Drawing.Size(99, 23);
+            this.showGeneralBtn.Size = new System.Drawing.Size(105, 23);
             this.showGeneralBtn.TabIndex = 0;
-            this.showGeneralBtn.Text = "Show General";
+            this.showGeneralBtn.Text = "Show Simple";
             this.showGeneralBtn.UseVisualStyleBackColor = true;
-            this.showGeneralBtn.Click += new System.EventHandler(this.ShowGeneralBtn_Click);
+            this.showGeneralBtn.Click += new System.EventHandler(this.ShowSimpleBtn_Click);
             // 
             // showTemporalBtn
             // 
-            this.showTemporalBtn.Location = new System.Drawing.Point(9, 47);
+            this.showTemporalBtn.Location = new System.Drawing.Point(10, 49);
             this.showTemporalBtn.Name = "showTemporalBtn";
-            this.showTemporalBtn.Size = new System.Drawing.Size(99, 23);
+            this.showTemporalBtn.Size = new System.Drawing.Size(105, 23);
             this.showTemporalBtn.TabIndex = 9;
             this.showTemporalBtn.Text = "Show Temporal";
             this.showTemporalBtn.UseVisualStyleBackColor = true;
@@ -246,7 +249,7 @@ namespace ALANNUI
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(565, 183);
+            this.label5.Location = new System.Drawing.Point(678, 186);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 15;
@@ -254,7 +257,7 @@ namespace ALANNUI
             // 
             // nodeCountBtn
             // 
-            this.nodeCountBtn.Location = new System.Drawing.Point(111, 19);
+            this.nodeCountBtn.Location = new System.Drawing.Point(6, 20);
             this.nodeCountBtn.Name = "nodeCountBtn";
             this.nodeCountBtn.Size = new System.Drawing.Size(99, 23);
             this.nodeCountBtn.TabIndex = 16;
@@ -264,7 +267,7 @@ namespace ALANNUI
             // 
             // enableTraceBtn
             // 
-            this.enableTraceBtn.Location = new System.Drawing.Point(6, 19);
+            this.enableTraceBtn.Location = new System.Drawing.Point(6, 78);
             this.enableTraceBtn.Name = "enableTraceBtn";
             this.enableTraceBtn.Size = new System.Drawing.Size(99, 23);
             this.enableTraceBtn.TabIndex = 17;
@@ -274,7 +277,7 @@ namespace ALANNUI
             // 
             // disableTraceBtn
             // 
-            this.disableTraceBtn.Location = new System.Drawing.Point(6, 49);
+            this.disableTraceBtn.Location = new System.Drawing.Point(6, 108);
             this.disableTraceBtn.Name = "disableTraceBtn";
             this.disableTraceBtn.Size = new System.Drawing.Size(99, 23);
             this.disableTraceBtn.TabIndex = 18;
@@ -361,16 +364,16 @@ namespace ALANNUI
             this.groupBox1.Controls.Add(this.enableTraceBtn);
             this.groupBox1.Controls.Add(this.nodeCountBtn);
             this.groupBox1.Controls.Add(this.disableTraceBtn);
-            this.groupBox1.Location = new System.Drawing.Point(133, 57);
+            this.groupBox1.Location = new System.Drawing.Point(230, 51);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(226, 84);
+            this.groupBox1.Size = new System.Drawing.Size(113, 137);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Node Commands";
             // 
             // nodeInfoBtn
             // 
-            this.nodeInfoBtn.Location = new System.Drawing.Point(111, 48);
+            this.nodeInfoBtn.Location = new System.Drawing.Point(6, 49);
             this.nodeInfoBtn.Name = "nodeInfoBtn";
             this.nodeInfoBtn.Size = new System.Drawing.Size(99, 23);
             this.nodeInfoBtn.TabIndex = 19;
@@ -385,7 +388,7 @@ namespace ALANNUI
             this.groupBox2.Controls.Add(this.saveDataBtn);
             this.groupBox2.Controls.Add(this.filenameTB);
             this.groupBox2.Controls.Add(this.loadSampleBtn);
-            this.groupBox2.Location = new System.Drawing.Point(317, 12);
+            this.groupBox2.Location = new System.Drawing.Point(430, 15);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(286, 85);
             this.groupBox2.TabIndex = 25;
@@ -394,25 +397,36 @@ namespace ALANNUI
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.showVariableBtn);
             this.groupBox3.Controls.Add(this.ShowSuperBtn);
             this.groupBox3.Controls.Add(this.showGeneralBtn);
             this.groupBox3.Controls.Add(this.showTemporalBtn);
-            this.groupBox3.Location = new System.Drawing.Point(6, 57);
+            this.groupBox3.Location = new System.Drawing.Point(103, 51);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(121, 109);
+            this.groupBox3.Size = new System.Drawing.Size(121, 137);
             this.groupBox3.TabIndex = 26;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Belief Commands";
             // 
+            // showVariableBtn
+            // 
+            this.showVariableBtn.Location = new System.Drawing.Point(10, 108);
+            this.showVariableBtn.Name = "showVariableBtn";
+            this.showVariableBtn.Size = new System.Drawing.Size(105, 23);
+            this.showVariableBtn.TabIndex = 27;
+            this.showVariableBtn.Text = "Show Generalised";
+            this.showVariableBtn.UseVisualStyleBackColor = true;
+            this.showVariableBtn.Click += new System.EventHandler(this.ShowGeneralisedBtn_Click);
+            // 
             // ShowSuperBtn
             // 
-            this.ShowSuperBtn.Location = new System.Drawing.Point(10, 77);
+            this.ShowSuperBtn.Location = new System.Drawing.Point(11, 79);
             this.ShowSuperBtn.Name = "ShowSuperBtn";
-            this.ShowSuperBtn.Size = new System.Drawing.Size(98, 23);
+            this.ShowSuperBtn.Size = new System.Drawing.Size(104, 23);
             this.ShowSuperBtn.TabIndex = 10;
-            this.ShowSuperBtn.Text = "Show Pre/Post";
+            this.ShowSuperBtn.Text = "Show Hypotheses";
             this.ShowSuperBtn.UseVisualStyleBackColor = true;
-            this.ShowSuperBtn.Click += new System.EventHandler(this.ShowSuperBtn_Click);
+            this.ShowSuperBtn.Click += new System.EventHandler(this.ShowHypothesisBtn_Click);
             // 
             // groupBox4
             // 
@@ -420,9 +434,9 @@ namespace ALANNUI
             this.groupBox4.Controls.Add(this.groupBox3);
             this.groupBox4.Controls.Add(this.groupBox1);
             this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Location = new System.Drawing.Point(632, 12);
+            this.groupBox4.Location = new System.Drawing.Point(722, 15);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(365, 170);
+            this.groupBox4.Size = new System.Drawing.Size(365, 206);
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Commands Requiring a Node";
@@ -468,7 +482,7 @@ namespace ALANNUI
             // 
             // catBlueSkyTestBtn
             // 
-            this.catBlueSkyTestBtn.Location = new System.Drawing.Point(61, 26);
+            this.catBlueSkyTestBtn.Location = new System.Drawing.Point(61, 19);
             this.catBlueSkyTestBtn.Name = "catBlueSkyTestBtn";
             this.catBlueSkyTestBtn.Size = new System.Drawing.Size(99, 23);
             this.catBlueSkyTestBtn.TabIndex = 24;
@@ -478,7 +492,7 @@ namespace ALANNUI
             // 
             // catLikeCodTestBtn
             // 
-            this.catLikeCodTestBtn.Location = new System.Drawing.Point(176, 26);
+            this.catLikeCodTestBtn.Location = new System.Drawing.Point(176, 19);
             this.catLikeCodTestBtn.Name = "catLikeCodTestBtn";
             this.catLikeCodTestBtn.Size = new System.Drawing.Size(100, 23);
             this.catLikeCodTestBtn.TabIndex = 25;
@@ -488,7 +502,7 @@ namespace ALANNUI
             // 
             // chainingTestBtn
             // 
-            this.chainingTestBtn.Location = new System.Drawing.Point(61, 55);
+            this.chainingTestBtn.Location = new System.Drawing.Point(61, 48);
             this.chainingTestBtn.Name = "chainingTestBtn";
             this.chainingTestBtn.Size = new System.Drawing.Size(99, 23);
             this.chainingTestBtn.TabIndex = 26;
@@ -498,20 +512,40 @@ namespace ALANNUI
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.button2);
+            this.groupBox5.Controls.Add(this.button1);
             this.groupBox5.Controls.Add(this.shapeWorldTestBtn);
             this.groupBox5.Controls.Add(this.catBlueSkyTestBtn);
             this.groupBox5.Controls.Add(this.chainingTestBtn);
             this.groupBox5.Controls.Add(this.catLikeCodTestBtn);
-            this.groupBox5.Location = new System.Drawing.Point(317, 104);
+            this.groupBox5.Location = new System.Drawing.Point(430, 107);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(286, 92);
+            this.groupBox5.Size = new System.Drawing.Size(286, 114);
             this.groupBox5.TabIndex = 29;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Standard Tests";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(176, 79);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(100, 23);
+            this.button2.TabIndex = 29;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(61, 79);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(99, 23);
+            this.button1.TabIndex = 28;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // shapeWorldTestBtn
             // 
-            this.shapeWorldTestBtn.Location = new System.Drawing.Point(176, 55);
+            this.shapeWorldTestBtn.Location = new System.Drawing.Point(176, 48);
             this.shapeWorldTestBtn.Name = "shapeWorldTestBtn";
             this.shapeWorldTestBtn.Size = new System.Drawing.Size(100, 23);
             this.shapeWorldTestBtn.TabIndex = 27;
@@ -654,6 +688,9 @@ namespace ALANNUI
         private System.Windows.Forms.ToolStripStatusLabel timeStatus;
         private System.Windows.Forms.ToolTip LoadtoolTip;
         private System.Windows.Forms.Button ShowSuperBtn;
+        private System.Windows.Forms.Button showVariableBtn;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

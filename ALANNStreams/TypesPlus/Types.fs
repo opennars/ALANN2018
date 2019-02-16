@@ -175,10 +175,10 @@ type Message = | ProcessEvent of Event
                | PrintMessage of string
                | PrimeConcept of AV
 
-type Command = | Show_General_Beliefs of Term
+type Command = | Show_Simple_Beliefs of Term
                | Show_Temporal_Beliefs of Term
-               | Show_Super_Beliefs of Term
-               | Show_Variable_Beliefs of Term
+               | Show_Hypothesis_Beliefs of Term
+               | Show_Generalised_Beliefs of Term
                | Show_Node of Term
                | Node_Count
                | Enable_Trace of Term

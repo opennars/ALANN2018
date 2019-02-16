@@ -32,6 +32,10 @@ type DisplayAnswerEventArgs(answer : string) =
     inherit EventArgs()
     member x.Answer = answer
 
+type DisplaySolutionEventArgs(solution : string) =
+    inherit EventArgs()
+    member x.Solution = solution
+
 type ParseErrorEventArgs(error : string) =
     inherit EventArgs()
     member x.Error = error
@@ -40,12 +44,20 @@ type ConceptCountEventArgs(n : int) =
     inherit EventArgs()
     member x.NumConcepts = n
 
+type ActionExecutionEventArgs(action : Actions.Action) =
+        inherit EventArgs()
+        member x.Action = action
+
 let syncContext = SynchronizationContext.CaptureCurrent()
 
 let DisplayAnswerEvent = new Event<DisplayAnswerEventArgs>()
+let DisplaySolutionEvent = new Event<DisplaySolutionEventArgs>()
 let ParseErrorEvent = new Event<ParseErrorEventArgs>()
 let ConceptCountEvent = new Event<ConceptCountEventArgs>()
+let ActionExecutionEvent = new Event<ActionExecutionEventArgs>()
 
 let raiseDisplayAnswerEvent(s) = syncContext.RaiseEvent DisplayAnswerEvent (DisplayAnswerEventArgs(s))
+let raiseDisplaySolutionEvent(s) = syncContext.RaiseEvent DisplaySolutionEvent (DisplaySolutionEventArgs(s))
 let raiseParseErrorEvent(s) = syncContext.RaiseEvent ParseErrorEvent (ParseErrorEventArgs(s))
 let raiseConceptCountEvent(n) = syncContext.RaiseEvent ConceptCountEvent (ConceptCountEventArgs(n))
+let raiseActionExecutionEvent(a) = syncContext.RaiseEvent ActionExecutionEvent (ActionExecutionEventArgs(a))

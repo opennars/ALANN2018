@@ -57,9 +57,10 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
+    <Compile Include="TypesPlus\Actions.fs" />
     <Compile Include="TypesPlus\AsyncUtils.fs" />
-    <Compile Include="TypesPlus\Events.fs" />
     <Compile Include="TypesPlus\Params.fs" />
+    <Compile Include="TypesPlus\Events.fs" />
     <Compile Include="TypesPlus\Types.fs" />
     <Compile Include="TypesPlus\Evidence.fs" />
     <Compile Include="TypesPlus\ActivePatterns.fs" />
@@ -73,6 +74,7 @@
     <Compile Include="IO\Loggers.fs" />
     <Compile Include="IO\Reporting.fs" />
     <Compile Include="IO\FileIO.fs" />
+    <Compile Include="IO\ActionExecution.fs" />
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
     <Compile Include="Containers\EventStore.fs" />
@@ -101,6 +103,7 @@
     <Compile Include="System\Controller.fs" />
     <Compile Include="Tests\TermFormatters\TermFormattersTests.fs" />
     <Compile Include="Tests\Unify\UniifyTests.fs" />
+    <Compile Include="Tests\Unify\SubstitutionTest.fs" />
     <Compile Include="Tests\Inference\FirstOrderInfernceTests.fs" />
     <Compile Include="Tests\Inference\HigherOrderInferenceTests.fs" />
     <Compile Include="Tests\Evidence\EvidenceTests.fs" />

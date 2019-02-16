@@ -27,7 +27,7 @@ module InferenceUtils
 open Types
 open Factories
 
-type Postcondition = | AllowBackward | Swap | NoSwap | QuestionOnly | BeliefFromQuestion | BeliefOnly | IsAfter | IsBefore | IsConcurrent | NotTemporal | Structural
+type Postcondition = | AllowBackward | Swap | NoSwap | QuestionOnly | BeliefFromQuestion | BeliefOnly | IsAfter | IsBefore | IsConcurrent | NotTemporal | Structural | GoalOnly
 type InferenceFunction = (Term * Term) -> (Term * (TV * TV -> TV) * (TV * TV -> TV) option * Postcondition list) list
 type TemporalInferenceFunction = (Term * Term) * Stamp * Stamp -> (Term * (TV * TV -> TV) * (TV * TV -> TV) option * Postcondition list) list
 
@@ -48,12 +48,13 @@ let inf (f, swap) eb =
             match eb.Event.EventType with
             | Belief when List.contains (concurrency()) conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
             | Belief when List.contains Structural conds -> [makeStructuralEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Belief when not(List.contains QuestionOnly conds) && not(containsTemporalCond conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
+            | Belief when not(List.contains GoalOnly conds) && not(List.contains QuestionOnly conds) && not(containsTemporalCond conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
             | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
             | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
             | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
             | Question when List.contains Structural conds -> [makeQuestionStructuralEvent eb term]
-            | Goal when Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
+            | Goal when List.contains (concurrency()) conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeGoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
+            | Goal when List.contains GoalOnly conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeGoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
             | Quest when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestEvent eb term]
             | _ -> []
 

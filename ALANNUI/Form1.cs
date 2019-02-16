@@ -256,9 +256,9 @@ namespace ALANNUI
             outSocket.SendAsync(data, data.Length);
         }
 
-        private void ShowGeneralBtn_Click(object sender, EventArgs e)
+        private void ShowSimpleBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#SGB ", termNameTB.Text);
+            SendCmdToServer("#SSB ", termNameTB.Text);
         }
 
         private void ShowTemporalBtn_Click(object sender, EventArgs e)
@@ -266,9 +266,14 @@ namespace ALANNUI
             SendCmdToServer("#STB ", termNameTB.Text);
         }
 
-        private void ShowSuperBtn_Click(object sender, EventArgs e)
+        private void ShowHypothesisBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#SSB ", termNameTB.Text);
+            SendCmdToServer("#SHB ", termNameTB.Text);
+        }
+
+        private void ShowGeneralisedBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SGB ", termNameTB.Text);
         }
 
         private void EnableTraceBtn_Click(object sender, EventArgs e)

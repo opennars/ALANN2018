@@ -42,8 +42,10 @@ type Controller() =
 
     // Publish Events
     member this.DisplayAnswer = DisplayAnswerEvent.Publish  
+    member this.DisplaySolution = DisplaySolutionEvent.Publish
     member this.ParseError = ParseErrorEvent.Publish
     member this.ConceptCount = ConceptCountEvent.Publish
+    member this.ActionExecution = ActionExecutionEvent.Publish
     
     // Initialise Controller
     member this.Initialise() =
@@ -74,29 +76,33 @@ type Controller() =
         let rec GCNodesLoop() = async {
             let! _ = Async.AwaitEvent GCtimer.Elapsed
             GCTemporalNodes()
-            GCGeneralNodes()
+            //GCGeneralNodes()
 
             return! GCNodesLoop() 
         }
 
         // Pong random action generator *** Experimental ***
-        let moveTimer = new System.Timers.Timer(200.0, Enabled = true)
+        let moveTimer = new System.Timers.Timer(500.0, Enabled = true)
         moveTimer.AutoReset <- true
 
         let rnd = new Random()
-        let rec moveLoop() = async {
-            let! _ = Async.AwaitEvent moveTimer.Elapsed
-
-            if rnd.NextDouble() < 0.5 then
-                sendMessageToPong("left")
+        let rec moveLoop(n) = async {
+            // random moves for 2 minutes
+            if n > (5 * 60 * 2) then
+                ()
             else
-                sendMessageToPong("right")
+                let! _ = Async.AwaitEvent moveTimer.Elapsed
 
-            return! moveLoop() 
+                if rnd.NextDouble() < 0.5 then
+                    sendMessageToPong("left")
+                else
+                    sendMessageToPong("right")
+
+                return! moveLoop(n + 1) 
         }
 
         mainLoop() |> Async.Start       // start main message loop
         statusLoop() |> Async.Start     // start status update loop
         GCNodesLoop() |> Async.Start    // start gc loop
 
-        moveLoop() |> Async.Start       // Random actions for Pong development *** Experimental ***
+        moveLoop(0) |> Async.Start       // Random actions for Pong development *** Experimental ***

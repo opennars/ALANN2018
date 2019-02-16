@@ -26,22 +26,21 @@ module ProcessGoal
 
 
 open Types
-open Choice
 open NodeFunctions
 open TermUtils
-open Unify
 open TermFormatters
 open Events
 
 let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
 
+let isPredictiveOp = function | PreImp | ConImp -> true | _ -> false
+
 // find max choice (unifies ? =/> G)
-let postCondition = function | Term(op, [_; postCondition]) when op |> isImplicationOp -> postCondition | term -> term
+let postCondition = function | Term(op, [_; postCondition]) when op |> isPredictiveOp -> postCondition | term -> term
 
 let satisfyingBelief state (event : Event) =
     let matches = 
         state.Beliefs.GetBeliefs()
-        |> Seq.map (fun b -> printfn "%s %s" (ft (postCondition b.Term)) (ft event.Term); b)
         |> Seq.filter (fun b -> (postCondition b.Term) = event.Term)
 
     if Seq.isEmpty matches then
@@ -49,26 +48,19 @@ let satisfyingBelief state (event : Event) =
     else
         Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
 
-
 let processGoal attention state (event : Event) =
-    match satisfyingBelief state event with
-    | Some belief ->
-        tryPrintAnswer event belief
-        // if host concept and solution exists then
-        let event =
-            if state.Term = event.Term then
-                if exp(belief.TV) > Params.DECISION_THRESHOLD then
-                    raiseDisplayAnswerEvent (sprintf "Executing solution for %s!" (ft event.Term))
-                    // update goal dv based on degree of satisfaction
-                    let tv = event.TV.Value
-                    let satisfaction = exp(belief.TV)
-                    {event with TV = Some {F = tv.F; C = tv.C * satisfaction}}
-                else
-                    event
-            else    
-                event
-        [makeAnsweredEventBelief attention event belief]
-    | None -> 
+    if state.Term = event.Term then
+        printfn "Processing goal for: %s %s %f" (ft state.Term) (truth event.TV.Value) (exp event.TV.Value)
+        if exp(event.TV.Value) > Params.DECISION_THRESHOLD then
+            match event.Term with
+            | Term(Inh, [Term(IntSet, [Word "left"]); Word "action"]) ->
+                raiseActionExecutionEvent (Actions.MoveLeft)
+            | Term(Inh, [Term(IntSet, [Word "right"]); Word "action"]) ->
+                raiseActionExecutionEvent (Actions.MoveRight)
+            | _ -> ()
+
+            raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
+        []
+    else
         getInferenceBeliefs attention state event
 
-    

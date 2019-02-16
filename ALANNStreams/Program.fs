@@ -27,6 +27,7 @@ open Controller
 open Reporting
 open ALANNSystem
 open Expecto
+open ActionExecution
 
 [<EntryPoint>]
 let main argv = 
@@ -49,6 +50,8 @@ let main argv =
     controller.Initialise()
     controller.ParseError.Add (fun e -> myprintfn (sprintf "%s" e.Error))
     controller.DisplayAnswer.Add (fun e -> displayAnswer e.Answer)
+    controller.DisplaySolution.Add(fun e -> displaySolution e.Solution)
+    controller.ActionExecution.Add(fun e -> executeAction e.Action)
 
     printfn "\tConfiguration complete\n"
     printfn "\tReady to accept commands\n"

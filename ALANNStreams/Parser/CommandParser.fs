@@ -33,10 +33,10 @@ let file_name = many1CharsTill anyChar (skipNewline <|> eof)
 let temporal_term = pint64 |>> fun a -> Temporal(a)
 let term_ws = temporal_term <|> pterm
 
-let show_general_beliefs = (str_ws "SHOW_GENERAL_BELIEFS" <|> str_ws "SGB") >>. term_ws |>> fun t -> Show_General_Beliefs(t)
+let show_simple_beliefs = (str_ws "SHOW_SIMPLE_BELIEFS" <|> str_ws "SSB") >>. term_ws |>> fun t -> Show_Simple_Beliefs(t)
 let show_temporal_beliefs = (str_ws "SHOW_TEMPORAL_BELIEFS" <|> str_ws "STB") >>. term_ws |>> fun t -> Show_Temporal_Beliefs(t)
-let show_super_beliefs = (str_ws "SHOW_SUPER_BELIEFS" <|> str_ws "SSB") >>. term_ws |>> fun t -> Show_Super_Beliefs(t)
-let show_variable_beliefs = (str_ws "SHOW_VARIABLE_BELIEFS" <|> str_ws "SVB") >>. term_ws |>> fun t -> Show_Variable_Beliefs(t)
+let show_hypothesis_beliefs = (str_ws "SHOW_HYPOTHESIS_BELIEFS" <|> str_ws "SHB") >>. term_ws |>> fun t -> Show_Hypothesis_Beliefs(t)
+let show_generalised_beliefs = (str_ws "SHOW_GENERALISED_BELIEFS" <|> str_ws "SGB") >>. term_ws |>> fun t -> Show_Generalised_Beliefs(t)
 let show_node = (str_ws "SHOW_NODE" <|> str_ws "SN") >>. term_ws |>> fun t -> Show_Node(t)
 
 
@@ -49,10 +49,10 @@ let load = (str_ws "LOAD" <|> str_ws "L") >>. file_name |>> fun file -> Load(fil
 let save = (str_ws "SAVE" <|> str_ws "S") >>. file_name |>> fun file -> Save(file)
 let reset = (str_ws "RESET" <|> str_ws "R") |>> fun _ -> Reset
 
-let pcmd = show_general_beliefs 
+let pcmd = show_simple_beliefs 
            <|> show_temporal_beliefs 
-           <|> show_super_beliefs
-           <|> show_variable_beliefs
+           <|> show_hypothesis_beliefs
+           <|> show_generalised_beliefs
            <|> show_node 
            <|> node_count 
            <|> enable_trace 
@@ -65,6 +65,7 @@ let pcmd = show_general_beliefs
 
 // General Parser entry point
 let commandParser(command:string) =
+    vNum <- 0; vMap.Clear(); 
     match run pcmd command with
     | Success(result, _, _)   -> 
         result

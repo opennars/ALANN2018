@@ -29,75 +29,79 @@ open TermUtils
 open SubStore
 open System
 
-type Store(hostTerm, generalCapacity, temporalCapacity, superCapacity ) =
-    let temporalStore = new SubStore(temporalCapacity) :> ISubStore
-    let GeneralStore = new SubStore(generalCapacity) :> ISubStore
-    let superStore = new SubStore(superCapacity) :> ISubStore
-    let variableStore = new SubStore(superCapacity) :> ISubStore
+
+type Store(hostTerm, generalCapacity, temporalCapacity, hypothesisCapacity ) =
+    let simpleBeliefRanking (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
+    let complexBeliefRanking (belief : Belief) = exp belief.TV
+
+    let simpleStore     = new SubStore(generalCapacity,    simpleBeliefRanking)  :> ISubStore
+    let temporalStore   = new SubStore(temporalCapacity,   complexBeliefRanking) :> ISubStore
+    let hypothesisStore = new SubStore(hypothesisCapacity, complexBeliefRanking) :> ISubStore
+    let variableStore   = new SubStore(hypothesisCapacity, complexBeliefRanking) :> ISubStore
 
     interface IStore with
         member x.Contains(key) = 
-            if key |> isSuperTerm hostTerm then
-                superStore.Contains key
+            if key |> isHypothesis then
+                hypothesisStore.Contains key
             else if key |> containsVars then
                 variableStore.Contains key
             else if key |> isTemporal then
                 temporalStore.Contains key
             else 
-                GeneralStore.Contains key
+                simpleStore.Contains key
 
         member x.Insert(key, belief) =
-            if key |> isSuperTerm hostTerm then
-                superStore.Insert(key, belief)
+            if key |> isHypothesis then
+                hypothesisStore.Insert(key, belief)
             else if key |> containsVars then
                 variableStore.Insert(key, belief)
             else if key |> isTemporal then
                 temporalStore.Insert(key, belief)
             else
-                GeneralStore.Insert(key, belief)
+                simpleStore.Insert(key, belief)
 
         member x.Update(key, belief) =
-            if key |> isSuperTerm hostTerm then
-                superStore.Update(key, belief)
+            if key |> isHypothesis then
+                hypothesisStore.Update(key, belief)
             else if key |> containsVars then
                 variableStore.Update(key, belief)
             else if key |> isTemporal then
                 temporalStore.Update(key, belief)
             else
-                GeneralStore.Update(key, belief)
+                simpleStore.Update(key, belief)
 
         member x.TryGetValue key = 
-            if key |> isSuperTerm hostTerm then
-                superStore.TryGetValue key
+            if key |> isHypothesis then
+                hypothesisStore.TryGetValue key
             else if key |> containsVars then
                 variableStore.TryGetValue key
             else if key |> isTemporal then
                 temporalStore.TryGetValue key
             else
-                GeneralStore.TryGetValue key
+                simpleStore.TryGetValue key
 
         member x.Clear() =
-            superStore.Clear()
+            hypothesisStore.Clear()
             temporalStore.Clear()
-            GeneralStore.Clear()
+            simpleStore.Clear()
             variableStore.Clear()
 
-        member x.Count = temporalStore.Count + GeneralStore.Count + superStore.Count + variableStore.Count
+        member x.Count = temporalStore.Count + simpleStore.Count + hypothesisStore.Count + variableStore.Count
 
         member x.GetBeliefs() =           
             Seq.append
-                (superStore.GetBeliefs())
+                (hypothesisStore.GetBeliefs())
                 (temporalStore.GetBeliefs())
             |> Seq.append
-                (GeneralStore.GetBeliefs())
+                (simpleStore.GetBeliefs())
             |> Seq.append
                 (variableStore.GetBeliefs())
 
-        member x.GetSuperBeliefs() = superStore.GetBeliefs()
+        member x.GetSuperBeliefs() = hypothesisStore.GetBeliefs()
 
         member x.GetTemporalBeliefs() = temporalStore.GetBeliefs()
            
-        member x.GetGeneralBeliefs() = GeneralStore.GetBeliefs() 
+        member x.GetGeneralBeliefs() = simpleStore.GetBeliefs() 
 
         member x.GetVariableBeliefs() = variableStore.GetBeliefs()
 

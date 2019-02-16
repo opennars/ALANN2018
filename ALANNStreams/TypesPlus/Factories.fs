@@ -135,3 +135,15 @@ let makeQuestEvent (eb : EventBelief) term =
                  Source = Derived}
 
     {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
+
+let makeGoalEvent (eb : EventBelief) (term, tv) =
+    let now = SystemTime()
+    let stamp = {Created = now
+                 SC = syntacticComplexity term 
+                 Evidence = []
+                 LastUsed = now
+                 UseCount = 0
+                 Source = Derived}
+
+    {EventType = Goal; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
+

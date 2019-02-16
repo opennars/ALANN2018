@@ -223,15 +223,15 @@ let nal5_nal8_implication_based_decomposition4 = function
 
 let nal5_nal8_implication_based_decomposition5 = function
     // conditional syllogism
-    | Imp(m2, p), m1 when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])]
-    | PreImp(m2, p), m1 when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsConcurrent])]
-    | ConImp(m2, p), m1 when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsConcurrent])]
-    | RetImp(m2, p), m1 when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsConcurrent])]
+    | m1, Imp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])]
+    | m1, PreImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsBefore])]
+    | m1, ConImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsConcurrent])]
+    | m1, RetImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsAfter])]
                                                               
-    | Imp(p, m2), m1 when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [])]
-    | PreImp(p, m2), m1 when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [IsConcurrent])]
-    | ConImp(p, m2), m1 when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [IsConcurrent])]
-    | RetImp(p, m2), m1 when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [IsConcurrent])]
+    | m1, Imp(p, m2) when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [])]
+    | m1, PreImp(p, m2) when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [IsBefore])]
+    | m1, ConImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [IsConcurrent])]
+    | m1, RetImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [IsAfter])]
 
     | m1, Equ(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
     | m1, Equ(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
@@ -275,14 +275,14 @@ let nal5_nal8_implication_based_decomposition8 = function
     | s, Or(lst) when isMember (Term(Not, [s])) lst -> [(reduce (Term(Or, listLess (Term(Not, [s])) lst)), nnn, None, [])]
     | _ -> []
 
-let nal5_multi_conditional_syllogism : InferenceFunction = function
+let nal5_multi_conditional_syllogism_1 : InferenceFunction = function
     // conditional deduction
-    | Imp(a, m1), Imp(And(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(Imp, [Term(And, a::tl); c]), ded, None, [])]
-    | Imp(a, m1), Imp(And(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, [a; hd]); c]), ded, None, [])]
+    | Imp(a, m1), Imp(And(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(Imp, [Term(And, a::tl); c]), ded, None, [])]
+    | Imp(a, m1), Imp(And(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, [a; hd]); c]), ded, None, [])]
 
     // conditional abduction
-    | Imp(m1, c1), Imp(And(m2::[tl]), c2) when m1 = m2 && c1 = c2 -> [(tl, abd, None, [])]
-    | Imp(m1, c1), Imp(And(hd::[m2]), c2) when m1 = m2 && c1 = c2 -> [(hd, abd, None, [])]
+    | Imp(m1, c1), Imp(And(m2::[tl]), c2) when unifies m1 m2 && c1 = c2 -> [(tl, abd, None, [])]
+    | Imp(m1, c1), Imp(And(hd::[m2]), c2) when unifies  m1 m2 && c1 = c2 -> [(hd, abd, None, [])]
 
     | y, Equ(And1(x::z::_), b)  when x <> b && unifies y x -> [(Term(Equ, [z; b]), ded, None, [])]
     | y, Equ(b, (And(x::z::_))) when x <> b && unifies y x -> [(Term(Equ, [b; z]), ded, None, [])]
@@ -315,28 +315,41 @@ let nal5_multi_conditional_syllogism : InferenceFunction = function
     | RetImp(Seq(m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b    -> [(substUnify m a b, abd, None, [])]
     | RetImp(Seq(_::m::_) as a, c1), RetImp(Seq(lstB) as b, c2) when c1 = c2 && unifies a b -> [(substUnify m a b, abd, None, [])]
 
-    | Equ(a, m1), Imp(And(m2::[tl]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, a::[tl]); c]), ana, None, [])]
-    | Equ(a, m1), Imp(And(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, hd::[a]); c]), ana, None, [])]
+    | Equ(a, m1), Imp(And(m2::[tl]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, a::[tl]); c]), ana, None, [])]
+    | Equ(a, m1), Imp(And(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(Imp, [Term(And, hd::[a]); c]), ana, None, [])]
     
-    | ConEqu(a, m1), ConImp(Par(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
-    | ConEqu(a, m1), ConImp(Par(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
-    | PreEqu(a, m1), ConImp(Par(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
-    | PreEqu(a, m1), ConImp(Par(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
-    | PreEqu(m1, a), ConImp(Par(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
-    | PreEqu(m1, a), ConImp(Par(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
+    | ConEqu(a, m1), ConImp(Par(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
+    | ConEqu(a, m1), ConImp(Par(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
+    | PreEqu(a, m1), ConImp(Par(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
+    | PreEqu(a, m1), ConImp(Par(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
+    | PreEqu(m1, a), ConImp(Par(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::tl); c]), ana, None, [IsConcurrent])]
+    | PreEqu(m1, a), ConImp(Par(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, hd::[a]); c]), ana, None, [IsConcurrent])]
 
-    | PreImp(a, m1), PreImp(Seq(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(PreImp, [Term(Seq, a::m1::tl); c]), ded, None, [])]
-    | PreImp(a, m1), PreImp(Seq(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(PreImp, [Term(Seq, [a; hd; m1]); c]), ded, None, [])]
-    | ConImp(a, m1), ConImp(Seq(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::m1::tl); c]), ded, None, [IsConcurrent])]
-    | ConImp(a, m1), ConImp(Seq(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, a::hd::[m1]); c]), ded, None, [IsConcurrent])]
-    | RetImp(a, m1), RetImp(Seq(m2::tl), c) when m1 = m2 && a <> c && m1 <> c   -> [(Term(RetImp, [Term(Seq, a::m1::tl); c]), ded, None, [])]
-    | RetImp(a, m1), RetImp(Seq(hd::[m2]), c) when m1 = m2 && a <> c && m1 <> c -> [(Term(RetImp, [Term(Seq, [a; hd; m1]); c]), ded, None, [])]
+    | PreImp(a, m1), PreImp(Seq(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(PreImp, [Term(Seq, a::m1::tl); c]), ded, None, [])]
+    | PreImp(a, m1), PreImp(Seq(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(PreImp, [Term(Seq, [a; hd; m1]); c]), ded, None, [])]
+    | ConImp(a, m1), ConImp(Seq(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(ConImp, [Term(Par, a::m1::tl); c]), ded, None, [IsConcurrent])]
+    | ConImp(a, m1), ConImp(Seq(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(ConImp, [Term(Par, a::hd::[m1]); c]), ded, None, [IsConcurrent])]
+    | RetImp(a, m1), RetImp(Seq(m2::tl), c) when unifies m1 m2 && a <> c && m1 <> c   -> [(Term(RetImp, [Term(Seq, a::m1::tl); c]), ded, None, [])]
+    | RetImp(a, m1), RetImp(Seq(hd::[m2]), c) when unifies m1 m2 && a <> c && m1 <> c -> [(Term(RetImp, [Term(Seq, [a; hd; m1]); c]), ded, None, [])]
 
-    | Imp(And([m; u]), a), Imp(w, b) when a <> b && w = u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
-    | Imp(And(lst), c), m when c <> m && isNotImpOrEqu m && not (isMember m lst) -> [(Term(Imp, [Term(And, m::lst); c]), ind, None, [])]
+    | Imp(And([m; u]), a), Imp(w, b) when a <> b && unifies w u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
+    | Imp(And([u; m]), a), Imp(w, b) when a <> b && unifies w u -> [(Term(Imp, [Term(And, [m; b]); a]), ind, None, [])]
+    | _ -> []
+
+
+let nal5_multi_conditional_syllogism_2 : InferenceFunction = function
+    | Imp(And(lst), c), m when c <> m && isNotImpOrEqu m && not (isMember m lst) -> [(Term(Imp, [reduce (Term(And, listLess m lst)); c]), ind, None, [])]
+
+    | y, Imp(And([x1; x2]), b) when unifies y x1 && b <> y && isNotImpOrEqu y -> [(substUnify (Term(Imp, [x2; b])) y x1, ded, None, [])]
+    | y, Imp(And([x1; x2]), b) when unifies y x2 && b <> y && isNotImpOrEqu y -> [(substUnify (Term(Imp, [x1; b])) y x2, ded, None, [])]
+                                                                                                            
+    | y, Equ(And([x1; x2]), b) when unifies y x1 && b <> y && isNotImpOrEqu y -> [(substUnify (Term(Equ, [x2; b])) y x1, ded, None, [])]
+    | y, Equ(And([x1; x2]), b) when unifies y x2 && b <> y && isNotImpOrEqu y -> [(substUnify (Term(Equ, [x1; b])) y x2, ded, None, [])]
+
     | Imp(a, c), m when a <> c && c <> m && isNotImpOrEqu m -> [(Term(Imp, [Term(And, [m; a]); c]), ind, None, [])]
 
     | _ -> []
+
 
 let nal6_variable_introduction = function
     | Inh(s, m1), Inh(p, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), abd, None, [BeliefOnly])
@@ -346,7 +359,7 @@ let nal6_variable_introduction = function
                                                         
                                                         (Term(ConImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), abd, None, [BeliefOnly; IsConcurrent])
                                                         (Term(ConImp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsConcurrent])
+                                                        (Term(ConEqu, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), com, None, [BeliefOnly; IsConcurrent])
                                                         (Term(Par, [Term(Inh, [p; Var(DVar, "1")]); Term(Inh, [s; Var(DVar, "")])]), int, None, [BeliefOnly; IsConcurrent])
 
                                                         (Term(PreImp, [Term(Inh, [s; Var(IVar, "1")]); Term(Inh, [p; Var(IVar, "1")])]), abd, None, [BeliefOnly; IsBefore])
@@ -357,10 +370,6 @@ let nal6_variable_introduction = function
                                                         (Term(RetImp, [Term(Inh, [p; Var(IVar, "1")]); Term(Inh, [s; Var(IVar, "1")])]), ind, None, [BeliefOnly; IsAfter])
                                                         (Term(Seq, [Term(Inh, [s; Var(DVar, "1")]); Term(Inh, [p; Var(DVar, "1")])]), int, None, [BeliefOnly; IsAfter])]
 
-
-
-                                                        // interval variants ommitted here as not required
-
     | Inh(m1, s), Inh(m2, p) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly])
                                                         (Term(Imp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly])
                                                         (Term(Equ, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), com, None, [BeliefOnly])
@@ -368,17 +377,16 @@ let nal6_variable_introduction = function
                                                         
                                                         (Term(ConImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsConcurrent])
                                                         (Term(ConImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsConcurrent])
-                                                        (Term(ConImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsConcurrent])
                                                         (Term(ConEqu, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), com, None, [BeliefOnly; IsConcurrent])
                                                         (Term(Par, [Term(Inh, [Var(DVar, "1"); s]); Term(Inh, [Var(DVar, "1"); p])]), int, None, [BeliefOnly; IsConcurrent])
 
                                                         (Term(PreImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsBefore])
                                                         (Term(RetImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsBefore])
-                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsBefore])
+                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), int, None, [BeliefOnly; IsBefore])
 
                                                         (Term(PreImp, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsAfter])
                                                         (Term(RetImp, [Term(Inh, [Var(IVar, "1"); p]); Term(Inh, [Var(IVar, "1"); s])]), abd, None, [BeliefOnly; IsAfter])
-                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), ind, None, [BeliefOnly; IsAfter])]
+                                                        (Term(Seq, [Term(Inh, [Var(IVar, "1"); s]); Term(Inh, [Var(IVar, "1"); p])]), int, None, [BeliefOnly; IsAfter])]
 
 
     | _ -> []
@@ -397,32 +405,45 @@ let nal6_multiple_variable_introduction = function
                                                                                            (Term(And, [Term(Imp, [a; Term(Inh, [Var(DVar, "1"); p])]); Term(Inh, [Var(DVar, "1"); s])]), int, None, [])]
     | And(Inh(m1, p)::lst), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [Var(IVar, "1"); s]); Term(And, Term(Inh, [Var(IVar, "1"); p])::lst)]), ind, None, [])
                                                                   (Term(And, Term(Inh, [Var(DVar, "1"); s])::Term(Inh, [Var(DVar, "1"); p])::lst), ind, None, [])]
+
+    | Imp(a, Inh(p, m1)), Inh(s, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(And, [a; Term(Inh, [s; Var(IVar, "1")])]); Term(Inh, [p; Var(IVar, "1")])]), abd, None, [])
+                                                                (Term(And, [Term(Imp, [a; Term(Inh, [p; Var(DVar, "1")])]); Term(Inh, [s; Var(DVar, "1")])]), int, None, [])]
+
+    | And(Inh(p, m1)::lst), Inh(s, m2) when m1 = m2 && s <> p -> [(Term(Imp, [Term(Inh, [s; Var(IVar, "1")]); Term(And, Term(Inh, [p; Var(IVar, "1")])::lst)]), ind, None, [])
+                                                                  (Term(And, Term(Inh, [s; Var(DVar, "1")])::Term(Inh, [p; Var(DVar, "1")])::lst), ind, None, [])]
+
+    | Inh(a1, l), Imp(Inh(a2, s), r) when a1 = a2 && s<> r && l <> s -> [(Term(Imp, [Term(Inh, [Var(DVar, "1"); s]); r]), ind, None, [])]
+
+    // #R[(A --> L) ((&& (A --> S) :list/A) ==> R) |- ((&& (#X --> L) (#X --> S) :list/A) ==> R) :pre ((:substitute A #X)) :post (:t/induction)]
+    | Inh(a1, l), Imp(And(Inh(a2, s)::lst), r) when a1 = a2 && s<> r && l <> s -> [(makeSubstitutions (Term(Imp, [Term(And, Term(Inh, [Var(DVar, "1"); l])::Term(Inh, [Var(DVar, "1"); s])::lst); r])) [(a1, Var(DVar, "1"))], ind, None, [])]
+    | Inh(a1, l), Imp(And(_::[Inh(a2, s)] as lst), r) when a1 = a2 && s<> r && l <> s -> [(makeSubstitutions (Term(Imp, [Term(And, Term(Inh, [Var(DVar, "1"); l])::Term(Inh, [Var(DVar, "1"); s])::lst); r])) [(a1, Var(DVar, "1"))], ind, None, [])]
+
     | _ -> []
 
 let nal6_variable_elimination = function
-    | b, And([a; c]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [])]
-    | b, And([c; a]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [])]
+    | b, And([a; c]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [BeliefOnly])]
+    | b, And([c; a]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [BeliefOnly])]
 
-    | And([c; a]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [])]
-    | And([a; c]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [])]
+    | And([c; a]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [GoalOnly])]
+    | And([a; c]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [GoalOnly])]
 
     | b, Imp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [])]
-    | b, PreImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [])]
-    | b, ConImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [])]
-    | b, RetImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [])]
+    | b, PreImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [IsConcurrent])]
+    | b, ConImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [IsConcurrent])]
+    | b, RetImp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [IsAfter])]
 
     | b, Imp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [])]
-    | b, PreImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [])]
-    | b, ConImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [])]
-    | b, RetImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [])]
+    | b, PreImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [IsAfter])]
+    | b, ConImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [IsConcurrent])]
+    | b, RetImp(c, a) when unifies b a -> [(substUnify c b a, abd, Some ded, [IsBefore])]
 
     | b, Equ(a, c) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
-    | b, ConEqu(a, c) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
-    | b, PreEqu(a, c) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
+    | b, ConEqu(a, c) when unifies b a -> [(substUnify c b a, ana, Some ded, [IsConcurrent])]
+    | b, PreEqu(a, c) when unifies b a -> [(substUnify c b a, ana, Some ded, [IsAfter])]
     
     | b, Equ(c, a) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
-    | b, ConEqu(c, a) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
-    | b, PreEqu(c, a) when unifies b a -> [(substUnify c b a, ana, Some ded, [])]
+    | b, ConEqu(c, a) when unifies b a -> [(substUnify c b a, ana, Some ded, [IsAfter])]
+    | b, PreEqu(c, a) when unifies b a -> [(substUnify c b a, ana, Some ded, [IsAfter])]
 
     | _ -> []
 

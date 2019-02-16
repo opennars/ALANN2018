@@ -41,7 +41,7 @@ let makeEventBelief attention event (belief : Belief) =
      Belief = belief}
 
 let makeAnsweredEventBelief attention event (belief : Belief) =
-    {Attention = attention //* TruthFunctions.exp(belief.TV)
+    {Attention = attention 
      Depth = SearchDepth.Deep
      Answer = true
      Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
@@ -59,10 +59,10 @@ let updateBeliefs state event =
             LastUsed = SystemTime()
             UseCount = st1.UseCount + st2.UseCount + 1}
                 
-    let makeRevisedBelief (b1 : Belief) (b2 : Belief) = 
-        let tv = rev(b1.TV, b2.TV)
-        let stamp = updateStamp b2.Stamp b1.Stamp
-        {Term = b1.Term; TV = tv; Stamp = stamp}
+    let makeRevisedBelief (oldb : Belief) (newb : Belief) = 
+        let tv = rev(newb.TV, oldb.TV)
+        let stamp = updateStamp newb.Stamp oldb.Stamp
+        {Term = newb.Term; TV = tv; Stamp = stamp}
 
     match event with
     | {Event.EventType = Belief; TV = Some(eTV)} ->
@@ -109,14 +109,7 @@ let getInferenceBeliefs attention state event =
          s
          |> Seq.toList
          |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
-         |> List.map (tryUpdatePredictiveTemporalbelief state event)
+         //|> List.map (tryUpdatePredictiveTemporalbelief state event)
          |> List.map (makeEventBelief attention event)
-
-    //List.append
-    //    (makeInferenceEventBeliefs (state.Beliefs.GetGeneralBeliefs()))
-    //    (makeInferenceEventBeliefs (state.Beliefs.GetTemporalBeliefs()))
-
-    //|> List.append
-    //    (makeInferenceEventBeliefs (state.Beliefs.GetSuperBeliefs()))
 
     makeInferenceEventBeliefs (state.Beliefs.GetBeliefs())

@@ -41,12 +41,7 @@ let maxTV (b1 : Belief) (b2 : Belief) =
 let bestAnswer state (event : Event) =
 
     let matches =
-        if event.Term |> isSuperTerm state.Term then
-            state.Beliefs.GetSuperBeliefs()
-        else if event.Term |> isTemporal then
-            state.Beliefs.GetTemporalBeliefs()
-        else
-            state.Beliefs.GetGeneralBeliefs()
+        state.Beliefs.GetBeliefs()
         |> Seq.filter (fun b -> b.Term = event.Term)
 
     if Seq.isEmpty matches then
@@ -56,12 +51,7 @@ let bestAnswer state (event : Event) =
 
 let selectiveAnswer state (event : Event) =
     let matches = 
-        if event.Term |> isSuperTerm state.Term then
-            state.Beliefs.GetSuperBeliefs()
-        else if event.Term |> isTemporal then
-            state.Beliefs.GetTemporalBeliefs()
-        else
-            state.Beliefs.GetGeneralBeliefs()
+        state.Beliefs.GetBeliefs()
         |> Seq.filter (fun b -> unifies b.Term event.Term)
 
     if Seq.isEmpty matches then

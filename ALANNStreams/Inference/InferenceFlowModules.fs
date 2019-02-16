@@ -60,7 +60,8 @@ let higherOrderModules : (InferenceFunction * Postcondition) [] =
                 (nal_5_implication_based_syllogism_Equ1, NoSwap)
                 (nal_5_implication_based_syllogism_Equ2, NoSwap)
                 (nal5_implication_based_composition, NoSwap)
-                (nal5_multi_conditional_syllogism, NoSwap)
+                (nal5_multi_conditional_syllogism_1, NoSwap)
+                (nal5_multi_conditional_syllogism_2, NoSwap)
                 (nal5_nal8_implication_based_decomposition1, NoSwap)
                 (nal5_nal8_implication_based_decomposition2, NoSwap)
                 (nal5_nal8_implication_based_decomposition3, NoSwap)
@@ -72,6 +73,7 @@ let higherOrderModules : (InferenceFunction * Postcondition) [] =
                 (nal6_variable_introduction, NoSwap)
                 (nal6_variable_syllogisms, NoSwap)
                 (nal6_variable_elimination, NoSwap)
+                (nal6_multiple_variable_introduction, NoSwap)
                 (nal7_temporal_inference, NoSwap)
               |]
 

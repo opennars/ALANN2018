@@ -44,6 +44,9 @@ let displayAnswer (answer : string) =
         | _ -> ()
     | _ -> ()
 
+let displaySolution solution =
+    printActor <! PrintMessage (sprintf "?%s" solution)
+
 let updateStatus() =
     myprintfn (sprintf "%sSystemTime [%d]" Params.STATUS_PREFIX (SystemTime()))
     myprintfn (sprintf "%sStatus: ALANN Server Running" Params.STATUS_PREFIX)

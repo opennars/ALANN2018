@@ -32,8 +32,7 @@ let terms term =
     let rec loop level term = seq {
         if level < Params.TERM_DEPTH then
             match term with
-            | Var(_, _) | Word "_" -> 
-                ()
+            | Word "_" | Var(_, _) -> ()
 
             | Word _ -> 
                 yield term
@@ -55,7 +54,7 @@ let rec syntacticComplexity st =
     | Var( _) -> 2
     | Word _ -> 1
     | Temporal _ -> 1
-    | _ -> failwith "Unexpected Temporal term in syntacticComplexity()"
+    | _ -> failwith "Unexpected Term Type in syntacticComplexity()"
 
 let noCommonSubterm s p =    
     let rec flatten acc term =
@@ -99,12 +98,11 @@ let isImp = function | Term(Imp, _) | Term(PreImp, _) | Term(ConImp, _) | Term(R
 let isEqu = function | Term(Equ, _) | Term(PreEqu, _) | Term(ConEqu, _) -> true | _ -> false
 let isTemporal = function | Term(ConEqu, _) | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isPredictiveTemporal = function | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) -> true | _ -> false
-let isImplicationOp = function Imp |ConImp | RetImp -> true | _ -> false
+let isImplicationOp = function Imp |PreImp | ConImp | RetImp -> true | _ -> false
 let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
 let isSequenceable = function | Term(Inh, [Word _; Word _]) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isCopula = function | Inh | Sim | Imp | Equ | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
-let isSuperTerm term = function | Term(op, [t1; t2]) when (term = t1 || term = t2) && isImplicationOp op -> true | _ -> false
-
+let isHypothesis = function | Term(op, [t1; t2]) when isImplicationOp op -> true | _ -> false
 let isNotImpOrEqu s = not(isImp s || isEqu s)
 let isVar = function | Var(_) -> true | _ -> false
 let notSet a = not (isExtSet a || isIntSet a)

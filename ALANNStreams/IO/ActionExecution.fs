@@ -22,42 +22,15 @@
  * THE SOFTWARE.
  *)
 
-module CommandUtils
+module ActionExecution
+open Actions
+open Network
 
-open ALANNSystem
-open TermFormatters
-open SystemState
-
-let getNodeFromTerm term =
-    let numStreams = Params.NUM_TERM_STREAMS 
-    let hashRoute numStreams t = abs(t.GetHashCode()) % numStreams
-    let i = hashRoute numStreams term
-
-    systemState.stores.[i].TryGetValue(term)
-
-let getNodeCount() =
-    let rec loop acc n =
-        match n with
-        | 0 -> acc + systemState.stores.[n].Count
-        | _ -> loop (acc + systemState.stores.[n].Count) (n - 1)
-
-    loop 0 (systemState.stores.GetLength(0) - 1)
-
-let printCommandWithString str str2 =
-     myprintfn (sprintf "%sCOMMAND: %s '%s'" Params.COMMAND_PREFIX str str2)
-
-let printCommand str =
-     myprintfn (sprintf "%sCOMMAND: %s" Params.COMMAND_PREFIX str)
-
-let printBeliefStr str =
-    myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)
-
-let showBeliefs beliefs =
-    beliefs
-    |> List.iter (fun b -> printBeliefStr (formatBelief b))
-    match beliefs with
-    | [] -> ()
-    | _ ->
-        beliefs
-        |> List.averageBy (fun b -> b.TV.C)
-        |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f" (List.length beliefs) avg))
+let executeAction action = 
+    match action with
+    | MoveLeft -> 
+        printfn "Moving left"
+        sendMessageToPong("left")
+    | MoveRight -> 
+        printfn "Moving right"
+        sendMessageToPong("right")

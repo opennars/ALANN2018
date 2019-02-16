@@ -44,11 +44,11 @@ let termStream (i) =
                         let (node', ebs) = processNode node e
                         match systemState.stores.[i].TryUpdate(t, node', node) with
                         | false -> 
-                            failwith "ProcessEvent failed with node update"
+                            //failwith "ProcessEvent failed with node update"
                             []
                         | _ -> ebs
                     | (false, _) -> 
-                        failwith "ProcessEvent failed with node get"
+                        //failwith "ProcessEvent failed with node get"
                         []
                 with
                     | ex -> 

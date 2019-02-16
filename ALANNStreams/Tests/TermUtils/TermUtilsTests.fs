@@ -40,7 +40,7 @@ let test1 =
                             Term(Inh, [Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]); Word "larger"]);
                             Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]);
                             Word "larger"]
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            Expect.equal (terms t1) expected "Incorrect subterms"
 
         testCase "SubtermTest2" <| fun () ->
             let t1 = Term(Inh, [Term(ExtSet, [Word "a"; Word "b"; Word "c"]); Word "letters"])
@@ -50,24 +50,24 @@ let test1 =
                             Word "b";
                             Word "c";
                             Word "letters"]
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            Expect.equal (terms t1) expected "Incorrect subterms"
 
         testCase "SubtermTest3" <| fun () ->
             let t1 = Term(Inh, [Word "a"; Word "b"])
             let expected = [Term(Inh, [Word "a"; Word "b"]);
                             Word "a";
                             Word "b"]
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            Expect.equal (terms t1) expected "Incorrect subterms"
 
         testCase "SubtermTest4" <| fun () ->
             let t1 = Word "a"
             let expected = [Word "a"]
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            Expect.equal (terms t1) expected "Incorrect subterms"
 
         testCase "SubtermTest5" <| fun () ->
-            let t1 = Var(QVar, "what")
-            let expected = []
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            let t1 = Var(QVar, "1")
+            let expected = [Var(QVar, "1")]
+            Expect.equal (terms t1) expected "Incorrect subterms"
 
         testCase "SubtermTest6" <| fun () ->
             let t1 = Term(Inh, [Term(ExtSet, [Word "tash"]); Word "human"])
@@ -75,5 +75,5 @@ let test1 =
                             Term(ExtSet, [Word "tash"])
                             Word "tash"
                             Word "human"]
-            Expect.equal expected (terms t1) "Incorrect subterms"
+            Expect.equal (terms t1) expected "Incorrect subterms"
     ]

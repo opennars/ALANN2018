@@ -64,7 +64,7 @@ let resetFlow =
 let mainSink = 
     GraphDsl.Create(
         fun builder-> 
-            let mergePref = builder.Add(MergePreferred<Event>(1))
+            let mergeInput = builder.Add(Merge<Event>(2))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
@@ -75,13 +75,14 @@ let mainSink =
                     match e with
                     | {EventType = Belief; TV = Some tv} when exp(tv) > Params.NOISE_LEVEL -> printfn "%s" (formatEvent e) 
                     | {EventType = Question} -> printfn "%s" (formatEvent e)
+                    | {EventType = Goal} -> printfn "%s" (formatEvent e)                    
                     | _ -> ()
                     e)
 
             builder
                 .From(inBuffer)
-                .To(mergePref.Preferred)
-                .From(mergePref)
+                .To(mergeInput.In(0))
+                .From(mergeInput)
                 .Via(resetFlow)
                 .Via(valveFlow)
                 .Via(termStreams)
@@ -89,7 +90,7 @@ let mainSink =
                 //.Via(showEvents)
                 .Via(incrementEvents)
                 .Via(attentionBuffer)
-                .To(mergePref.In(0))
+                .To(mergeInput.In(1))
                 |> ignore
 
             SinkShape<Event>(inBuffer.Inlet)
