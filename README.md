@@ -78,8 +78,10 @@ The ALANN Server accepts a range of commands to support run time control and ins
 #SHOW_NODE (#SN) show node specific information such as current attention level
 #ENABLE_TRACE (#ET) "term" turns on node activation tracing for the node with the specified term - can be multiple traces
 #DISABLE_TRACE (#DT) "term" turns off tracing for the specified node
-#SHOW_GENERAL_BELIEFS (#SGB) "term" shows the general beliefs for the specified node
+#SHOW_SIMPLE_BELIEFS (#SSB) "term" shows the 'simple' beliefs for the specified node
 #SHOW_TEMPORAL_BELIEFS (#STB) "term" show the temporal beliefs for the specified node
+#SHOW_HYPOTHESIS_BELIEFS (#SHB) "term" show the hypothesis beliefs for the specified node
+#SHOW_GENERALISED_BELIEFS (#SGB) "term" show the generalised beliefs for the specified node
 ```
 ## Project Details
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
