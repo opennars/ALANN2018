@@ -276,6 +276,11 @@ namespace ALANNUI
             SendCmdToServer("#SGB ", termNameTB.Text);
         }
 
+        private void ShowGoalsBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SGO ");
+        }
+
         private void EnableTraceBtn_Click(object sender, EventArgs e)
         {
             SendCmdToServer("#ET ", termNameTB.Text);
@@ -563,7 +568,7 @@ namespace ALANNUI
          "<{tweety} --> (eats / _ fish)>?",
          "<(bird * seed) --> eats>.",
          "<{tweety} --> (eats / _ seed)>?"
-            };
+        };
     }
 }
 

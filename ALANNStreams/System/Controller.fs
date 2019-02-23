@@ -87,8 +87,8 @@ type Controller() =
 
         let rnd = new Random()
         let rec moveLoop(n) = async {
-            // random moves for 2 minutes
-            if n > (5 * 60 * 2) then
+            // random moves for 20 minutes
+            if n > (5 * 60 * 20) then
                 ()
             else
                 let! _ = Async.AwaitEvent moveTimer.Elapsed

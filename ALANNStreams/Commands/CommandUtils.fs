@@ -52,6 +52,9 @@ let printCommand str =
 let printBeliefStr str =
     myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)
 
+let printGoalStr str =
+    myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)
+
 let showBeliefs beliefs =
     beliefs
     |> List.iter (fun b -> printBeliefStr (formatBelief b))
@@ -61,3 +64,13 @@ let showBeliefs beliefs =
         beliefs
         |> List.averageBy (fun b -> b.TV.C)
         |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f" (List.length beliefs) avg))
+
+let showGoals goals =
+    goals
+    |> List.iter (fun g -> printGoalStr (formatGoal g))
+    match goals with
+    | [] -> ()
+    | _ ->
+        goals
+        |> List.averageBy (fun b -> b.TV.C)
+        |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f" (List.length goals) avg))

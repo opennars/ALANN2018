@@ -37,10 +37,10 @@ let answerToQuestion = function
     | _ -> []
     
 let firstOrderSyllogisitic = function
-    | Inh(a, b1), Inh(b2, c) when b1 = b2 && a <> c && noCommonSubterm a c -> [(Term(Inh, [a; c]), ded, Some strong, [AllowBackward; Swap])
-                                                                               (Term(Inh, [c; a]), exe, Some weak, [AllowBackward; Swap])]
-    | Inh(a1, b), Inh(a2, c) when a1 = a2 && b <> c && noCommonSubterm b c -> [(Term(Inh, [c; b]), abd, Some weak, [AllowBackward; Swap])]
-    | Inh(a, c1), Inh(b, c2) when c1 = c2 && a <> b && noCommonSubterm a b -> [(Term(Inh, [b; a]), ind, Some weak, [AllowBackward; Swap])]
+    | Inh(a, b1), Inh(b2, c) when b1 = b2 && a <> c -> [(Term(Inh, [a; c]), ded, Some strong, [AllowBackward; Swap])
+                                                        (Term(Inh, [c; a]), exe, Some weak, [AllowBackward; Swap])]
+    | Inh(a1, b), Inh(a2, c) when a1 = a2 && b <> c -> [(Term(Inh, [c; b]), abd, Some weak, [AllowBackward; Swap])]
+    | Inh(a, c1), Inh(b, c2) when c1 = c2 && a <> b -> [(Term(Inh, [b; a]), ind, Some weak, [AllowBackward; Swap])]
     | _ -> []    
 
 let (immediate : InferenceFunction) = function
@@ -48,24 +48,24 @@ let (immediate : InferenceFunction) = function
     | _ -> []
 
 let similaritySyllogisitic = function
-    | Inh(p, m1), Inh(s, m2) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
-    | Inh(m1, p), Inh(m2, s) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
+    | Inh(p, m1), Inh(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
+    | Inh(m1, p), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
 
-    | Inh(m1, p), Sim(s, m2) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
-    | Inh(m1, p), Sim(m2, s) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
+    | Inh(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
+    | Inh(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
 
-    | Inh(p, m1), Sim(s, m2) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
-    | Inh(p, m1), Sim(m2, s) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
+    | Inh(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
+    | Inh(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
 
-    | Sim(m1, p), Sim(s, m2) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(m1, p), Sim(m2, s) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(p, m1), Sim(s, m2) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(p, m1), Sim(m2, s) when m1 = m2 && s <> p && noCommonSubterm s p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
+    | Sim(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
+    | Sim(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
+    | Sim(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
+    | Sim(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
 
     | _ -> []
 
 let similarityFromInheritance = function
-    | Inh(s1, p1), Inh(p2, s2) when p1 = p2 && s1 = s2 && p1 <> s1 && noCommonSubterm s1 p1 -> [(Term(Sim, [s1; p1]), int, None, [AllowBackward])]
+    | Inh(s1, p1), Inh(p2, s2) when p1 = p2 && s1 = s2 && p1 <> s1 -> [(Term(Sim, [s1; p1]), int, None, [AllowBackward])]
     | _ -> []
 
 let setIntersectionComprehension = function

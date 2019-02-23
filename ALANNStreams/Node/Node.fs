@@ -48,6 +48,7 @@ let processNode state (event : Event) =
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
 
     let state = updateAttention state now event
+    let state = updateEventTruth state now
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
@@ -65,7 +66,6 @@ let processNode state (event : Event) =
 
         let eventBeliefs = createEventBeliefs state event
 
-        // add eventBelief for oldBelief (if it existed) so overlap does not filter out
         let eventBeliefsPlus (belief : Belief option) = 
             match belief with
             | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
@@ -94,7 +94,8 @@ let processNode state (event : Event) =
 let initState term =
     {Created = SystemTime()
      Term = term
-     Beliefs = Store(term, Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
+     EventTruth = {F = 1.0f; C = 0.9f}
+     Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL
      LastUsed = SystemTime()

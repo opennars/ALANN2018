@@ -26,6 +26,8 @@ module Unify
 
 open Types
 open Akka.Actor
+open TermUtils
+open TermFormatters
 
 //
 // Unify - a recursive unifier that unifies two terms
@@ -55,16 +57,29 @@ let unify x y =
             match x, y with
             | x, y when x = y -> map
             | Term(termType1, argsx), Term(termType2, argsy) when termType1 = termType2 && List.length argsx = List.length argsy -> unifyList argsx argsy map
-            | Var(_, _), y -> unifyVar x y map
-            | x, Var(_, _) -> unifyVar y x map
+            | Var(QVar, _), y when not(containsVars y) -> unifyVar x y map
+            | x, Var(QVar, _) when not(containsVars x) -> unifyVar x y map
+            | Var(DVar, _), y when not(containsQueryVars y) -> 
+                //printfn "Unifying %s %s" (ft x) (ft y)
+                unifyVar x y map
+            | x, Var(DVar, _) when not(containsQueryVars x) -> 
+                //printfn "Unifying %s %s" (ft x) (ft y)
+                unifyVar y x map
+            | Var(IVar, _), y when not(containsQueryVars y) -> 
+                //printfn "Unifying %s %s" (ft x) (ft y)
+                unifyVar x y map
+            | x, Var(IVar, _) when not(containsQueryVars x) -> 
+                //printfn "Unifying %s %s" (ft x) (ft y)
+                unifyVar y x map
+
             | _ -> None
         map'
 
     // Main function body here
-
     match unifyRec x y (Some Map.empty) with | Some map -> map |> Map.toList | _ -> []
 
-let unifies x y = if x = y then true else unify x y <> []
+let unifies x y =     
+    if x = y then true else unify x y <> []
 
 //
 // makeSubstitutions - recursively apply substitutions from subs list to r e.g. R{S/T}

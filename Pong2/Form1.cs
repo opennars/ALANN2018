@@ -20,7 +20,7 @@ namespace Pong2
 
         int b_x = 20;
         int b_y = 1;
-        int b_dx = 3;
+        int b_dx = 5;
 
         static string serverAddr = "127.0.0.1";
         static int serverPort = 5000;
@@ -99,7 +99,11 @@ namespace Pong2
                 toolStripStatusLabel1.Text = "Hit Bat - wahoo! (" + x.ToString() + " " + y.ToString() + ")";
 
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [equal]>!");
+                sb.AppendFormat("<BALLPOS --> [hit]>.");
+                SendStatement(sb.ToString());
+
+                sb.Clear();
+                sb.AppendFormat("<BALLPOS --> [hit]>!");
                 SendStatement(sb.ToString());
             }
 
@@ -131,12 +135,16 @@ namespace Pong2
             }
             // end of fix
 
-            if (newBall_x < 0 || newBall_x > this.ClientSize.Width - 10) dx = -dx;
-            if (newBall_y == 0 || newBall_y > this.ClientSize.Height - (10 + t_y)) dy = -dy;
-            if (newBall_y == 0)
+            if (newBall_x <= 0 || newBall_x >= this.ClientSize.Width - 10) dx = -dx;
+            if (newBall_y <= 0 || newBall_y >= this.ClientSize.Height - (10 + t_y)) dy = -dy;
+            if (newBall_y <= 0)
             {
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [equal]>!");
+                sb.AppendFormat("<BALLPOS --> [hit]>. {{0.00 0.90}}");
+                SendStatement(sb.ToString());
+
+                sb.Clear();
+                sb.AppendFormat("<BALLPOS --> [hit]>!");
                 SendStatement(sb.ToString());
 
                 toolStripStatusLabel1.Text = "Missed - boohoo!";
@@ -200,34 +208,34 @@ namespace Pong2
             if ((b_x + 50) < x)
             {
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [leftpos]>. {{0.00 0.90}}");
+                sb.AppendFormat("<BALLPOS --> [left]>. {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [rightpos]>.");
+                sb.AppendFormat("<BALLPOS --> [right]>.");
                 SendStatement(sb.ToString());
             }
             else if ((b_x - 50) > x)
             {
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [rightpos]>.  {{0.00 0.90}}");
+                sb.AppendFormat("<BALLPOS --> [right]>.  {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [leftpos]>.");
+                sb.AppendFormat("<BALLPOS --> [left]>.");
                 SendStatement(sb.ToString());
             }
             else
             {
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [rightpos]>. {{0.00 0.90}}");
+                sb.AppendFormat("<BALLPOS --> [right]>. {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [leftpos]>.  {{0.00 0.90}}");
+                sb.AppendFormat("<BALLPOS --> [left]>.  {{0.00 0.90}}");
                 SendStatement(sb.ToString());
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [equal]>.");

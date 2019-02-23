@@ -49,8 +49,8 @@ let satisfyingBelief state (event : Event) =
         Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
 
 let processGoal attention state (event : Event) =
-    if state.Term = event.Term then
-        printfn "Processing goal for: %s %s %f" (ft state.Term) (truth event.TV.Value) (exp event.TV.Value)
+    match Choice.bestAnswer state event with
+    | Some belief when state.Term = event.Term ->
         if exp(event.TV.Value) > Params.DECISION_THRESHOLD then
             match event.Term with
             | Term(Inh, [Term(IntSet, [Word "left"]); Word "action"]) ->
@@ -60,7 +60,5 @@ let processGoal attention state (event : Event) =
             | _ -> ()
 
             raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
-        []
-    else
-        getInferenceBeliefs attention state event
-
+        [makeAnsweredEventGoal attention event belief] 
+    | _ -> getInferenceBeliefs attention state event

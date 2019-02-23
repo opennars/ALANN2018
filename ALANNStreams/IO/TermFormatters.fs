@@ -55,9 +55,9 @@ let rec ft t =
     | Inh(s, p) -> "<" + ft s + " --> " + ft p + ">"
     | Sim(s, p) -> "<" + ft s + " <-> " + ft p + ">"
     | Oper(lst) -> "^(" + separateList lst " " + ")"
-    | ExtSet(lst) when lst = [] -> "{" + separateList lst " " + "}"
+    //| ExtSet(lst) when lst = [] -> "{" + separateList lst " " + "}"
     | ExtSet(lst) -> "{" + separateList lst " " + "}"
-    | IntSet(lst) when lst = [] -> "[" + separateList lst " " + "]"
+    //| IntSet(lst) when lst = [] -> "[" + separateList lst " " + "]"
     | IntSet(lst) -> "[" + separateList lst " " + "]"
     | ExtInt(lst) -> "(" + separateList lst " & " + ")"
     | IntInt(lst) -> "(" + separateList lst " | " + ")"
@@ -75,6 +75,7 @@ let rec ft t =
     | Temporal(n) -> "Temporal(" + n.ToString() + ")"
     | _ -> "Unknown type Error"
 
-let formatEvent e = sprintf "%A %s %s %s %s" e.EventType (av e.AV) (match e.TV with | Some tv -> truth tv | _ -> "None") (ft e.Term) (Trail e.Stamp.Evidence)
+let formatEvent e = sprintf "%A %A %s %s %s %s" e.Stamp.Intervals e.EventType (av e.AV) (match e.TV with | Some tv -> truth tv | _ -> "None") (ft e.Term) (Trail e.Stamp.Evidence)
 
 let formatBelief (b : Belief) = sprintf "@%d %s %s %s" (b.Stamp.Created) (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) 
+let formatGoal (g : Belief) = sprintf "@%d %s %s! %s" (g.Stamp.Created) (truth g.TV) (ft g.Term) (Trail g.Stamp.Evidence) 

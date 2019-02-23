@@ -33,7 +33,6 @@ let mutable systemState =
     {
         Id = ref 0L
         StartTime = 0L
-        SC_Term_ID = ref 0L
         EventsPerSecond = ref 0
         Activations = ref 0
         stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
@@ -67,11 +66,12 @@ let GCGeneralNodes() =
     let mutable deleted = 0
     let maxNodesPerStream = Params.MAX_CONCEPTS / Params.NUM_TERM_STREAMS
     let usefullness n = 
-        let age = max (SystemTime() - n.Created) 1L
-        let recency = max (SystemTime() - n.LastUsed) 1L
-        (n.UseCount |> double) / (recency |> double)
+        //let age = max (SystemTime() - n.Created) 1L
+        //let recency = max (SystemTime() - n.LastUsed) 1L
+        //(n.UseCount |> double) / (recency |> double)
         //n.LastUsed // * int64(syntacticComplexity n.Term)
         //n.UseCount
+        n.LastUsed
 
     try
         for store in systemState.stores do

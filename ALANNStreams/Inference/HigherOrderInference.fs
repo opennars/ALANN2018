@@ -223,24 +223,32 @@ let nal5_nal8_implication_based_decomposition4 = function
 
 let nal5_nal8_implication_based_decomposition5 = function
     // conditional syllogism
-    | m1, Imp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])]
-    | m1, PreImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsBefore])]
-    | m1, ConImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsConcurrent])]
-    | m1, RetImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [IsAfter])]
+    | m1, Imp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])]                                                 
+    | m1, PreImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])
+                                                    (Term(Seq, [m1; p]), ded, Some weak, [])]
+
+    | m1, ConImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])
+                                                    (Term(Par, [m1; p]), ded, Some weak, [])]
+
+    | m1, RetImp(m2, p) when m1 = m2 && m1 <> p -> [(p, ded, Some weak, [])
+                                                    (Term(Seq, [p; m1]), ded, Some weak, [])]
                                                               
     | m1, Imp(p, m2) when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [])]
-    | m1, PreImp(p, m2) when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [IsBefore])]
-    | m1, ConImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [IsConcurrent])]
-    | m1, RetImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [IsAfter])]
+    | m1, PreImp(p, m2) when m1 = m2 && m1 <> p -> [(p, abd, Some strong, [])
+                                                    (Term(Seq, [p; m1]), abd, Some strong, [])]
+    | m1, ConImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [])
+                                                    (Term(Par, [p; m1]), ana, Some strong, [])]
+    | m1, RetImp(p, m2) when m1 = m2 && m1 <> p -> [(p, ana, Some strong, [])
+                                                    (Term(Seq, [p; m1]), ana, Some strong, [])]
 
     | m1, Equ(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
     | m1, Equ(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
 
-    | m1, ConEqu(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [IsConcurrent])]
-    | m1, ConEqu(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [IsConcurrent])]
+    | m1, ConEqu(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
+    | m1, ConEqu(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
 
-    | m1, PreEqu(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [IsConcurrent])]
-    | m1, PreEqu(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [IsConcurrent])]
+    | m1, PreEqu(s, m2) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
+    | m1, PreEqu(m2, s) when m1 = m2 && m1 <> s -> [(s, ana, Some strong, [])]
 
     | _ -> []
 
@@ -448,16 +456,18 @@ let nal6_variable_elimination = function
     | _ -> []
 
 let nal7_temporal_inference  = function
-    | s, p when isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(ConImp, [s; p]), temporal_ind, None, [IsConcurrent])
-                                                        (Term(ConImp, [p; s]), temporal_abd, None, [IsConcurrent])
-                                                        (Term(ConEqu, [s; p]), temporal_com, None, [IsConcurrent])
-                                                        (Term(Par,    [s; p]), temporal_int, None, [IsConcurrent])
-                                                        (Term(PreImp, [s; p]), temporal_ind, None, [IsBefore])
-                                                        (Term(RetImp, [p; s]), temporal_abd, None, [IsBefore])
-                                                        (Term(PreEqu, [s; p]), temporal_com, None, [IsBefore])
+    | s, p when s <> p &&  isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(ConImp, [s; p]), temporal_ind, None, [IsConcurrent])
+                                                                   (Term(ConImp, [p; s]), temporal_abd, None, [IsConcurrent])
+                                                                   (Term(ConEqu, [s; p]), temporal_com, None, [IsConcurrent])
+                                                                   (Term(PreImp, [s; p]), temporal_ind, None, [IsBefore])
+                                                                   (Term(RetImp, [p; s]), temporal_abd, None, [IsBefore])
+                                                                   (Term(PreEqu, [s; p]), temporal_com, None, [IsBefore])
+                                                                   (Term(PreImp, [p; s]), temporal_ind, None, [IsAfter])
+                                                                   (Term(RetImp, [s; p]), temporal_abd, None, [IsAfter])
+                                                                   (Term(PreEqu, [p; s]), temporal_com, None, [IsAfter])]
+
+    | s, p when isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(Par,    [s; p]), temporal_int, None, [IsConcurrent])
                                                         (Term(Seq,    [s; p]), temporal_int, None, [IsBefore])
-                                                        (Term(PreImp, [p; s]), temporal_ind, None, [IsAfter])
-                                                        (Term(RetImp, [s; p]), temporal_abd, None, [IsAfter])
-                                                        (Term(PreEqu, [p; s]), temporal_com, None, [IsAfter])
                                                         (Term(Seq,    [p; s]), temporal_int, None, [IsAfter])]
+
     | _ -> []

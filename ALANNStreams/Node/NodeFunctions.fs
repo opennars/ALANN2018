@@ -47,6 +47,13 @@ let makeAnsweredEventBelief attention event (belief : Belief) =
      Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
      Belief = belief}
 
+let makeAnsweredEventGoal attention event (goal : Belief) =
+    {Attention = attention 
+     Depth = SearchDepth.Deep
+     Answer = true
+     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - goal.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some goal}
+     Belief = goal}
+
 let updateBeliefs state event =    
     let isBetterThan aTV bTV =
         let cond1 = bTV.C >= aTV.C 
@@ -91,6 +98,12 @@ let updateAttention state now event =
     let attention = forget state now
     let sti = max (_or [attention; event.AV.STI]) Params.RESTING_POTENTIAL
     {state with Attention = sti}
+
+let updateEventTruth state now =
+    let lambda = float(1.0f / Params.DECAY_RATE)
+    let delta = float(now - state.LastUsed)
+    let tv = {state.EventTruth with C = state.EventTruth.C * float32(Math.Exp(-lambda * delta))}
+    {state with EventTruth = tv}
 
 let tryUpdatePredictiveTemporalbelief state e (b : Belief) =
     let inline reduceC {F = f; C = c} = 

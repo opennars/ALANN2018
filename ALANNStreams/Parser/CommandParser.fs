@@ -37,8 +37,8 @@ let show_simple_beliefs = (str_ws "SHOW_SIMPLE_BELIEFS" <|> str_ws "SSB") >>. te
 let show_temporal_beliefs = (str_ws "SHOW_TEMPORAL_BELIEFS" <|> str_ws "STB") >>. term_ws |>> fun t -> Show_Temporal_Beliefs(t)
 let show_hypothesis_beliefs = (str_ws "SHOW_HYPOTHESIS_BELIEFS" <|> str_ws "SHB") >>. term_ws |>> fun t -> Show_Hypothesis_Beliefs(t)
 let show_generalised_beliefs = (str_ws "SHOW_GENERALISED_BELIEFS" <|> str_ws "SGB") >>. term_ws |>> fun t -> Show_Generalised_Beliefs(t)
+let show_goals = (str_ws "SHOW_GOALS" <|> str_ws "SGO") |>> fun _ -> Show_Goals
 let show_node = (str_ws "SHOW_NODE" <|> str_ws "SN") >>. term_ws |>> fun t -> Show_Node(t)
-
 
 let node_count = (str_ws "NODE_COUNT" <|> str_ws "NC") |>> fun _ -> Node_Count
 let enable_trace = (str_ws "ENABLE_TRACE" <|> str_ws "ET") >>. term_ws |>> fun t -> Enable_Trace(t)
@@ -53,6 +53,7 @@ let pcmd = show_simple_beliefs
            <|> show_temporal_beliefs 
            <|> show_hypothesis_beliefs
            <|> show_generalised_beliefs
+           <|> show_goals
            <|> show_node 
            <|> node_count 
            <|> enable_trace 

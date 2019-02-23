@@ -39,10 +39,9 @@ let maxTV (b1 : Belief) (b2 : Belief) =
     | false -> b2
 
 let bestAnswer state (event : Event) =
-
     let matches =
         state.Beliefs.GetBeliefs()
-        |> Seq.filter (fun b -> b.Term = event.Term)
+        |> Seq.filter (fun b -> b.Term = event.Term && b.Term = state.Term)
 
     if Seq.isEmpty matches then
         None

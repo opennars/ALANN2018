@@ -105,6 +105,7 @@ namespace ALANNUI
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.LoadtoolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.ShowGoalsBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -430,6 +431,7 @@ namespace ALANNUI
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.ShowGoalsBtn);
             this.groupBox4.Controls.Add(this.termNameTB);
             this.groupBox4.Controls.Add(this.groupBox3);
             this.groupBox4.Controls.Add(this.groupBox1);
@@ -593,6 +595,16 @@ namespace ALANNUI
             this.label8.TabIndex = 33;
             this.label8.Text = "Beliefs";
             // 
+            // ShowGoalsBtn
+            // 
+            this.ShowGoalsBtn.Location = new System.Drawing.Point(16, 159);
+            this.ShowGoalsBtn.Name = "ShowGoalsBtn";
+            this.ShowGoalsBtn.Size = new System.Drawing.Size(75, 23);
+            this.ShowGoalsBtn.TabIndex = 27;
+            this.ShowGoalsBtn.Text = "Show Goals";
+            this.ShowGoalsBtn.UseVisualStyleBackColor = true;
+            this.ShowGoalsBtn.Click += new System.EventHandler(this.ShowGoalsBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -691,6 +703,7 @@ namespace ALANNUI
         private System.Windows.Forms.Button showVariableBtn;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button ShowGoalsBtn;
     }
 }
 

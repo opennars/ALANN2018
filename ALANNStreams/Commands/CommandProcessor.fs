@@ -33,6 +33,7 @@ open FileIO
 open TermFormatters
 open CommandUtils
 open SystemState
+open GoalStore
 
 let showSimpleBeliefs term =
     match getNodeFromTerm term with
@@ -61,6 +62,10 @@ let showGeneralisedBeliefs term =
         printCommandWithString "SHOW_VARIABLE_BELIEFS FOR TERM" (ft term)
         showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetVariableBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+
+let showGoals() =
+    printCommandWithString "SHOW_GOALS" ""
+    showGoals (List.sortBy (fun b -> -exp(b.TV)) [for g in goalStore.GetGoals() -> g])
 
 let showNode term =
     match getNodeFromTerm term with
@@ -149,6 +154,7 @@ let processCommand (cmd : string) =
     | Show_Temporal_Beliefs(term) -> showTemporalBeliefs term
     | Show_Hypothesis_Beliefs(term) -> showHypothesisBeliefs term
     | Show_Generalised_Beliefs(term) -> showGeneralisedBeliefs term
+    | Show_Goals -> showGoals()
     | Show_Node(term) -> showNode(term)
     | Node_Count -> nodeCount()
     | Enable_Trace(term) -> enableTrace term

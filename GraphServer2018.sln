@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		paket.dependencies = paket.dependencies
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ALANNStreams", "ALANNStreams\ALANNStreams.fsproj", "{82DFBDF2-260E-4B89-A76E-EAB235BACDA7}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ALANNServer", "ALANNStreams\ALANNServer.fsproj", "{82DFBDF2-260E-4B89-A76E-EAB235BACDA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALANNUI", "ALANNUI\ALANNUI.csproj", "{FFD36D6E-3EC8-4948-B862-FB33A86AEA9F}"
 EndProject
@@ -19,9 +19,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pong2", "Pong2\Pong2.csproj", "{623C18E4-623B-4BB2-9B68-E43C04CED445}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -97,6 +94,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {26ADACD3-99B5-40E3-A579-070B78F82A97}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

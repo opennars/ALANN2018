@@ -35,17 +35,18 @@ let processQuestion attention state (event : Event) =
     match event.Term with    
     | Selective ->
         match selectiveAnswer state event with
-        | Some belief ->
+        | Some belief when state.Term = event.Term  ->
             tryPrintAnswer event belief
             [makeAnsweredEventBelief attention event belief]
-        | None -> 
+        | Some belief -> // not host term so send event to host to get host truth
+            [makeEventBelief attention {event with Term = belief.Term} belief]
+        | _ -> 
             getInferenceBeliefs attention state event
 
     | NonSelective ->                                      
         match bestAnswer state event with
-        | Some belief -> 
-            if state.Term = event.Term then
-                tryPrintAnswer event belief
+        | Some belief when state.Term = event.Term -> 
+            tryPrintAnswer event belief
             [makeAnsweredEventBelief attention event belief]
-        | None -> 
+        | _ -> 
             getInferenceBeliefs attention state event

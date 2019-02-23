@@ -37,6 +37,8 @@ open PriorityBuffer
 open System.Threading
 open SystemState
 open TermFormatters
+open GoalStore
+open GoalRevision
 
 let valveFlow =    
     GraphDsl.Create(
@@ -67,8 +69,16 @@ let mainSink =
             let mergeInput = builder.Add(Merge<Event>(2))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
+            let goalBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
-                     
+            let broadcast = builder.Add(Broadcast<Event>(2))
+            let mergeGoals = builder.Add(Merge<Event>(2))
+
+            let processGoal = 
+                Flow.Create<Event>() 
+                |> Flow.map (fun g -> reviseGoal goalStore g)
+                |> Flow.collect (fun g -> g)            
+
             let showEvents =
                 Flow.Create<Event>()
                 |> Flow.map (fun e -> 
@@ -86,6 +96,18 @@ let mainSink =
                 .Via(resetFlow)
                 .Via(valveFlow)
                 .Via(termStreams)
+
+                .To(broadcast)
+                .From(broadcast.Out(1))
+                .Via(goalBuffer)
+                .Via(processGoal)
+                //.Via(showEvents)
+                .To(mergeGoals.In(1))
+
+                .From(broadcast.Out(0))
+                .To(mergeGoals.In(0))
+                .From(mergeGoals)
+
                 .Via(eventLogger)
                 //.Via(showEvents)
                 .Via(incrementEvents)

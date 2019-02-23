@@ -27,10 +27,8 @@ module Store
 open Types
 open TermUtils
 open SubStore
-open System
 
-
-type Store(hostTerm, generalCapacity, temporalCapacity, hypothesisCapacity ) =
+type Store(generalCapacity, temporalCapacity, hypothesisCapacity ) =
     let simpleBeliefRanking (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
     let complexBeliefRanking (belief : Belief) = exp belief.TV
 

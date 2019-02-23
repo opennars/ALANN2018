@@ -56,6 +56,7 @@ type Id = int64
 
 type SysTime = int64
 type Evidence = Id list
+type Interval = | Interval of SysTime | Intervals of Interval list | NoInterval
 
 type Sentence = {EventType : EventType; Term: Term; TV : TV option}
 
@@ -64,6 +65,7 @@ type Source = | User | Derived | Virtual | Channel of int16
 type Stamp = {Created : int64
               SC : int
               Evidence : Evidence
+              Intervals : Interval
               LastUsed : SysTime
               UseCount : int
               Source : Source}
@@ -162,7 +164,17 @@ type IStore =
     abstract GetGeneralBeliefs : unit -> seq<Belief>
     abstract GetVariableBeliefs : unit -> seq<Belief>
 
+type IGoalStore =
+    abstract Contains : Key -> bool
+    abstract Insert : Key * Belief -> unit
+    abstract Update : Key * Belief -> unit
+    abstract TryGetValue : Key -> Belief option
+    abstract Clear : unit -> unit
+    abstract Count : int
+    abstract GetGoals : unit -> seq<Belief>
+
 type Node     = {Term : Term
+                 EventTruth : TV
                  Beliefs : IStore
                  VirtualBelief : Belief
                  Created : SysTime
@@ -179,6 +191,7 @@ type Command = | Show_Simple_Beliefs of Term
                | Show_Temporal_Beliefs of Term
                | Show_Hypothesis_Beliefs of Term
                | Show_Generalised_Beliefs of Term
+               | Show_Goals
                | Show_Node of Term
                | Node_Count
                | Enable_Trace of Term
@@ -194,7 +207,6 @@ type SystemState =
     {
         Id : int64 ref
         mutable StartTime : int64
-        SC_Term_ID : int64 ref
         EventsPerSecond : int ref
         Activations : int ref
         mutable stores : ConcurrentDictionary<Term, Node> array
