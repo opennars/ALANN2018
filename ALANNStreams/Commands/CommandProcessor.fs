@@ -39,28 +39,28 @@ let showSimpleBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_GENERAL_BELIEFS FOR TERM" (ft term)
-        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetGeneralBeliefs() -> b])
+        showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetGeneralBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showTemporalBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_TEMPORAL_BELIEFS FOR TERM" (ft term)
-        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
+        showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showHypothesisBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_PRE/POST_BELIEFS FOR TERM" (ft term)
-        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetSuperBeliefs() -> b])
+        showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetHypotheses() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showGeneralisedBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_VARIABLE_BELIEFS FOR TERM" (ft term)
-        showBeliefs (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetVariableBeliefs() -> b])
+        showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetVariableBeliefs() -> b])
     | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
 
 let showGoals() =
