@@ -205,41 +205,44 @@ namespace Pong2
             Invalidate();
             tickCount++;
 
-            if ((b_x + 50) < x)
+            if (tickCount % 10 == 0)
             {
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [left]>. {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [right]>.");
-                SendStatement(sb.ToString());
-            }
-            else if ((b_x - 50) > x)
-            {
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [right]>.  {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [left]>.");
-                SendStatement(sb.ToString());
-            }
-            else
-            {
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [right]>. {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [left]>.  {{0.00 0.90}}");
-                SendStatement(sb.ToString());
-                sb.Clear();
-                sb.AppendFormat("<BALLPOS --> [equal]>.");
-                SendStatement(sb.ToString());
+                if ((b_x + 50) < x)
+                {
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [left]>. {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [right]>.");
+                    SendStatement(sb.ToString());
+                }
+                else if ((b_x - 50) > x)
+                {
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [right]>.  {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [left]>.");
+                    SendStatement(sb.ToString());
+                }
+                else
+                {
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [right]>. {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    //sb.Clear();
+                    //sb.AppendFormat("<BALLPOS --> [left]>.  {{0.00 0.90}}");
+                    //SendStatement(sb.ToString());
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [equal]>.");
+                    SendStatement(sb.ToString());
+                }
             }
         }
     }

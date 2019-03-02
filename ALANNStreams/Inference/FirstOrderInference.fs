@@ -29,12 +29,6 @@ open TruthFunctions
 open TermUtils
 open ActivePatterns
 open InferenceUtils
-open Unify
-
-let answerToQuestion = function
-    | a, b when a = b -> [(b, identity, None, [BeliefFromQuestion])]
-    | a, b when isSelective b && unifies a b -> [(b, identity, None, [BeliefFromQuestion])]
-    | _ -> []
     
 let firstOrderSyllogisitic = function
     | Inh(a, b1), Inh(b2, c) when b1 = b2 && a <> c -> [(Term(Inh, [a; c]), ded, Some strong, [AllowBackward; Swap])
@@ -43,24 +37,20 @@ let firstOrderSyllogisitic = function
     | Inh(a, c1), Inh(b, c2) when c1 = c2 && a <> b -> [(Term(Inh, [b; a]), ind, Some weak, [AllowBackward; Swap])]
     | _ -> []    
 
-let (immediate : InferenceFunction) = function
-    | Inh(s, p), _ when s <> p -> [(Term(Inh, [p; s]), cnv, None, [Swap])]
-    | _ -> []
-
 let similaritySyllogisitic = function
-    | Inh(p, m1), Inh(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
-    | Inh(m1, p), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, None, [AllowBackward; Swap])]
+    | Inh(p, m1), Inh(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, Some weak, [AllowBackward; Swap])]
+    | Inh(m1, p), Inh(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), com, Some weak, [AllowBackward; Swap])]
 
-    | Inh(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
-    | Inh(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, None, [AllowBackward; Swap])]
+    | Inh(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, Some strong, [AllowBackward; Swap])]
+    | Inh(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [s; p]), ana, Some strong, [AllowBackward; Swap])]
 
-    | Inh(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
-    | Inh(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, None, [AllowBackward; Swap])]
+    | Inh(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, Some strong, [AllowBackward; Swap])]
+    | Inh(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Inh, [p; s]), ana, Some strong, [AllowBackward; Swap])]
 
-    | Sim(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
-    | Sim(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, None, [AllowBackward; Swap])]
+    | Sim(m1, p), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, Some strong, [AllowBackward; Swap])]
+    | Sim(m1, p), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, Some strong, [AllowBackward; Swap])]
+    | Sim(p, m1), Sim(s, m2) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, Some strong, [AllowBackward; Swap])]
+    | Sim(p, m1), Sim(m2, s) when m1 = m2 && s <> p -> [(Term(Sim, [s; p]), res, Some strong, [AllowBackward; Swap])]
 
     | _ -> []
 
@@ -110,30 +100,51 @@ let InheritanceSetComprehension = function
     | _ -> []
 
 let (Nal1_3_EquivalenceAndImplication : InferenceFunction) = function
+    // Similarity to inheritance
     | Inh(s1, p1), Sim(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(Inh, [s1; p1]), structuralInt, None, [BeliefFromQuestion])]
-    | Sim(s1, p1), Inh(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(Sim, [s1; p1]), structuralInt, None, [BeliefFromQuestion])]
-    | Sim(s1, ExtSet([p])), s2 when s1 = s2 && s1 <> p -> [(Term(Inh, [s1; Term(ExtSet, [p])]), identity, None, [AllowBackward])]
-    | Sim(s, ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [s; Term(ExtSet, [p1])]), identity, None, [AllowBackward])]
-    | Sim(IntSet([s1]), p), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(IntSet, [s1]); p]), identity, None, [AllowBackward])]
-    | Sim(IntSet([s]), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(IntSet, [s]); p1]), identity, None, [])]
-    | Sim(ExtSet([s1]), ExtSet([p])), ExtSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(ExtSet, [s1]); Term(ExtSet, [p])]), identity, None, [AllowBackward])]
-    | Sim(ExtSet([s]), ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(ExtSet, [s]); Term(ExtSet, [p1])]), identity, None, [AllowBackward])]
-    | Sim(IntSet([s1]), IntSet([p])), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(IntSet, [s1]); Term(IntSet, [p])]), identity, None, [AllowBackward])]
-    | Sim(IntSet([s]), IntSet([p1])), IntSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(IntSet, [s]); Term(IntSet, [p1])]), identity, None, [AllowBackward])]
+    | Inh(s1, p1), Sim(p2, s2) when s1 = s2 && p1 = p2 -> [(Term(Inh, [s1; p1]), structuralInt, None, [BeliefFromQuestion])]
+    // Inheritance to similarity
+    | Sim(s1, p1), Inh(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(Sim, [s1; p1]), structuralAbd, None, [BeliefFromQuestion])]
+    | Sim(p1, s1), Inh(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(Sim, [p1; s1]), structuralAbd, None, [BeliefFromQuestion])]
+    // Set Definition Similarity to Inheritance
+    | Sim(s1, ExtSet([p])), s2 when s1 = s2 && s1 <> p -> [(Term(Inh, [s1; Term(ExtSet, [p])]), identity, Some identity, [AllowBackward])]
+    | Sim(s, ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [s; Term(ExtSet, [p1])]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s1]), p), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(IntSet, [s1]); p]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s]), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(IntSet, [s]); p1]), identity, Some identity, [])]
 
-
+    | Sim(ExtSet([s1]), ExtSet([p])), ExtSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(ExtSet, [p]); Term(ExtSet, [s1])]), identity, Some identity, [AllowBackward])]
+    | Sim(ExtSet([s]), ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(ExtSet, [p1]); Term(ExtSet, [s])]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s1]), IntSet([p])), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(IntSet, [p]); Term(IntSet, [s1])]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s]), IntSet([p1])), IntSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(IntSet, [p1]); Term(IntSet, [s])]), identity, Some identity, [AllowBackward])]
+    // Set Definition Unwrap
+    | Sim(ExtSet([s1]), ExtSet([p])), ExtSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(ExtSet, [s1]); Term(ExtSet, [p])]), identity, Some identity, [AllowBackward])]
+    | Sim(ExtSet([s]), ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(ExtSet, [s]); Term(ExtSet, [p1])]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s1]), IntSet([p])), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Inh, [Term(IntSet, [s1]); Term(IntSet, [p])]), identity, Some identity, [AllowBackward])]
+    | Sim(IntSet([s]), IntSet([p1])), IntSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Inh, [Term(IntSet, [s]); Term(IntSet, [p1])]), identity, Some identity, [AllowBackward])]
+    // Nothing is more specific than a instance so it's similar
+    | Inh(s1, ExtSet([p])), s2 when s1 = s2 && s1 <> p -> [(Term(Sim, [s1; Term(ExtSet, [p])]), identity, Some identity, [AllowBackward])]
+    | Inh(s, ExtSet([p1])), ExtSet([p2]) when p1 = p2 && s <> p1 -> [(Term(Sim, [s; Term(ExtSet, [p1])]), identity, Some identity, [AllowBackward])]
+    // nothing is more general than a property so it's similar
+    | Inh(IntSet([s1]), p), IntSet([s2]) when s1 = s2 && s1 <> p -> [(Term(Sim, [Term(IntSet, [s1]); p]), identity, Some identity, [])]
+    | Inh(IntSet([s]), p1), p2 when p1 = p2 && s <> p1 -> [(Term(Sim, [Term(IntSet, [s]); p1]), identity, Some identity, [])]
     | _ -> []
 
 let Nal1_4_conversion_contrapostion_negation : InferenceFunction = function
     // conversion
-    | Inh(p1, s1), Inh(s2, p2) when s1 = s2 && p1 = p2 -> [(Term(Inh, [p1; s1]), cnv, None, [BeliefFromQuestion])]
+    | Inh(p1, s1), Inh(s2, p2) when s1 = s2 && p1 = p2 && s1 <> p1 -> [(Term(Inh, [p1; s1]), cnv, None, [BeliefFromQuestion])]
 
     // negation
-    | Inh(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Inh, [a1; b])]), neg, Some d_neg, [AllowBackward])]
-    | Inh(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Inh, [a; b1])]), neg, Some d_neg, [AllowBackward])]
+    | Inh(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Inh, [a1; b])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Inh(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Inh, [a; b1])]), neg, Some d_neg, [Structural; AllowBackward])]
+    
+    | Not(Inh(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Inh, [a1; b]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Inh(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Inh, [a; b1]), neg, Some d_neg, [Structural; AllowBackward])]
 
-    | Sim(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Sim, [a1; b])]), neg, Some d_neg, [AllowBackward])]
-    | Sim(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Sim, [a; b1])]), neg, Some d_neg, [AllowBackward])]
+    | Sim(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Sim, [a1; b])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Sim(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Sim, [a; b1])]), neg, Some d_neg, [Structural; AllowBackward])]
+    
+    | Not(Sim(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Sim, [a1; b]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Sim(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Sim, [a; b1]), neg, Some d_neg, [Structural; AllowBackward])]
 
     | _ -> []
 
@@ -181,6 +192,20 @@ let structuralInference2 = function
     | Inh(a, c1), Inh(b, IntSet([c2])) when c1 = c2 && a <> b && a <> c1  -> [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [c1; Term(IntSet, [c2])])]), int, None, [])]
     | _ -> []
 
+let RFTRules = function
+    // mutual entailment
+    //| Inh(Prod(a, b), r), _ -> [(Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [r; Word "_"; b])])]), identity, None, [Structural])]
+    // Combinatorial mutual entailment
+    | Inh(Prod(a, m1), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+    | Inh(Prod(m1, a), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+    | Inh(Prod(a, m1), rx), Inh(Prod(b, m2), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+
+    | _ -> []
+
+
 let backwardDrivenForwardInference = function
     // Composition on both sides of a statement
     | Inh(ExtInt(set1), ExtInt(set2)), Inh(a, b) when isMember a set1 && isMember b set2 -> [(Term(Inh, [Term(ExtInt, set1); Term(ExtInt, set2)]), beliefStructuralDed, None, [BeliefFromQuestion])]
@@ -226,4 +251,6 @@ let backwardOnlyInference = function
                                                         (Term(Inh, [b; a]), identity, None, [QuestionOnly])
                                                         (Term(Sim, [a; b]), identity, None, [QuestionOnly])]
     | _ -> []
+
+
 

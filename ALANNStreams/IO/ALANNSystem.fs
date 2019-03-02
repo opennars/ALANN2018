@@ -45,7 +45,7 @@ let behavior3 (m:Actor<_>) =
     loop ()
     
 let printActor  =
-    outSocket.Connect(clientEndPoint)
+    outSocketUI.Connect(clientEndPoint)
     spawn system "Printer" <| props behavior3 
 
 let myprintfn msg = 

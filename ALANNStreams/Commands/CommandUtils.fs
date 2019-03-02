@@ -27,6 +27,7 @@ module CommandUtils
 open ALANNSystem
 open TermFormatters
 open SystemState
+open Types
 
 let getNodeFromTerm term =
     let numStreams = Params.NUM_TERM_STREAMS 
@@ -55,7 +56,7 @@ let printBeliefStr str =
 let printGoalStr str =
     myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)
 
-let showBeliefs beliefs =
+let showBeliefs (node : Node) beliefs =
     beliefs
     |> List.iter (fun b -> printBeliefStr (formatBelief b))
     match beliefs with
@@ -63,7 +64,7 @@ let showBeliefs beliefs =
     | _ ->
         beliefs
         |> List.averageBy (fun b -> b.TV.C)
-        |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f" (List.length beliefs) avg))
+        |> (fun avg -> printBeliefStr (sprintf "COUNT = %d AVERAGE CONF = %f Host TV = %s" (List.length beliefs) avg (truth node.HostBelief.TV)))
 
 let showGoals goals =
     goals

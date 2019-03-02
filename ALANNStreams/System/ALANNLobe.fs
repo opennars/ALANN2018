@@ -68,16 +68,16 @@ let mainSink =
         fun builder-> 
             let mergeInput = builder.Add(Merge<Event>(2))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
-            let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
-            let goalBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
+            let goalBuffer = Flow.FromGraph(MyBuffer(10).Async())
             let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
-            let broadcast = builder.Add(Broadcast<Event>(2))
+            let partitionGoals = builder.Add(Partition<Event>(2, fun e -> if e.EventType = Goal then 1 else 0))
             let mergeGoals = builder.Add(Merge<Event>(2))
 
             let processGoal = 
                 Flow.Create<Event>() 
                 |> Flow.map (fun g -> reviseGoal goalStore g)
-                |> Flow.collect (fun g -> g)            
+                |> Flow.collect (fun g -> g)      
+                |> Flow.filter (fun g -> g.TV.Value.F > 0.25f)
 
             let showEvents =
                 Flow.Create<Event>()
@@ -95,23 +95,22 @@ let mainSink =
                 .From(mergeInput)
                 .Via(resetFlow)
                 .Via(valveFlow)
-                .Via(termStreams)
 
-                .To(broadcast)
-                .From(broadcast.Out(1))
+                .To(partitionGoals)
+                .From(partitionGoals.Out(1))
                 .Via(goalBuffer)
-                .Via(processGoal)
+                .Via(processGoal.Async())
                 //.Via(showEvents)
                 .To(mergeGoals.In(1))
 
-                .From(broadcast.Out(0))
+                .From(partitionGoals.Out(0))
                 .To(mergeGoals.In(0))
                 .From(mergeGoals)
 
                 .Via(eventLogger)
-                //.Via(showEvents)
+                .Via(termStreams)
                 .Via(incrementEvents)
-                .Via(attentionBuffer)
+                //.Via(showEvents)
                 .To(mergeInput.In(1))
                 |> ignore
 
@@ -131,7 +130,7 @@ let spawnActor2 targetRef =
 
 let ALANNLobe = Source.actorRef OverflowStrategy.DropHead 1000
                  |> Source.mapMaterializedValue spawnActor2
-                 |> Source.map (fun s -> Parser s)
+                 |> Source.map Parser 
                  |> Source.collect (fun lst -> lst)
                  |> Source.toMat mainSink Keep.left
 

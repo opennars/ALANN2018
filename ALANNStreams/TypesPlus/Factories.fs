@@ -32,42 +32,32 @@ open SystemState
 
 let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
 
-let mergeIntervals eb term =
-    match term with
-    | term when term |> isTemporal -> 
-        let t1 = eb.Event.Stamp.LastUsed
-        let t2 = eb.Belief.Stamp.LastUsed
-        match eb.Event.Stamp.Intervals, eb.Belief.Stamp.Intervals with
-        | NoInterval, _ | _, NoInterval -> Interval(abs(t1 - t2))
-        | _ -> Intervals(Interval(abs(t1 - t2))::eb.Event.Stamp.Intervals::[eb.Belief.Stamp.Intervals])
-    | _ -> NoInterval
-
 // Event factories
 let makeEventFromBelief eb =
-    let stamp = {eb.Belief.Stamp with Created = SystemTime()}
-    //let stamp = eb.Belief.Stamp
-
-    {EventType = Belief; Term = eb.Belief.Term; TV = Some eb.Belief.TV; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
+    {EventType = Belief
+     Term = eb.Belief.Term
+     TV = Some eb.Belief.TV
+     AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}
+     Stamp = eb.Belief.Stamp
+     Solution = None}
 
 // Belief factories
 
 let makeBeliefFromEvent (e : Event) =
     match e with
-    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with LastUsed = SystemTime(); UseCount = e.Stamp.UseCount + 1}}
+    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with UseCount = e.Stamp.UseCount + 1}}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeGoalFromEvent (e : Event) =
     match e with
-    | {EventType = Goal; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with LastUsed = SystemTime(); UseCount = e.Stamp.UseCount + 1}}
+    | {EventType = Goal; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with UseCount = e.Stamp.UseCount + 1}}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeVirtualBelief term =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = 1
                  Evidence = []
-                 Intervals = NoInterval
-                 LastUsed = now
                  UseCount = 0
                  Source = Virtual}
 
@@ -77,19 +67,17 @@ let makeVirtualBelief term =
 
 let makeInferredEvent eb (term, tv) =
     let temporalDistanceDiscount eb = 
-        let t1 = eb.Event.Stamp.Created
-        let t2 = eb.Belief.Stamp.Created
+        let t1 = eb.Event.Stamp.OccurenceTime
+        let t2 = eb.Belief.Stamp.OccurenceTime
         let d = abs(t1 - t2)
         float32(Math.Pow(0.999, float(d)))
 
     let stamp1 = eb.Event.Stamp
     let stamp2 = eb.Belief.Stamp
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = merge stamp1.Evidence stamp2.Evidence
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -97,11 +85,9 @@ let makeInferredEvent eb (term, tv) =
 
 let makeInferredFromQuestionEvent eb (term, tv) =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = eb.Belief.Stamp.Evidence
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -109,11 +95,9 @@ let makeInferredFromQuestionEvent eb (term, tv) =
 
 let makeStructuralEvent eb (term, tv) =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = eb.Event.Stamp.Evidence
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -121,11 +105,9 @@ let makeStructuralEvent eb (term, tv) =
 
 let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term                 
                  Evidence = []
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -133,11 +115,9 @@ let makeQuestionEvent (eb : EventBelief) term =
 
 let makeQuestionStructuralEvent (eb : EventBelief) term =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = []
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -146,11 +126,9 @@ let makeQuestionStructuralEvent (eb : EventBelief) term =
 
 let makeQuestEvent (eb : EventBelief) term =
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = []
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 
@@ -159,13 +137,10 @@ let makeQuestEvent (eb : EventBelief) term =
 let makeGoalEvent (eb : EventBelief) (term, tv) =
     let stamp1 = eb.Event.Stamp
     let stamp2 = eb.Belief.Stamp
-    let interval = Interval(abs(stamp1.LastUsed - stamp2.LastUsed))
     let now = SystemTime()
-    let stamp = {Created = now
+    let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence
-                 Intervals = mergeIntervals eb term
-                 LastUsed = now
                  UseCount = 0
                  Source = Derived}
 

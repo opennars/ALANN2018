@@ -43,7 +43,7 @@ let optor x y = match x with | Some x -> x | None -> y
 
 // White space parsers
 let str s = pstring s
-let pcomment = str "'" >>. skipRestOfLine true
+let pcomment = (str "'" <|> str "//") >>. skipRestOfLine true
 let ws = skipSepBy spaces pcomment
 let str_ws s = pstring s .>> ws
 
@@ -63,13 +63,14 @@ let pstringliteral =
 
 let pword_ws = pstringliteral .>> ws 
 
+// Interval parser
+let interval_ws = str_ws "+" >>. pint32 .>> ws |>> fun i -> Interval(i)
+
 // TV, DV and AV parsers
 let ptruth  = between (str_ws "{") (str_ws "}") (tuple2 pfloat_ws pfloat_ws) |>> fun (f, c) -> {F = float32(f); C = float32(c)}
-//let pdesire = between (str_ws "{") (str_ws "}") (tuple2 pfloat_ws pfloat_ws) |>> fun (p, d) -> {P = float32(p); D = float32(d)}
 let pav     = between (str_ws "[") (str_ws "]") (tuple2 pfloat_ws pfloat_ws) |>> fun (s, l) -> {STI = float32(s); LTI = float32(l)}
 
 let ptruth_ws  = ptruth .>> ws
-//let pdesire_ws = pdesire .>> ws
 let pav_ws     = pav .>> ws
 
 //Variable parsers
@@ -83,7 +84,6 @@ let pivar = str_ws "$" >>. varname_ws |>> fun a -> Var(IVar, (renameVar (a.ToUpp
 let pdvar = str_ws "#" >>. varname_ws |>> fun a -> Var(DVar , (renameVar (a.ToUpper())))
 let pqvar = str_ws "?" >>. varname_ws |>> fun a -> Var(QVar , (renameVar (a.ToUpper())))
 let pvariable_ws = pivar <|> pdvar <|> pqvar .>> ws
-
 
 // Set parser
 let setBetweenStrings sOpen sClose pElement f =
@@ -123,9 +123,13 @@ let matchOpToTerm a b c =
   | "/" -> Term(ExtImg, a::c)
   | _ -> failwith "Unexpected Operator in Parser"
 
+let matchOpToTermPrefix b a c = matchOpToTerm a b c
+
 let pcompound_term_ws = 
     between (str_ws "(") (str_ws ")")
-      (pipe3 pterm binary_op_ws (many1 pterm) matchOpToTerm)
+        ((pipe3 binary_op_ws pterm (many1 pterm) matchOpToTermPrefix)
+        <|>
+        (pipe3 pterm binary_op_ws (many1 pterm) matchOpToTerm))      
 
 // Copula parsers       
 let first_order_copula = str_ws "-->" <|> str_ws "<->" <|> str_ws "{--" <|> str_ws "--]" <|> str_ws "{-]" <|> str_ws "->>" <|> str_ws "<<-"
@@ -153,7 +157,7 @@ let statement =
           | "<|>" -> Term(ConEqu, [a; c])  
           | _ -> failwith "Unexpected copula type in Parser"))
 
-do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement]
+do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement; interval_ws]
 do pstatementRef := pterm <|> statement
  
 // EventType parsers
@@ -170,11 +174,11 @@ let psentence_ws = psentence .>> ws
 
 let makeStamp eType term = 
     match eType with
-    | Belief | Goal -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; Intervals = NoInterval; LastUsed = SystemTime(); UseCount = 0; Source = User}
-    | Question | Quest -> {Created = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; Intervals = NoInterval; LastUsed = SystemTime(); UseCount = 0; Source = User}
+    | Belief | Goal -> {OccurenceTime = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; UseCount = 0; Source = User}
+    | Question | Quest -> {OccurenceTime = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; UseCount = 0; Source = User}
 
 // Event parser
-let pevent          = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType;  TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
+let pevent = pipe2 (opt (attempt pav)) psentence (fun a b -> {Term = b.Term; AV = optor a {STI = Params.USER_STI; LTI = Params.USER_LTI}; EventType = b.EventType;  TV = b.TV; Stamp = makeStamp b.EventType b.Term; Solution = None})
 let pevent_ws = ws >>. pevent
 
 // General Parser entry point

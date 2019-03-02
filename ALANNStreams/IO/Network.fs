@@ -33,13 +33,20 @@ let clientAddr = Params.CLIENT_ADDR
 let serverPort = Params.SERVER_PORT
 let clientPort = Params.GUI_CLIENT_PORT
 let pongPort = Params.PONG_CLIENT_PORT
+let shellAddr = Params.SHELL_ADDR
+let shellPort = Params.SHELL_PORT
 
 let clientEndPoint = new IPEndPoint(IPAddress.Parse(clientAddr), clientPort)
-let outSocket = new UdpClient()
+let shellEndPoint = new IPEndPoint(IPAddress.Parse(shellAddr), shellPort)
+let outSocketUI = new UdpClient()
+let outSocketShell = new UdpClient();
+
+outSocketShell.Connect(shellEndPoint)
 
 let sendMessageToClient (msg : string) =
     let data = Encoding.ASCII.GetBytes(msg)
-    outSocket.SendAsync(data, data.Length) |> ignore
+    outSocketUI.SendAsync(data, data.Length) |> ignore
+    outSocketShell.SendAsync(data, data.Length) |> ignore
 
 let serverEndPoint = new IPEndPoint(IPAddress.Any, serverPort)
 let inSocket = new UdpClient(serverEndPoint)

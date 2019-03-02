@@ -28,7 +28,6 @@ open Types
 open Store
 open Factories
 open NodeFunctions
-open ImmediateInference
 open ProcessBelief
 open ProcessQuestion
 open ProcessGoal
@@ -37,23 +36,23 @@ open Reporting
 open System.Threading
 open SystemState
 open Evidence
-open TermFormatters
 
 let processNode state (event : Event) =
-    
-    immediateInference state event
-    let oldBelief = updateBeliefs state event
+
+    let (oldBelief, state) =
+        match state.Term = event.Term with
+        | false -> updateLinks state event
+        | true -> updateHostBeliefs state event
 
     let now = SystemTime()
     let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
 
     let state = updateAttention state now event
-    let state = updateEventTruth state now
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
     let cond3 = match state.Term with | Temporal _ -> true | _ -> false
-          
+     
     let processEvent attention oldBelief event =
         
         if state.Trace then showTrace state event
@@ -69,7 +68,6 @@ let processNode state (event : Event) =
         let eventBeliefsPlus (belief : Belief option) = 
             match belief with
             | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
-                //printfn "Old belief in %s" (ft state.Term)
                 (makeEventBelief attention event belief)::eventBeliefs
             | _ -> eventBeliefs
 
@@ -91,10 +89,11 @@ let processNode state (event : Event) =
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 
-let initState term =
-    {Created = SystemTime()
+let initState term e = 
+    let now = SystemTime()
+    {Created = now
      Term = term
-     EventTruth = {F = 1.0f; C = 0.9f}
+     HostBelief = {Term = term; TV = e.TV.Value; Stamp = e.Stamp}
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL
@@ -103,5 +102,6 @@ let initState term =
      Trace = false}
     
 let createNode (t, e : Event) = 
-    initState t
+    initState t e
+
 

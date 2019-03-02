@@ -25,7 +25,6 @@
 module TermStream
 
 open System
-open Akkling
 open Akkling.Streams
 open Akka.Streams.Dsl
 open Akka.Streams
@@ -33,6 +32,7 @@ open Types
 open Node
 open InferenceFlow
 open SystemState
+open PriorityBuffer
 
 let termStream (i) =
     GraphDsl.Create(
@@ -75,18 +75,16 @@ let termStream (i) =
             let processEvent = 
                 (Flow.Create<TermEvent>()
                 |> Flow.map processEvent).Async()
-            
-            let collector =
-                Flow.Create<EventBelief list>()
                 |> Flow.collect (fun ebs -> ebs)
 
             let groupAndDelay =
                 Flow.Create<TermEvent>()
                 |> Flow.groupedWithin (Params.GROUP_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                |> Flow.delay(System.TimeSpan.FromMilliseconds(Params.CYCLE_DELAY_MS))
                 |> Flow.collect (fun termEvents -> termEvents)
-
+            
             let deriver = builder.Add(inferenceFlow.Async())
+
+            let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
 
             builder
                 .From(preferCreatedTermMerge)
@@ -97,7 +95,7 @@ let termStream (i) =
                 .From(partitionExistingTerms.Out(1))
                 .Via(groupAndDelay)
                 .Via(processEvent)
-                .Via(collector)
+                .Via(attentionBuffer)
                 .Via(deriver)
                 |> ignore
 

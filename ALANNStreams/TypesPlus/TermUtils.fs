@@ -32,7 +32,7 @@ let terms term =
     let rec loop level term = seq {
         if level < Params.TERM_DEPTH then
             match term with
-            | Word "_" | Var(_, _) -> ()
+            | Word "_" | Var(_, _) | Interval _ -> ()
 
             | Word _ -> 
                 yield term
@@ -54,6 +54,7 @@ let rec syntacticComplexity st =
     | Var( _) -> 2
     | Word _ -> 1
     | Temporal _ -> 1
+    | Interval _ -> 1
     | _ -> failwith "Unexpected Term Type in syntacticComplexity()"
 
 let noCommonSubterm s p =    
@@ -100,7 +101,6 @@ let isTemporal = function | Term(ConEqu, _) | Term(PreEqu, _) | Term(PreImp, _) 
 let isPredictiveTemporal = function | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) -> true | _ -> false
 let isImplicationOp = function Imp |PreImp | ConImp | RetImp -> true | _ -> false
 let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
-let isSequenceable = function | Term(Inh, [Word _; Word _]) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
 let isCopula = function | Inh | Sim | Imp | Equ | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
 let isHypothesis = function | Term(op, [t1; t2]) when isImplicationOp op -> true | _ -> false
 let isNotImpOrEqu s = not(isImp s || isEqu s)
@@ -113,22 +113,22 @@ let difference a b = Set.toList <| Set.difference (Set.ofList a) (Set.ofList b)
 let isMember s lst = Set.contains s (Set.ofList lst)
 let listLess s lst = List.except [s] lst //Set.toList <| Set.difference (Set.ofList lst) (Set.ofList [s])
 let from s lst = match listLess s lst with | [a] -> a | _ -> failwith "Failure in from() - Non binary term" 
-let isBefore (s : Stamp) (p : Stamp) = s.Created < p.Created && abs(s.Created - p.Created) < Params.PAST_TENSE_OFFSET
-let isConcurrent (s : Stamp) (p : Stamp) = abs (p.Created - s.Created) < Params.CONCURRENCY_DURATION
-let isAfter (s : Stamp) (p : Stamp) = s.Created > p.Created && abs(s.Created - p.Created) < Params.FUTURE_TENSE_OFFSET
+let isBefore (s : Stamp) (p : Stamp) = s.OccurenceTime < p.OccurenceTime && abs(s.OccurenceTime - p.OccurenceTime) < Params.CONCURRENCY_DURATION
+let isConcurrent (s : Stamp) (p : Stamp) = abs (p.OccurenceTime - s.OccurenceTime) < Params.CONCURRENCY_DURATION
+let isAfter (s : Stamp) (p : Stamp) = s.OccurenceTime > p.OccurenceTime && abs(s.OccurenceTime - p.OccurenceTime) < Params.CONCURRENCY_DURATION
 let isQuoted = function | Word s -> s.Chars(s.Length - 1) = ''' | _ -> false
 let isBelief e = e.EventType = EventType.Belief
  
 let rec containsVars = function
     | Var(_, _) -> true
-    | Word _ -> false
+    | Word _ | Interval _ -> false
     | Term(_, lst) -> List.exists containsVars lst
     | _ -> failwith "Unexpected Temporal term in containsVars()"
 
 let rec containsQueryVars = function
     | Var(QVar, _) -> true
     | Var(_, _) -> false
-    | Word _ -> false
+    | Word _ | Interval _ -> false
     | Term(_, lst) -> List.exists containsQueryVars lst
     | _ -> failwith "Unexpected Temporal term in containsQueryVars()"
 
@@ -145,7 +145,7 @@ let isSelective t = containsQueryVars t
 
 let isFirstOrder = function | Term(Inh, _) | Term(Sim, _) -> true | _ -> false
 
-let isRevisble (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Stamp.Evidence    
+let isRevisable (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Stamp.Evidence    
 
 // Helper functions
 let makeKey (b : Belief) = b.Term

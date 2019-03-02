@@ -110,7 +110,7 @@ let test1 =
             let t1 = parseEvent <|  "<s --> p>." + truth tv1
             let t2 = parseEvent <|  "<z --> z>." + truth tv1 
             let expected = [("<p --> s>", Some <| cnv(tv1, tv2))]
-            Expect.equal (testInfFunc immediate t1 t2) expected "Immediate: cnv failed"
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: cnv failed"
       
         testCase "similaritySyllogisitic: com1" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}

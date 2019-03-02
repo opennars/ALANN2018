@@ -33,7 +33,7 @@ type TemporalInferenceFunction = (Term * Term) * Stamp * Stamp -> (Term * (TV * 
 
 let inf (f, swap) eb =
     let concurrency() = 
-        match eb.Event.Stamp.LastUsed, eb.Belief.Stamp.LastUsed with
+        match eb.Event.Stamp.OccurenceTime, eb.Belief.Stamp.OccurenceTime with
         | o1, o2 when abs(o1 - o2) < Params.CONCURRENCY_DURATION -> IsConcurrent
         | o1, o2 when o1 < o2 -> IsBefore
         | o1, o2 when o1 > o2 -> IsAfter

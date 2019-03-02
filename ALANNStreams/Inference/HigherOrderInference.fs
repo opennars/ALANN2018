@@ -49,27 +49,15 @@ let Nal5_conversion_contrapostion_negation : InferenceFunction = function
     | RetImp(Not(s1), p), Not(s2) when s1 = s2 && s1 <> p -> [(Term(PreImp, [Term(Not, [p]); s1]), cnt, None, [AllowBackward; Structural])]
 
     // negation
-    | Inh(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Inh, [a1; b])]), neg, Some d_neg, [Structural])]
-    | Inh(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Inh, [a; b1])]), neg, Some d_neg, [Structural])]
+    | Imp(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Imp, [a1; b])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Imp(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Imp, [a; b1])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Imp(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Imp, [a1; b]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Imp(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Imp, [a; b1]), neg, Some d_neg, [Structural; AllowBackward])]
 
-    | Not(Inh(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Inh, [a1; b]), neg, Some d_neg, [Structural])]
-    | Not(Inh(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Inh, [a; b1]), neg, Some d_neg, [Structural])]
-
-    | Sim(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Sim, [a1; b])]), neg, Some d_neg, [Structural])]
-    | Sim(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Sim, [a; b1])]), neg, Some d_neg, [Structural])]
-
-    | Not(Sim(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Sim, [a1; b]), neg, Some d_neg, [Structural])]
-    | Not(Sim(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Sim, [a; b1]), neg, Some d_neg, [Structural])]
-
-    | Imp(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Imp, [a1; b])]), neg, Some d_neg, [Structural])]
-    | Imp(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Imp, [a; b1])]), neg, Some d_neg, [Structural])]
-    | Not(Imp(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Imp, [a1; b]), neg, Some d_neg, [Structural])]
-    | Not(Imp(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Imp, [a; b1]), neg, Some d_neg, [Structural])]
-
-    | Equ(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Equ, [a1; b])]), neg, Some d_neg, [Structural])]
-    | Equ(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Equ, [a; b1])]), neg, Some d_neg, [Structural])]
-    | Not(Equ(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Equ, [a1; b]), neg, Some d_neg, [Structural])]
-    | Not(Equ(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Equ, [a; b1]), neg, Some d_neg, [Structural])]
+    | Equ(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Equ, [a1; b])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Equ(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Equ, [a; b1])]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Equ(a1, b)), a2 when a1 = a2 && a1 <> b -> [(Term(Equ, [a1; b]), neg, Some d_neg, [Structural; AllowBackward])]
+    | Not(Equ(a, b1)), b2 when b1 = b2 && a <> b1 -> [(Term(Equ, [a; b1]), neg, Some d_neg, [Structural; AllowBackward])]
     | _ -> []
 
 let nal_5_implication_based_syllogism_Imp : InferenceFunction = function
@@ -462,12 +450,12 @@ let nal7_temporal_inference  = function
                                                                    (Term(PreImp, [s; p]), temporal_ind, None, [IsBefore])
                                                                    (Term(RetImp, [p; s]), temporal_abd, None, [IsBefore])
                                                                    (Term(PreEqu, [s; p]), temporal_com, None, [IsBefore])
-                                                                   (Term(PreImp, [p; s]), temporal_ind, None, [IsAfter])
-                                                                   (Term(RetImp, [s; p]), temporal_abd, None, [IsAfter])
-                                                                   (Term(PreEqu, [p; s]), temporal_com, None, [IsAfter])]
+                                                                   (Term(PreImp, [p; s]), temporal_ind, None, [IsBefore])
+                                                                   (Term(RetImp, [s; p]), temporal_abd, None, [IsBefore])
+                                                                   (Term(PreEqu, [p; s]), temporal_com, None, [IsBefore])]
 
     | s, p when isNotImpOrEqu p && isNotImpOrEqu s  -> [(Term(Par,    [s; p]), temporal_int, None, [IsConcurrent])
                                                         (Term(Seq,    [s; p]), temporal_int, None, [IsBefore])
-                                                        (Term(Seq,    [p; s]), temporal_int, None, [IsAfter])]
+                                                        (Term(Seq,    [p; s]), temporal_int, None, [IsBefore])]
 
     | _ -> []

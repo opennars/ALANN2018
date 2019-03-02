@@ -46,6 +46,9 @@ type Term      = | Word of string
                  | Var of VarCode * string 
                  | Term of OpCode * Term list
                  | Temporal of int64
+                 | Interval of int32
+                 | Fail                             // For unification
+
 
 type TV = {F : float32; C : float32}    // Acts as DV for goals
 type AV = {STI : float32; LTI : float32}
@@ -56,17 +59,14 @@ type Id = int64
 
 type SysTime = int64
 type Evidence = Id list
-type Interval = | Interval of SysTime | Intervals of Interval list | NoInterval
 
 type Sentence = {EventType : EventType; Term: Term; TV : TV option}
 
 type Source = | User | Derived | Virtual | Channel of int16
 
-type Stamp = {Created : int64
+type Stamp = {OccurenceTime : SysTime
               SC : int
               Evidence : Evidence
-              Intervals : Interval
-              LastUsed : SysTime
               UseCount : int
               Source : Source}
 
@@ -159,7 +159,7 @@ type IStore =
     abstract Clear : unit -> unit
     abstract Count : int
     abstract GetBeliefs : unit -> seq<Belief>
-    abstract GetSuperBeliefs : unit -> seq<Belief>
+    abstract GetHypotheses : unit -> seq<Belief>
     abstract GetTemporalBeliefs : unit -> seq<Belief>
     abstract GetGeneralBeliefs : unit -> seq<Belief>
     abstract GetVariableBeliefs : unit -> seq<Belief>
@@ -174,10 +174,10 @@ type IGoalStore =
     abstract GetGoals : unit -> seq<Belief>
 
 type Node     = {Term : Term
-                 EventTruth : TV
                  Beliefs : IStore
                  VirtualBelief : Belief
                  Created : SysTime
+                 mutable HostBelief : Belief
                  mutable Attention : float32
                  mutable LastUsed : SysTime
                  mutable UseCount : int64

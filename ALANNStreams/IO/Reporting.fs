@@ -32,15 +32,20 @@ open Akkling
 open TermUtils
 open TermFormatters
 open SystemState
+open Events
 
-let answerDict = ConcurrentDictionary<string, string>()
+let answerDict = ConcurrentDictionary<string, (string * string * string)>()
 
-let displayAnswer (answer : string) =    
-    let answer' = answer.Substring(9)
-    match answerDict.ContainsKey answer' with
-    | false ->
-        match answerDict.TryAdd(answer', answer') with
-        | true -> printActor <! PrintMessage (sprintf "?%s" answer)
+let displayAnswer (answer : Answer) =    
+    let answer' = answer.QuestionID + answer.Term
+    match answerDict.TryGetValue answer' with
+    | (false, _) ->
+        match answerDict.TryAdd(answer', (answer.Prefix, answer.Term, answer.TV)) with
+        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
+        | _ -> ()
+    | (true, ((_, _, tv) as existing)) when tv < answer.TV -> 
+        match answerDict.TryUpdate(answer', (answer.Prefix, answer.Term, answer.TV), existing) with
+        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
         | _ -> ()
     | _ -> ()
 
@@ -53,7 +58,7 @@ let updateStatus() =
     myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.EventsPerSecond, 0)))  
     myprintfn (sprintf "%sNode Activations %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.Activations, 0)))  
 
-let showTrace state e =
+let showTrace (state : Node) e =
     let activationType (e : Event) = if isTemporal e.Term then "TEMPORAL" else "GENERAL"
     let msg1 = sprintf "%sTRACING NODE '%s': ACTIVATED WITH %s ATTENTION %.2f" Params.COMMAND_PREFIX (ft state.Term) (activationType e) state.Attention
     let msg2 = formatEvent e

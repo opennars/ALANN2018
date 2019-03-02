@@ -27,8 +27,11 @@ module Events
 open System
 open System.Threading
 open AsyncUtils
+open Types
 
-type DisplayAnswerEventArgs(answer : string) =
+type Answer = {Prefix : string; QuestionID : string; Term : String; TV : string}
+
+type DisplayAnswerEventArgs(answer : Answer) =
     inherit EventArgs()
     member x.Answer = answer
 

@@ -30,7 +30,7 @@ open SubStore
 type GoalStore(generalCapacity) =
     let simpleBeliefRanking (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
     let complexBeliefRanking (belief : Belief) = exp belief.TV
-    let recencyRanking (belief : Belief) = float32(belief.Stamp.LastUsed)
+    let recencyRanking (belief : Belief) = float32(belief.Stamp.OccurenceTime)
 
     let store = new SubStore(generalCapacity, recencyRanking) :> ISubStore
 

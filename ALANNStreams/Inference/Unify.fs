@@ -25,61 +25,63 @@
 module Unify
 
 open Types
-open Akka.Actor
 open TermUtils
-open TermFormatters
 
 //
 // Unify - a recursive unifier that unifies two terms
 //
 
 let unify x y =
-    let rec unifyRec x y map =
+    let rec unifyRec selective x y map =
         let rec unifyList argsx argsy map =
-            let map' =
-                match argsx, argsy with 
-                | x::restx, y::resty -> 
-                    let map' = unifyRec x y map
-                    match map with | Some map ->  unifyList restx resty map' | _ -> None
-                | [], [] -> map
+            match argsx, argsy with 
+            | x::restx, y::resty ->                 
+                match map with 
+                | Some _ -> 
+                    let map' = unifyRec selective x y map
+                    unifyList restx resty map' 
                 | _ -> None
-            map'
+            | [], [] -> map
+            | _ -> None
+
+        let rec occurCheck var x map =
+            match (var, x) with
+            | v, x when v = x -> true
+            | v, x when Map.containsKey x map ->
+                occurCheck v (Map.find x map) map
+            | v, Term(_, args) ->
+                List.exists (fun t -> occurCheck v t map) args
+            | _ -> false            
 
         let rec unifyVar var x map =
             match map with
             | Some map ->
-                if Map.containsKey var map then unifyRec (Map.find var map) x (Some map)
-                elif Map.containsKey x map then unifyRec var (Map.find x map) (Some map)
+                if Map.containsKey var map then unifyRec selective (Map.find var map) x (Some map)
+                elif Map.containsKey x map then unifyRec selective var (Map.find x map) (Some map)
+                elif occurCheck var x map then None 
                 else Some (Map.add var x map)
             | None -> None
 
-        let map' = 
+        if map = None then None
+        else
             match x, y with
             | x, y when x = y -> map
-            | Term(termType1, argsx), Term(termType2, argsy) when termType1 = termType2 && List.length argsx = List.length argsy -> unifyList argsx argsy map
-            | Var(QVar, _), y when not(containsVars y) -> unifyVar x y map
-            | x, Var(QVar, _) when not(containsVars x) -> unifyVar x y map
-            | Var(DVar, _), y when not(containsQueryVars y) -> 
-                //printfn "Unifying %s %s" (ft x) (ft y)
-                unifyVar x y map
-            | x, Var(DVar, _) when not(containsQueryVars x) -> 
-                //printfn "Unifying %s %s" (ft x) (ft y)
-                unifyVar y x map
-            | Var(IVar, _), y when not(containsQueryVars y) -> 
-                //printfn "Unifying %s %s" (ft x) (ft y)
-                unifyVar x y map
-            | x, Var(IVar, _) when not(containsQueryVars x) -> 
-                //printfn "Unifying %s %s" (ft x) (ft y)
-                unifyVar y x map
+            | Term(op1, argsx), Term(op2, argsy) when op1 = op2 && List.length argsx = List.length argsy -> 
+                              unifyList argsx argsy map
+            | Var(QVar, _), y -> unifyVar x y map
+            | x, Var(QVar, _) -> unifyVar y x map
+            | Var(IVar, _), y when not(selective) -> unifyVar x y map
+            | x, Var(IVar, _) when not(selective) -> unifyVar y x map
+            | Var(DVar, _), y when not(selective) -> unifyVar x y map
+            | x, Var(DVar, _) when not(selective) -> unifyVar y x map
 
             | _ -> None
-        map'
 
     // Main function body here
-    match unifyRec x y (Some Map.empty) with | Some map -> map |> Map.toList | _ -> []
 
-let unifies x y =     
-    if x = y then true else unify x y <> []
+    match unifyRec (isSelective x) x y (Some Map.empty) with | Some map -> map |> Map.toList | _ -> []
+
+let unifies x y = if x = y then true else unify x y <> []
 
 //
 // makeSubstitutions - recursively apply substitutions from subs list to r e.g. R{S/T}

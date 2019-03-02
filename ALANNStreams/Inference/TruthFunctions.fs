@@ -117,16 +117,16 @@ module TruthFunctions
     let inline identity (tv, _) = tv
     
     let inline structuralDed (tv, _) = 
-        ded(tv, {F = 1.0f; C = 0.9f})
+        ded(tv, {F = 1.0f; C = 1.0f})
     
     let inline structuralAbd (tv, _) = 
-        abd((tv), {F = 1.0f; C = 0.9f})
+        abd({F = 1.0f; C = 1.0f}, tv)
     
     let inline structuralInt (tv, _) = 
-        int(tv, {F = 1.0f; C = 0.9f})
+        int(tv, {F = 1.0f; C = 1.0f})
     
     let inline beliefStructuralDed (tv, _) = 
-        ded(tv, {F = 1.0f; C = 0.9f})
+        ded(tv, {F = 1.0f; C = 1.0f})
     
     let inline beliefNeg (tv, _) = 
         neg (tv)
@@ -138,7 +138,7 @@ module TruthFunctions
 
     // Desire truth functions
     let inline desire_structural_strong (tv, _) =
-        ana(tv, {F = 1.0f; C = 0.9f})
+        ana(tv, {F = 1.0f; C = 1.0f})
 
     let inline desire_weak({F = f1; C = c1}, {F = f2; C = c2}) =
         {F = _and [f1; f2]; C = _and [c1; c2; f2]}              // *** TODO need to add w2c(1.0f)
@@ -149,7 +149,7 @@ module TruthFunctions
     let d_ind = ind
     let d_id = identity
     let d_neg = neg
-    let d_strucural_strong = desire_structural_strong
+    let d_structural_strong = desire_structural_strong
 
     //Temporal truth functions
     let inline temporal_abd ({F=f1; C=c1}, {F=f2; C=c2}) = 

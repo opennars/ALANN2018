@@ -41,7 +41,7 @@ let maxTV (b1 : Belief) (b2 : Belief) =
 let bestAnswer state (event : Event) =
     let matches =
         state.Beliefs.GetBeliefs()
-        |> Seq.filter (fun b -> b.Term = event.Term && b.Term = state.Term)
+        |> Seq.filter (fun b -> b.Term = event.Term)
 
     if Seq.isEmpty matches then
         None
@@ -51,7 +51,7 @@ let bestAnswer state (event : Event) =
 let selectiveAnswer state (event : Event) =
     let matches = 
         state.Beliefs.GetBeliefs()
-        |> Seq.filter (fun b -> unifies b.Term event.Term)
+        |> Seq.filter (fun b -> unifies event.Term b.Term)
 
     if Seq.isEmpty matches then
         None
@@ -60,13 +60,14 @@ let selectiveAnswer state (event : Event) =
 
 let isBetterThan aTV bTV =
     let cond1 = bTV.C >= aTV.C 
-    let cond2 = (bTV.C = aTV.C) && (bTV.F > aTV.F)
+    let cond2 = (bTV.C = aTV.C) && (bTV.F >= aTV.F)
     cond1 || cond2
 
-let tryPrintAnswer (e : Event) (b : Belief) =
+let tryPrintAnswer e (b : Belief) =
     let bBetter = e.Solution = None || Option.exists (fun (solution : Belief) -> b.TV |> isBetterThan solution.TV) e.Solution
 
     if e.Stamp.Source = User && bBetter then
-        let msg =  sprintf "[%5dms]Unifies %s %s %s %s " (SystemState.SystemTime() - e.Stamp.Created) (ft e.Term) (Trail e.Stamp.Evidence) (ft b.Term) (truth b.TV) //(Trail b.Stamp.Evidence)
-        raiseDisplayAnswerEvent msg
+        let timeTaken = SystemState.SystemTime() - e.Stamp.OccurenceTime
+        let answer = {Prefix = sprintf "Answer:[%5dms]" timeTaken; QuestionID = (Trail e.Stamp.Evidence); Term = (ft b.Term); TV = (truth b.TV)} // =  sprintf "Answer:[%5dms] %s %s %s " timeTaken (Trail e.Stamp.Evidence) (ft b.Term) (truth b.TV)
+        raiseDisplayAnswerEvent answer
     

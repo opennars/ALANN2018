@@ -40,12 +40,13 @@ let reviseGoal (goalStore : IGoalStore) event =
     
     let updateStamp st1 (st2 : Stamp) = 
         {st1 with 
+            OccurenceTime = SystemTime()
             Evidence = merge st1.Evidence st2.Evidence
-            LastUsed = SystemTime()
             UseCount = st1.UseCount + st2.UseCount + 1}
                 
     let makeRevisedGoal (oldb : Belief) (newb : Belief) = 
-        let tv = rev(newb.TV, oldb.TV)
+        let {F = f; C = c} = rev(newb.TV, oldb.TV)
+        let tv = {F = f; C = min c 0.9f}
         let stamp = updateStamp newb.Stamp oldb.Stamp
         {Term = newb.Term; TV = tv; Stamp = stamp}
 
@@ -54,14 +55,19 @@ let reviseGoal (goalStore : IGoalStore) event =
 
     match event with
     | {Event.EventType = Goal; TV = Some(eTV)} ->
+        //printfn "In Revise goal %s" (formatEvent event)
         let newGoal = makeGoalFromEvent event
         match goalStore.TryGetValue(makeKey newGoal) with
-        | Some oldGoal when unifies newGoal.Term oldGoal.Term && isRevisble oldGoal newGoal ->
+        | Some oldGoal when unifies newGoal.Term oldGoal.Term && isRevisable oldGoal newGoal ->
+            //printfn "Revising goals %s %s" (formatGoal newGoal) (formatGoal oldGoal)
             let goal' = makeRevisedGoal oldGoal newGoal
             goalStore.Update(makeKey goal', goal')
-        | Some oldGoal when unifies newGoal.Term oldGoal.Term && eTV |> isBetterThan oldGoal.TV -> 
+        | Some oldGoal when unifies newGoal.Term oldGoal.Term && eTV |> isBetterThan oldGoal.TV ->
+            //printfn "Updating goal"
             goalStore.Update(makeKey newGoal, newGoal)
-        | None -> goalStore.Insert(makeKey newGoal, newGoal)
+        | None -> 
+            //printfn "Inserting goal"
+            goalStore.Insert(makeKey newGoal, newGoal)
         | _ -> () // Exists but not better truth or revisable
             
         Seq.map makeEventFromGoal (goalStore.GetGoals())

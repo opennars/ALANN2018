@@ -30,7 +30,6 @@ open Akka.Streams
 open Types
 open TermStream
 open TermUtils
-open TermFormatters
 
 let termStreams =
     GraphDsl.Create(
@@ -41,18 +40,17 @@ let termStreams =
             let merge = builder.Add(Merge<Event>(numStreams))
             
             let separateTerms = 
+                let createTermList = function
+                | {Event.EventType = Belief} as event -> Temporal(event.Stamp.OccurenceTime)::(terms event.Term)
+                | event -> (terms event.Term)
+
                 builder.Add(
                     (Flow.Create<Event>()
-                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| Temporal(e.Stamp.Created)::(terms e.Term))).Async())
+                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)).Async())
                     //|> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)).Async())
-
-            let termPrinter =
-                Flow.Create<TermEvent>()
-                |> Flow.map (fun te -> printfn "%s" (ft te.Term); te)
 
             builder
                 .From(separateTerms)
-                //.Via(termPrinter)
                 .To(partition)                
                 |> ignore
 

@@ -51,7 +51,7 @@ let satisfyingBelief state (event : Event) =
 let processGoal attention state (event : Event) =
     match Choice.bestAnswer state event with
     | Some belief when state.Term = event.Term ->
-        if exp(event.TV.Value) > Params.DECISION_THRESHOLD then
+        if exp(state.HostBelief.TV) > Params.DECISION_THRESHOLD then
             match event.Term with
             | Term(Inh, [Term(IntSet, [Word "left"]); Word "action"]) ->
                 raiseActionExecutionEvent (Actions.MoveLeft)
@@ -60,5 +60,9 @@ let processGoal attention state (event : Event) =
             | _ -> ()
 
             raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
-        [makeAnsweredEventGoal attention event belief] 
+            let belief = {belief with TV = state.HostBelief.TV}
+            [makeAnsweredEventGoal attention event belief] 
+        else    
+            printfn "Processing inference"
+            getInferenceBeliefs attention state event
     | _ -> getInferenceBeliefs attention state event

@@ -77,8 +77,8 @@
     <Compile Include="IO\ActionExecution.fs" />
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
-    <Compile Include="Containers\EventStore.fs" />
     <Compile Include="Containers\GoalStore.fs" />
+    <Compile Include="Containers\NodeStore.fs" />
     <Compile Include="Inference\Unify.fs" />
     <Compile Include="Inference\TruthFunctions.fs" />
     <Compile Include="Inference\InferenceUtils.fs" />
@@ -86,7 +86,6 @@
     <Compile Include="Inference\HigherOrderInference.fs" />
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
-    <Compile Include="Inference\ImmediateInference.fs" />
     <Compile Include="Parser\Parser.fs" />
     <Compile Include="Parser\CommandParser.fs" />
     <Compile Include="Node\Choice.fs" />

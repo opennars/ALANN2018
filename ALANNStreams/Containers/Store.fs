@@ -33,9 +33,9 @@ type Store(generalCapacity, temporalCapacity, hypothesisCapacity ) =
     let complexBeliefRanking (belief : Belief) = exp belief.TV
 
     let simpleStore     = new SubStore(generalCapacity,    simpleBeliefRanking)  :> ISubStore
-    let temporalStore   = new SubStore(temporalCapacity,   complexBeliefRanking) :> ISubStore
-    let hypothesisStore = new SubStore(hypothesisCapacity, complexBeliefRanking) :> ISubStore
-    let variableStore   = new SubStore(hypothesisCapacity, complexBeliefRanking) :> ISubStore
+    let temporalStore   = new SubStore(temporalCapacity,   simpleBeliefRanking) :> ISubStore
+    let hypothesisStore = new SubStore(hypothesisCapacity, simpleBeliefRanking) :> ISubStore
+    let variableStore   = new SubStore(hypothesisCapacity, simpleBeliefRanking) :> ISubStore
 
     interface IStore with
         member x.Contains(key) = 
@@ -95,7 +95,7 @@ type Store(generalCapacity, temporalCapacity, hypothesisCapacity ) =
             |> Seq.append
                 (variableStore.GetBeliefs())
 
-        member x.GetSuperBeliefs() = hypothesisStore.GetBeliefs()
+        member x.GetHypotheses() = hypothesisStore.GetBeliefs()
 
         member x.GetTemporalBeliefs() = temporalStore.GetBeliefs()
            
