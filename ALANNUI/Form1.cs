@@ -249,6 +249,11 @@ namespace ALANNUI
             SendTestToServer(ShapeWorldTest);
         }
 
+        private void MatchToSampleBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(MatchToSampleTest);
+        }
+
         private void SendCmdToServer(string cmd, params string[] list)
         {
             var cmdStr = cmd + (list.Length == 0 ? "" : list[0]);
@@ -409,8 +414,36 @@ namespace ALANNUI
         "<{ball} --> (on / _(on / _ {floor}))>?"
         };
 
+        string[] MatchToSampleTest =
+        {
+            "<example1 --> (triangle * (left * up))>.",
+            "<example1 --> (triangle * (right * up))>.",
+            "<example1 --> (triangle * (left * down))>.",
+            "<example1 --> (square * (right * down))>.",
+            "<example2 --> (square * (left * up))>.",
+            "<example2 --> (triangle * (right * up))>.",
+            "<example2 --> (triangle * (left * down))>.",
+            "<example2 --> (triangle * (right * down))>.",
+            "<example3 --> (triangle * (left * up))>.",
+            "<example3 --> (triangle * (right * up))>.",
+            "<example3 --> (square * (left * down))>.",
+            "<example3 --> (triangle * (right * down))>.",
+            "<(* example4 _) --> (triangle * (left * up))>.",
+            "<(* example4 _) --> (square * (right * up))>.",
+            "<(* example4 _) --> (triangle * (left * down))>.",
+            "<(* example4 _) --> (triangle * (right * down))>.",
+            "<(* example5 _) --> (triangle * (left * up))>.",
+            "<(* example5 _) --> (triangle * (right * up))>.",
+            "<(* example5 _) --> (square * (left * down))>.",
+            "<(* example5 _) --> (square * (right * down))>.",
+            "<example1 --> example>.",
+            "<example2 --> example>.",
+            "<example3 --> example>.",
+            "<(* ?what _) --> example>?"
+        };
+
         string[] Samples =
-{
+        {
          "<cat --> animal>.",
          "<dog --> animal>.",
          "<(cat * fish) --> eats>.",

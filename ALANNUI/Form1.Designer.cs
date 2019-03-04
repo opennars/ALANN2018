@@ -85,6 +85,7 @@ namespace ALANNUI
             this.showVariableBtn = new System.Windows.Forms.Button();
             this.ShowSuperBtn = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ShowGoalsBtn = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.timeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.eventsPerSecondStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -95,7 +96,7 @@ namespace ALANNUI
             this.chainingTestBtn = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.MatchToSampleBtn = new System.Windows.Forms.Button();
             this.shapeWorldTestBtn = new System.Windows.Forms.Button();
             this.resetTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.pauseTooltip = new System.Windows.Forms.ToolTip(this.components);
@@ -105,7 +106,6 @@ namespace ALANNUI
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.LoadtoolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.ShowGoalsBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -443,6 +443,16 @@ namespace ALANNUI
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Commands Requiring a Node";
             // 
+            // ShowGoalsBtn
+            // 
+            this.ShowGoalsBtn.Location = new System.Drawing.Point(16, 159);
+            this.ShowGoalsBtn.Name = "ShowGoalsBtn";
+            this.ShowGoalsBtn.Size = new System.Drawing.Size(75, 23);
+            this.ShowGoalsBtn.TabIndex = 27;
+            this.ShowGoalsBtn.Text = "Show Goals";
+            this.ShowGoalsBtn.UseVisualStyleBackColor = true;
+            this.ShowGoalsBtn.Click += new System.EventHandler(this.ShowGoalsBtn_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.BackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -515,7 +525,7 @@ namespace ALANNUI
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.button2);
-            this.groupBox5.Controls.Add(this.button1);
+            this.groupBox5.Controls.Add(this.MatchToSampleBtn);
             this.groupBox5.Controls.Add(this.shapeWorldTestBtn);
             this.groupBox5.Controls.Add(this.catBlueSkyTestBtn);
             this.groupBox5.Controls.Add(this.chainingTestBtn);
@@ -536,14 +546,15 @@ namespace ALANNUI
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // MatchToSampleBtn
             // 
-            this.button1.Location = new System.Drawing.Point(61, 79);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(99, 23);
-            this.button1.TabIndex = 28;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.MatchToSampleBtn.Location = new System.Drawing.Point(61, 79);
+            this.MatchToSampleBtn.Name = "MatchToSampleBtn";
+            this.MatchToSampleBtn.Size = new System.Drawing.Size(99, 23);
+            this.MatchToSampleBtn.TabIndex = 28;
+            this.MatchToSampleBtn.Text = "Match To Sample";
+            this.MatchToSampleBtn.UseVisualStyleBackColor = true;
+            this.MatchToSampleBtn.Click += new System.EventHandler(this.MatchToSampleBtn_Click);
             // 
             // shapeWorldTestBtn
             // 
@@ -594,16 +605,6 @@ namespace ALANNUI
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 33;
             this.label8.Text = "Beliefs";
-            // 
-            // ShowGoalsBtn
-            // 
-            this.ShowGoalsBtn.Location = new System.Drawing.Point(16, 159);
-            this.ShowGoalsBtn.Name = "ShowGoalsBtn";
-            this.ShowGoalsBtn.Size = new System.Drawing.Size(75, 23);
-            this.ShowGoalsBtn.TabIndex = 27;
-            this.ShowGoalsBtn.Text = "Show Goals";
-            this.ShowGoalsBtn.UseVisualStyleBackColor = true;
-            this.ShowGoalsBtn.Click += new System.EventHandler(this.ShowGoalsBtn_Click);
             // 
             // Form1
             // 
@@ -702,7 +703,7 @@ namespace ALANNUI
         private System.Windows.Forms.Button ShowSuperBtn;
         private System.Windows.Forms.Button showVariableBtn;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button MatchToSampleBtn;
         private System.Windows.Forms.Button ShowGoalsBtn;
     }
 }
