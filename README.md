@@ -50,7 +50,7 @@ independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
 query-variable ::== ‘?’ word
 word ::== string-literal | decimal-integer | real-number
-interval ::== '+' integer
+interval ::== '+' digit-sequence
 string-literal ::== leading-identifier {identifier | digit | '_'}
 leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
 identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
