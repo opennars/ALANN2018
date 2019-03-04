@@ -47,7 +47,7 @@ let displayAnswer (answer : Answer) =
     | _ -> ()
 
 let displaySolution solution =
-    printActor <! PrintMessage (sprintf "?%s" solution)
+    printActor <! PrintMessage (sprintf "?%s" solution)  
 
 let updateStatus() =
     myprintfn (sprintf "%sSystemTime [%d]" Params.STATUS_PREFIX (SystemTime()))
