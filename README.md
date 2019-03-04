@@ -41,7 +41,7 @@ question ::== statement ‘?’
 quest ::== statement '@'
 statement ::== ‘<’ term copula term ‘>’
 compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
-term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
+term ::== word | interval | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
 binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
@@ -50,6 +50,7 @@ independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
 query-variable ::== ‘?’ word
 word ::== string-literal | decimal-integer | real-number
+interval ::== '+' digit-sequence
 string-literal ::== leading-identifier {identifier | digit | '_'}
 leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
 identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
@@ -93,7 +94,7 @@ The implementation of the inference rules uses the beautiful Rule meta language 
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%201.png)
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%202.png)
 
-ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation, and intervals are removed. Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
+ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets). Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
 The most significant differences are related to the attention mechanism. In OpenNARS there are two key aspects to activation spreading; firstly, term links, which connects concepts (related to the depth of sub terms in the concept host term) and secondly, inference results which cause concept activation as a by-product of their derivation.  In ALANN there are no term links and activation spreading is entirely due to event distribution and inference spreading. So activation spreading is totally controlled by inference.
 
