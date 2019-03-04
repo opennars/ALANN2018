@@ -45,12 +45,12 @@ let makeEventFromBelief eb =
 
 let makeBeliefFromEvent (e : Event) =
     match e with
-    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with UseCount = e.Stamp.UseCount + 1}}
+    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = e.Stamp}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeGoalFromEvent (e : Event) =
     match e with
-    | {EventType = Goal; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with UseCount = e.Stamp.UseCount + 1}}
+    | {EventType = Goal; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = e.Stamp}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeVirtualBelief term =
@@ -58,7 +58,6 @@ let makeVirtualBelief term =
     let stamp = {OccurenceTime = now
                  SC = 1
                  Evidence = []
-                 UseCount = 0
                  Source = Virtual}
 
     {Term = term; TV = {F = 0.0f; C = 0.5f}; Stamp = stamp}    
@@ -78,7 +77,6 @@ let makeInferredEvent eb (term, tv) =
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = merge stamp1.Evidence stamp2.Evidence
-                 UseCount = 0
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -88,7 +86,6 @@ let makeInferredFromQuestionEvent eb (term, tv) =
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = eb.Belief.Stamp.Evidence
-                 UseCount = 0
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -98,7 +95,6 @@ let makeStructuralEvent eb (term, tv) =
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = eb.Event.Stamp.Evidence
-                 UseCount = 0
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -107,8 +103,7 @@ let makeQuestionEvent (eb : EventBelief) term =
     let now = SystemTime()
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term                 
-                 Evidence = []
-                 UseCount = 0
+                 Evidence = eb.Belief.Stamp.Evidence
                  Source = Derived}
 
     {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -117,8 +112,7 @@ let makeQuestionStructuralEvent (eb : EventBelief) term =
     let now = SystemTime()
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
-                 Evidence = []
-                 UseCount = 0
+                 Evidence = eb.Belief.Stamp.Evidence
                  Source = Derived}
 
     {EventType = Question; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
@@ -129,19 +123,15 @@ let makeQuestEvent (eb : EventBelief) term =
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = []
-                 UseCount = 0
                  Source = Derived}
 
     {EventType = Quest; Term = term; TV = None; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
 let makeGoalEvent (eb : EventBelief) (term, tv) =
-    let stamp1 = eb.Event.Stamp
-    let stamp2 = eb.Belief.Stamp
     let now = SystemTime()
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 
                  Evidence = merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence
-                 UseCount = 0
                  Source = Derived}
 
     {EventType = Goal; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}

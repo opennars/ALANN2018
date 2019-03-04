@@ -89,11 +89,11 @@ let processNode state (event : Event) =
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 
-let initState term e = 
+let initState term (e : Event) = 
     let now = SystemTime()
     {Created = now
      Term = term
-     HostBelief = {Term = term; TV = e.TV.Value; Stamp = e.Stamp}
+     HostBelief = {Term = term; TV = e.TV.Value; Stamp = e.Stamp} 
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL

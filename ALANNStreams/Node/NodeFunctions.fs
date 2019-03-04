@@ -56,8 +56,7 @@ let makeAnsweredEventGoal attention event (belief : Belief) =
     
 let updateStamp st1 st2 = 
     {st1 with 
-        Evidence = merge st1.Evidence st2.Evidence
-        UseCount = st1.UseCount + st2.UseCount + 1}
+        Evidence = merge st1.Evidence st2.Evidence}
 
 let isBetterThan aTV bTV =
     let cond1 = bTV.C >= aTV.C 
@@ -102,7 +101,7 @@ let forget (state : Node) now =
 
 let updateAttention state now event =
     let attention = forget state now
-    let sti = max (_or [attention; event.AV.STI]) Params.RESTING_POTENTIAL
+    let sti = max (_or (attention, event.AV.STI)) Params.RESTING_POTENTIAL
     {state with Attention = sti}
 
 let getInferenceBeliefs attention state event = 

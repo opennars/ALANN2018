@@ -39,15 +39,15 @@ let termStreams =
             let partition = builder.Add(Partition<TermEvent>(numStreams, fun {Term = t} -> hashRoute numStreams t))
             let merge = builder.Add(Merge<Event>(numStreams))
             
-            let separateTerms = 
+            let separateTerms =                
                 let createTermList = function
                 | {Event.EventType = Belief} as event -> Temporal(event.Stamp.OccurenceTime)::(terms event.Term)
                 | event -> (terms event.Term)
 
                 builder.Add(
                     (Flow.Create<Event>()
-                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)).Async())
-                    //|> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)).Async())
+                    //|> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)).Async())
+                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)).Async())
 
             builder
                 .From(separateTerms)

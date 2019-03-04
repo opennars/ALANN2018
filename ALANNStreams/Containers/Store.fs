@@ -29,60 +29,60 @@ open TermUtils
 open SubStore
 
 type Store(generalCapacity, temporalCapacity, hypothesisCapacity ) =
-    let simpleBeliefRanking (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
-    let complexBeliefRanking (belief : Belief) = exp belief.TV
+    let expComplexityBeliefRanking (belief : Belief) = exp belief.TV / float32(System.Math.Pow(float(belief.Stamp.SC), Params.BELIEF_RANK_POW))
+    let expBeliefRanking (belief : Belief) = exp belief.TV
 
-    let simpleStore     = new SubStore(generalCapacity,    simpleBeliefRanking)  :> ISubStore
-    let temporalStore   = new SubStore(temporalCapacity,   simpleBeliefRanking) :> ISubStore
-    let hypothesisStore = new SubStore(hypothesisCapacity, simpleBeliefRanking) :> ISubStore
-    let variableStore   = new SubStore(hypothesisCapacity, simpleBeliefRanking) :> ISubStore
+    let simpleStore     = new SubStore(generalCapacity,    expComplexityBeliefRanking)  :> ISubStore
+    let temporalStore   = new SubStore(temporalCapacity,   expComplexityBeliefRanking) :> ISubStore
+    let hypothesisStore = new SubStore(hypothesisCapacity, expComplexityBeliefRanking) :> ISubStore
+    let variableStore   = new SubStore(hypothesisCapacity, expComplexityBeliefRanking) :> ISubStore
 
     interface IStore with
-        member x.Contains(key) = 
-            if key |> isHypothesis then
-                hypothesisStore.Contains key
-            else if key |> containsVars then
+        member x.Contains(key) =
+            if key |> containsVars then
                 variableStore.Contains key
+            else if key |> isHypothesis then
+                hypothesisStore.Contains key
             else if key |> isTemporal then
                 temporalStore.Contains key
             else 
                 simpleStore.Contains key
 
         member x.Insert(key, belief) =
-            if key |> isHypothesis then
-                hypothesisStore.Insert(key, belief)
-            else if key |> containsVars then
+            if key |> containsVars then
                 variableStore.Insert(key, belief)
+            else if key |> isHypothesis then
+                hypothesisStore.Insert(key, belief)
             else if key |> isTemporal then
                 temporalStore.Insert(key, belief)
             else
                 simpleStore.Insert(key, belief)
 
         member x.Update(key, belief) =
-            if key |> isHypothesis then
-                hypothesisStore.Update(key, belief)
-            else if key |> containsVars then
+            if key |> containsVars then
                 variableStore.Update(key, belief)
+            else if key |> isHypothesis then
+                hypothesisStore.Update(key, belief)
             else if key |> isTemporal then
                 temporalStore.Update(key, belief)
             else
                 simpleStore.Update(key, belief)
 
         member x.TryGetValue key = 
-            if key |> isHypothesis then
-                hypothesisStore.TryGetValue key
-            else if key |> containsVars then
+            if key |> containsVars then
                 variableStore.TryGetValue key
+            else if key |> isHypothesis then
+                hypothesisStore.TryGetValue key
             else if key |> isTemporal then
                 temporalStore.TryGetValue key
             else
                 simpleStore.TryGetValue key
 
         member x.Clear() =
+            variableStore.Clear()
             hypothesisStore.Clear()
             temporalStore.Clear()
             simpleStore.Clear()
-            variableStore.Clear()
 
         member x.Count = temporalStore.Count + simpleStore.Count + hypothesisStore.Count + variableStore.Count
 

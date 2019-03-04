@@ -213,7 +213,7 @@ namespace ALANNUI
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
                 EchoCmd("", str);
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
             EchoCmd("SAMPLE LOADED", "");
         }
@@ -225,7 +225,7 @@ namespace ALANNUI
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
                 EchoCmd("", str);
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
         }
 

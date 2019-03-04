@@ -86,6 +86,10 @@ let termStream (i) =
 
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
 
+            let showResult = 
+                Flow.Create<EventBelief>()
+                |> Flow.map (fun eb -> printfn "%A %s %s" eb.Event.EventType (TermFormatters.ft eb.Event.Term) (TermFormatters.ft eb.Belief.Term); eb)
+
             builder
                 .From(preferCreatedTermMerge)
                 .To(partitionExistingTerms)
@@ -95,6 +99,7 @@ let termStream (i) =
                 .From(partitionExistingTerms.Out(1))
                 .Via(groupAndDelay)
                 .Via(processEvent)
+                //.Via(showResult)
                 .Via(attentionBuffer)
                 .Via(deriver)
                 |> ignore

@@ -33,10 +33,10 @@ let ACTIVATION_THRESHOLD                = 0.85f         // Minimum concept STI f
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let DECAY_RATE                          = 0.10f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 10            // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 10            // Max number of temporal beliefs per node
-let PRE_POST_BELIEF_CAPACITY            = 10            // Max number of Pre and Post condition beliefs per node
-let BELIEF_RANK_POW                     = 0.20          // exp/sc^n ranking where n is this parameter
+let GENERAL_BELIEF_CAPACITY             = 25            // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 25            // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 25            // Max number of Pre and Post condition beliefs per node
+let BELIEF_RANK_POW                     = 1.00          // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
 let CONCURRENCY_DURATION                = 80L           // Period when two occurence times are deemed concurrent
@@ -44,17 +44,24 @@ let CONCURRENCY_DURATION                = 80L           // Period when two occur
 // General Parameters
 let CONFIDENCE                          = 0.90f         // Truth Value confidence component
 let FREQUENCY                           = 1.00f         // Truth Value frequency component
-let MINIMUM_CONFIDENCE                  = 0.05f         // don't accept inference results with confidence below this Value
-let MINIMUM_STI                         = 0.05f         // filter STI below this threhold
-let USER_STI                            = 1.00f         // Short Term Importance default Value for user entered events AKA priority
-let USER_LTI                            = 0.90f         // long Term Importance default Value for user entered events AKA duration
+let MINIMUM_CONFIDENCE                  = 0.001f        // don't accept inference results with confidence below this Value
+let MINIMUM_STI                         = 0.01f         // filter STI below this threhold
+let BELIEF_STI                          = 0.90f         // Short Term Importance default Value for user entered events AKA priority
+let BELIEF_LTI                          = 0.50f         // long Term Importance default Value for user entered events AKA duration
+let GOAL_STI                            = 1.00f         // Short Term Importance default Value for user entered events AKA priority
+let GOAL_LTI                            = 0.95f         // long Term Importance default Value for user entered events AKA duration
+let QUESTION_STI                        = 1.00f         // Short Term Importance default Value for user entered events AKA priority
+let QUESTION_LTI                        = 0.95f         // long Term Importance default Value for user entered events AKA duration
+let QUEST_STI                           = 1.00f         // Short Term Importance default Value for user entered events AKA priority
+let QUEST_LTI                           = 0.95f         // long Term Importance default Value for user entered events AKA duration
+
 let SHALLOW_LTI                         = 0.25f         // long Term Importance value for derived shallow events AKA duration
-let DEEP_LTI                            = 0.75f         // long Term Importance value for derived deep events AKA duration
+let DEEP_LTI                            = 0.85f         // long Term Importance value for derived deep events AKA duration
 let TRAIL_LENGTH                        = 10            // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20            // Maximum syntactic complexity of general terms
 let MAX_TEMPORAL_SC                     = 100           // Maximum syntactic complexity of temporal terms
-let TERM_DEPTH                          = 4             // depth of term separation
-let ATTENTION_BUFFER_SIZE               = 20            // Maximum number of events in Attention buffer
+let TERM_DEPTH                          = 5             // depth of term separation
+let ATTENTION_BUFFER_SIZE               = 15            // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 100           // Maximum number of events in input buffer
 let MAX_CONCEPTS                        = 100_000       // Maximum number of concepts
 let ANSWER_ATTENTION_SCALING            = 3.0           // Scale answer attention by STI * (1 - C^n) where n is this parameter

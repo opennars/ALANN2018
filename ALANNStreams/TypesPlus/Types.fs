@@ -67,7 +67,6 @@ type Source = | User | Derived | Virtual | Channel of int16
 type Stamp = {OccurenceTime : SysTime
               SC : int
               Evidence : Evidence
-              UseCount : int
               Source : Source}
 
 type SearchDepth = Deep | Shallow 

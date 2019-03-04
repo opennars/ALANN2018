@@ -41,8 +41,7 @@ let reviseGoal (goalStore : IGoalStore) event =
     let updateStamp st1 (st2 : Stamp) = 
         {st1 with 
             OccurenceTime = SystemTime()
-            Evidence = merge st1.Evidence st2.Evidence
-            UseCount = st1.UseCount + st2.UseCount + 1}
+            Evidence = merge st1.Evidence st2.Evidence}
                 
     let makeRevisedGoal (oldb : Belief) (newb : Belief) = 
         let {F = f; C = c} = rev(newb.TV, oldb.TV)

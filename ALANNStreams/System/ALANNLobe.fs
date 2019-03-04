@@ -108,7 +108,7 @@ let mainSink =
                 .From(mergeGoals)
 
                 .Via(eventLogger)
-                .Via(termStreams)
+                .Via(termStreams.Async())
                 .Via(incrementEvents)
                 //.Via(showEvents)
                 .To(mergeInput.In(1))
