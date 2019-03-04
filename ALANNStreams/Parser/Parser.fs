@@ -43,8 +43,10 @@ let optor x y = match x with | Some x -> x | None -> y
 
 // White space parsers
 let str s = pstring s
-let pcomment = (str "'" <|> str "//") >>. skipRestOfLine true
-let ws = skipSepBy spaces pcomment
+//let pcommentPrefix = str "//" <|> str "**" <|> str "'"
+//let pcomment =  pcommentPrefix >>. skipRestOfLine true
+//let ws = skipSepBy spaces pcomment
+let ws = spaces
 let str_ws s = pstring s .>> ws
 
 // Forward refs
@@ -157,7 +159,9 @@ let statement =
           | "<|>" -> Term(ConEqu, [a; c])  
           | _ -> failwith "Unexpected copula type in Parser"))
 
-do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement; interval_ws]
+let statement_ws = statement .>> ws
+
+do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement_ws; interval_ws]
 do pstatementRef := pterm <|> statement
  
 // EventType parsers
@@ -170,7 +174,7 @@ let peventType = pbeliefType <|> pgoalType <|> pquestionType <|> pquestType
 
 // Sentence parsers
 let psentence    = pipe3 pstatement peventType (opt ptruth) (fun a b c -> {EventType = b; Term = a; TV = if b = Belief || b = Goal then Some(optor c {F = Params.FREQUENCY; C = Params.CONFIDENCE}) else None})
-let psentence_ws = psentence .>> ws
+let psentence_ws = ws >>. psentence .>> ws
 
 let makeStamp eType term = 
     match eType with
@@ -187,7 +191,7 @@ let inputAV =
 
 let pevent = 
     pipe2 
-        (opt (attempt pav)) psentence 
+        (opt (attempt pav)) psentence_ws 
             (fun a b -> {Term = b.Term
                          AV = optor a (inputAV b.EventType)
                          EventType = b.EventType
@@ -199,15 +203,12 @@ let pevent_ws = ws >>. pevent
 // General Parser entry point
 let Parser(program:string) =
     vNum <- 0; vMap.Clear(); 
-    match program.Trim() with
-    | "" -> []
-    | _ ->
-        match run pevent_ws program with
-        | Success(result, _, _)   -> 
-            [result]
-        | Failure(errorMsg, e, s) -> 
-            raiseParseErrorEvent errorMsg
-            []
+    match run pevent_ws program with
+    | Success(result, _, _)   -> 
+        [result]
+    | Failure(errorMsg, e, s) -> 
+        raiseParseErrorEvent errorMsg
+        []
 
 // Parser tester
 let testp p str =

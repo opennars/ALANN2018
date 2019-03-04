@@ -96,7 +96,11 @@ namespace ALANNUI
             foreach (var line in lines)
             {
                 var trimmedLine = line.Trim();
-                if (trimmedLine == "") return;
+                if (trimmedLine == "") continue;
+
+                if (trimmedLine.StartsWith("//")) continue;
+                else if (trimmedLine.StartsWith("**")) continue;
+                else if (trimmedLine.StartsWith("'")) continue;
 
                 var data = Encoding.ASCII.GetBytes(trimmedLine);
                 outSocket.SendAsync(data, data.Length);
