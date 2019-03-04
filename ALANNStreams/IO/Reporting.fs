@@ -24,7 +24,6 @@
 
 module Reporting
 
-open System.Collections.Concurrent
 open System.Threading
 open ALANNSystem
 open Types
@@ -34,17 +33,15 @@ open TermFormatters
 open SystemState
 open Events
 
-let answerDict = ConcurrentDictionary<string, (string * string * string)>()
-
 let displayAnswer (answer : Answer) =    
     let answer' = answer.QuestionID + answer.Term
-    match answerDict.TryGetValue answer' with
+    match systemState.answerDict.TryGetValue answer' with
     | (false, _) ->
-        match answerDict.TryAdd(answer', (answer.Prefix, answer.Term, answer.TV)) with
+        match systemState.answerDict.TryAdd(answer', (answer.Prefix, answer.Term, answer.TV)) with
         | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
         | _ -> ()
     | (true, ((_, _, tv) as existing)) when tv < answer.TV -> 
-        match answerDict.TryUpdate(answer', (answer.Prefix, answer.Term, answer.TV), existing) with
+        match systemState.answerDict.TryUpdate(answer', (answer.Prefix, answer.Term, answer.TV), existing) with
         | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
         | _ -> ()
     | _ -> ()

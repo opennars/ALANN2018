@@ -36,6 +36,7 @@ let mutable systemState =
         EventsPerSecond = ref 0
         Activations = ref 0
         stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
+        answerDict = ConcurrentDictionary<string, (string * string * string)>()
     }
 
 let ID() = Interlocked.Increment(systemState.Id)

@@ -209,6 +209,7 @@ type SystemState =
         EventsPerSecond : int ref
         Activations : int ref
         mutable stores : ConcurrentDictionary<Term, Node> array
+        mutable answerDict : ConcurrentDictionary<string, (string * string * string)>
     }
 
 let mutable valveAsync : Async<IValveSwitch> = Unchecked.defaultof<Async<IValveSwitch>>

@@ -82,16 +82,23 @@ let updateLinks state event =
             (Some oldBelief, state)
         | None ->
             state.Beliefs.Insert(makeKey newBelief, newBelief)
-            (Some (makeBeliefFromEvent event), state)
+            (Some newBelief, state)
         | _ -> (None, state) // Exists but not better truth or revisable
     | _ -> (None, state) // Not a belief
 
 let updateHostBeliefs state event =    
     match event with
-    | {Event.EventType = Belief} ->
-        let oldBelief = state.HostBelief
-        state.HostBelief <- makeBeliefFromEvent event
-        (Some oldBelief, state        )
+    | {Event.EventType = Belief; TV = Some(eTV)} ->
+        let newBelief = makeBeliefFromEvent event
+        match state.HostBelief with
+        | oldBelief when isRevisable oldBelief newBelief ->
+            state.HostBelief <- makeRevisedBelief oldBelief newBelief
+            (Some oldBelief, state)
+        | oldBelief when eTV |> isBetterThan oldBelief.TV -> 
+            state.HostBelief <- newBelief
+            (Some oldBelief, state)
+        | _ -> // Not better truth or revisable
+            (Some newBelief, state)
     | _ -> (None, state) // Not a belief
 
 let forget (state : Node) now = 

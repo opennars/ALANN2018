@@ -37,6 +37,33 @@ open System.Threading
 open SystemState
 open Evidence
 
+let processEvent state attention oldBelief event =
+    
+    if state.Trace then showTrace state event
+
+    let createEventBeliefs state = function
+        | {Event.EventType = Question} as event -> processQuestion attention state event
+        | {Event.EventType = Belief} as event   -> processBelief attention state event
+        | {Event.EventType = Goal} as event     -> processGoal attention state event
+        | {Event.EventType = Quest} as event    -> processQuest attention state event
+
+    let eventBeliefs = createEventBeliefs state event
+
+    let eventBeliefsPlus (belief : Belief option) = 
+        match belief with
+        | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
+            (makeEventBelief attention event belief)::eventBeliefs
+        | _ -> eventBeliefs
+
+    match event.EventType with
+    | Belief | Question ->
+        match state.Term with
+        | Temporal(_) -> eventBeliefsPlus oldBelief // No virtual term for Temporal concepts
+        | _ -> (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
+    | Goal ->
+        eventBeliefsPlus oldBelief
+    | _ -> []
+
 let processNode state (event : Event) =
 
     let (oldBelief, state) =
@@ -45,7 +72,7 @@ let processNode state (event : Event) =
         | true -> updateHostBeliefs state event
 
     let now = SystemTime()
-    let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
+    let inLatencyPeriod = (now - state.LastUsed) <= Params.LATENCY_PERIOD
 
     let state = updateAttention state now event
 
@@ -53,39 +80,12 @@ let processNode state (event : Event) =
     let cond2 = event.EventType = Question && event.Stamp.Source = User
     let cond3 = match state.Term with | Temporal _ -> true | _ -> false
      
-    let processEvent attention oldBelief event =
-        
-        if state.Trace then showTrace state event
-
-        let createEventBeliefs state = function
-            | {Event.EventType = Question} as event -> processQuestion attention state event
-            | {Event.EventType = Belief} as event   -> processBelief attention state event
-            | {Event.EventType = Goal} as event     -> processGoal attention state event
-            | {Event.EventType = Quest} as event    -> processQuest attention state event
-
-        let eventBeliefs = createEventBeliefs state event
-
-        let eventBeliefsPlus (belief : Belief option) = 
-            match belief with
-            | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
-                (makeEventBelief attention event belief)::eventBeliefs
-            | _ -> eventBeliefs
-
-        match event.EventType with
-        | Belief | Question ->
-            match state.Term with
-            | Temporal(_) -> eventBeliefsPlus oldBelief // No virtual term for Temporal concepts
-            | _ -> (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
-        | Goal ->
-            eventBeliefsPlus oldBelief
-        | _ -> []
-
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2 || cond3) with
     | true ->  
         let attention = state.Attention
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
         Interlocked.Increment(systemState.Activations) |> ignore
-        (state, processEvent attention oldBelief event)
+        (state, processEvent state attention oldBelief event)
 
     | false -> (state, [])  // inLatencyPeriod or below activation threshold    
 

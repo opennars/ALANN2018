@@ -138,8 +138,10 @@ let saveFile file =
 
 let reset() =
     printCommand "RESET IN PROGRESS..."
-    resetSwitch <- true
-    System.Threading.Thread.Sleep(2000)
+    for i in 1..3 do
+        resetSwitch <- true
+        System.Threading.Thread.Sleep(1000)
+        resetSwitch <- false
     systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
     //systemState.Id := 0L
     systemState.StartTime <- 0L
