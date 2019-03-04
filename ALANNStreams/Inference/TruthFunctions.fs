@@ -126,7 +126,7 @@ module TruthFunctions
         int(tv, {F = 1.0f; C = 1.0f})
     
     let inline beliefStructuralDed (tv, _) = 
-        ded(tv, {F = 1.0f; C = 1.0f})
+        ded(tv, {F = 1.0f; C = 0.9f})
     
     let inline beliefNeg (tv, _) = 
         neg (tv)

@@ -66,10 +66,10 @@ let setIntersectionComprehension = function
     | _ -> []
 
 let setUnionComprehension = function
-    | Inh(c1, ExtSet(a)), Inh(c2, ExtSet(b)) when c1 = c2 && a <> b -> [(Term(Inh, [c1; Term(ExtSet, sort <| union a b)]), uni, None, [])]
-    | Inh(c1, IntSet(a)), Inh(c2, IntSet(b)) when c1 = c2 && a <> b -> [(Term(Inh, [c1; Term(IntSet, sort <| union a b)]), int, None, [])]
-    | Inh(ExtSet(a), c1), Inh(ExtSet(b), c2) when c1 = c2 && a <> b -> [(Term(Inh, [Term(ExtSet, sort <| union a b); c1]), int, None, [])]
-    | Inh(IntSet(a), c1), Inh(IntSet(b), c2) when c1 = c2 && a <> b -> [(Term(Inh, [Term(IntSet, sort <| union a b); c1]), uni, None, [])]
+    | Inh(c1, ExtSet(a)), Inh(c2, ExtSet(b)) when c1 = c2 && a <> b -> [(Term(Inh, [c1; Term(ExtSet, union a b)]), uni, None, [])]
+    | Inh(c1, IntSet(a)), Inh(c2, IntSet(b)) when c1 = c2 && a <> b -> [(Term(Inh, [c1; Term(IntSet, union a b)]), int, None, [])]
+    | Inh(ExtSet(a), c1), Inh(ExtSet(b), c2) when c1 = c2 && a <> b -> [(Term(Inh, [Term(ExtSet, union a b); c1]), int, None, [])]
+    | Inh(IntSet(a), c1), Inh(IntSet(b), c2) when c1 = c2 && a <> b -> [(Term(Inh, [Term(IntSet, union a b); c1]), uni, None, [])]
     | _ -> []
 
 let setDifferenceComprehension = function
