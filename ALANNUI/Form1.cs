@@ -254,6 +254,11 @@ namespace ALANNUI
             SendTestToServer(MatchToSampleTest);
         }
 
+        private void TransformFuncBtn_Click(object sender, EventArgs e)
+        {
+            SendTestToServer(TransformStimulusFuncTest);
+        }
+
         private void SendCmdToServer(string cmd, params string[] list)
         {
             var cmdStr = cmd + (list.Length == 0 ? "" : list[0]);
@@ -440,6 +445,18 @@ namespace ALANNUI
             "<example2 --> example>.",
             "<example3 --> example>.",
             "<(* ?what _) --> example>?"
+        };
+
+        string[] TransformStimulusFuncTest =
+        {
+            "<([bad] * [good]) --> opposite>.",
+            "<juice --> [good]>.",
+            "<\"Juice\" <-> juice>.",
+            "<(\"Coffee\" * \"Juice\") --> opposite>.",
+            "<(\"Beer\" * \"Juice\") --> better>.",
+            "<(better / _ [good]) <-> [great]>.",
+            "<\"Beer\" --> [great]>?",
+            "<\"Coffee\" --> [bad]>?"
         };
 
         string[] Samples =

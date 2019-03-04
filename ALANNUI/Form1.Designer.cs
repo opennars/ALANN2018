@@ -95,7 +95,7 @@ namespace ALANNUI
             this.catLikeCodTestBtn = new System.Windows.Forms.Button();
             this.chainingTestBtn = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.TransformFuncBtn = new System.Windows.Forms.Button();
             this.MatchToSampleBtn = new System.Windows.Forms.Button();
             this.shapeWorldTestBtn = new System.Windows.Forms.Button();
             this.resetTooltip = new System.Windows.Forms.ToolTip(this.components);
@@ -524,7 +524,7 @@ namespace ALANNUI
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.button2);
+            this.groupBox5.Controls.Add(this.TransformFuncBtn);
             this.groupBox5.Controls.Add(this.MatchToSampleBtn);
             this.groupBox5.Controls.Add(this.shapeWorldTestBtn);
             this.groupBox5.Controls.Add(this.catBlueSkyTestBtn);
@@ -537,14 +537,15 @@ namespace ALANNUI
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Standard Tests";
             // 
-            // button2
+            // TransformFuncBtn
             // 
-            this.button2.Location = new System.Drawing.Point(176, 79);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 23);
-            this.button2.TabIndex = 29;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
+            this.TransformFuncBtn.Location = new System.Drawing.Point(176, 79);
+            this.TransformFuncBtn.Name = "TransformFuncBtn";
+            this.TransformFuncBtn.Size = new System.Drawing.Size(100, 23);
+            this.TransformFuncBtn.TabIndex = 29;
+            this.TransformFuncBtn.Text = "Transform Func";
+            this.TransformFuncBtn.UseVisualStyleBackColor = true;
+            this.TransformFuncBtn.Click += new System.EventHandler(this.TransformFuncBtn_Click);
             // 
             // MatchToSampleBtn
             // 
@@ -702,7 +703,7 @@ namespace ALANNUI
         private System.Windows.Forms.ToolTip LoadtoolTip;
         private System.Windows.Forms.Button ShowSuperBtn;
         private System.Windows.Forms.Button showVariableBtn;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button TransformFuncBtn;
         private System.Windows.Forms.Button MatchToSampleBtn;
         private System.Windows.Forms.Button ShowGoalsBtn;
     }
