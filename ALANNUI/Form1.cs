@@ -38,7 +38,7 @@ namespace ALANNUI
     {
         static string serverAddr = "127.0.0.1";
         static int serverPort = 5000;
-        static string clientAddr = "127.0.0.1";
+        //static string clientAddr = "127.0.0.1";
         static int clientPort = 5001;
 
         static IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverAddr), serverPort);
@@ -49,6 +49,20 @@ namespace ALANNUI
         private static System.Timers.Timer timer;
         private bool ServerLive = false;
         const int TextBufferSize = 75000;
+
+        const string ErrorPrefixStr        = "*** ERROR: ";
+        const string StartServerWarningStr = "Status: ALANN Server Not Running";
+        const string MissingNodeNameStr    = "Must Enter 'node name' in Node Term box";
+        const string LoadingSampleStr      = "LOADING SAMPLE...";
+        const string SampleLoadedStr       = "SAMPLE LOADED...";
+        private void DisplayWelcomeMessage()
+        {
+            var msg =
+                "*** WELCOME TO ALANN ***\n\n" +
+                "REMEMBER TO START THE ALANN SERVER\n";
+
+            inputRTB.Text = msg;
+        }
 
         public Form1()
         {
@@ -70,7 +84,7 @@ namespace ALANNUI
         {
             if (!ServerLive)
             {
-                statusLabel.Text = "Status: ALANN Server Not Running";
+                statusLabel.Text = StartServerWarningStr;
             }
             ServerLive = false;
         }
@@ -146,11 +160,6 @@ namespace ALANNUI
         {
             var statusMsg = msg.TrimStart(':');
 
-            //if (statusMsg.StartsWith("Cycle"))
-            //{
-            //    CycleStatus.Text = statusMsg;
-            //}
-            //else 
             if (statusMsg.StartsWith("Status"))
             {
                 statusLabel.Text = statusMsg;
@@ -207,7 +216,7 @@ namespace ALANNUI
 
         private void LoadSampleBtn_Click(object sender, EventArgs e)
         {
-            EchoCmd("LOADING SAMPLE...", "");
+            EchoCmd(LoadingSampleStr, "");
             foreach (var str in Samples)
             {
                 var data = Encoding.ASCII.GetBytes(str);
@@ -215,7 +224,7 @@ namespace ALANNUI
                 EchoCmd("", str);
                 Thread.Sleep(20);
             }
-            EchoCmd("SAMPLE LOADED", "");
+            EchoCmd(SampleLoadedStr, "");
         }
 
         private void SendTestToServer(string[] test)
@@ -268,22 +277,34 @@ namespace ALANNUI
 
         private void ShowSimpleBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#SSB ", termNameTB.Text);
+            if(termNameTB.Text.Length > 0)
+                SendCmdToServer("#SSB ", termNameTB.Text);
+            else
+                EchoCmd(ErrorPrefixStr, MissingNodeNameStr);
         }
 
         private void ShowTemporalBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#STB ", termNameTB.Text);
+            if (termNameTB.Text.Length > 0)
+                SendCmdToServer("#STB ", termNameTB.Text);
+            else
+                EchoCmd(ErrorPrefixStr, MissingNodeNameStr);
         }
 
         private void ShowHypothesisBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#SHB ", termNameTB.Text);
+            if (termNameTB.Text.Length > 0)
+                SendCmdToServer("#SHB ", termNameTB.Text);
+            else
+                EchoCmd(ErrorPrefixStr, MissingNodeNameStr);
         }
 
         private void ShowGeneralisedBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#SGB ", termNameTB.Text);
+            if (termNameTB.Text.Length > 0)
+                SendCmdToServer("#SGB ", termNameTB.Text);
+            else
+                EchoCmd(ErrorPrefixStr, MissingNodeNameStr);
         }
 
         private void ShowGoalsBtn_Click(object sender, EventArgs e)
@@ -343,15 +364,6 @@ namespace ALANNUI
             beliefsRTB.Text = "";
             inputRTB.Text = "";
             inferenceRTB.Text = "";
-        }
-
-        private void DisplayWelcomeMessage()
-        {
-            var msg =
-                "*** WELCOME TO ALANN ***\n\n" +
-                "REMEMBER TO START THE ALANN SERVER\n";
-
-            inputRTB.Text = msg;
         }
 
         string[] CatBlueSkyTest =
