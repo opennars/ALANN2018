@@ -52,9 +52,10 @@ namespace ALANNUI
 
         const string ErrorPrefixStr        = "*** ERROR: ";
         const string StartServerWarningStr = "Status: ALANN Server Not Running";
-        const string MissingNodeNameStr    = "Must Enter 'node name' in Node Term box";
+        const string MissingNodeNameStr    = "Must enter 'node name' in Node Term box";
         const string LoadingSampleStr      = "LOADING SAMPLE...";
         const string SampleLoadedStr       = "SAMPLE LOADED...";
+        const string MissingFileNameStr    = "Must enter 'filename' in filename box";
         private void DisplayWelcomeMessage()
         {
             var msg =
@@ -87,6 +88,24 @@ namespace ALANNUI
                 statusLabel.Text = StartServerWarningStr;
             }
             ServerLive = false;
+        }
+
+        private void DisableControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                DisableControls(c);
+            }
+            con.Enabled = false;
+        }
+
+        private void EnableControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                EnableControls(c);
+            }
+            con.Enabled = true;
         }
 
         private void InputBtn_Click(object sender, EventArgs e)
@@ -153,6 +172,8 @@ namespace ALANNUI
         private void ProcessCmdMsg(string msg)
         {
             UpdateRTB(cmdLogRTB, '#', msg);
+
+            if(msg == "#COMMAND: RESET COMPLETE") EnableControls(this);
         }
 
         private void ProcessInferenceMsg(string msg)
@@ -338,7 +359,10 @@ namespace ALANNUI
 
         private void LoadDataBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#L ", filenameTB.Text);
+            if(filenameTB.Text.Length > 0)
+                SendCmdToServer("#L ", filenameTB.Text);
+            else
+                EchoCmd(ErrorPrefixStr, MissingFileNameStr);
         }
 
         private void SaveDataBtn_Click(object sender, EventArgs e)
@@ -359,6 +383,7 @@ namespace ALANNUI
         private void ResetBtn_Click(object sender, EventArgs e)
         {
             SendCmdToServer("#RESET");
+            DisableControls(this);
         }
 
         private void ClearFormBtn_Click(object sender, EventArgs e)

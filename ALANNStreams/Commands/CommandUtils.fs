@@ -24,6 +24,7 @@
 
 module CommandUtils
 
+open System
 open ALANNSystem
 open TermFormatters
 open SystemState
@@ -47,8 +48,12 @@ let getNodeCount() =
 let printCommandWithString str str2 =
      myprintfn (sprintf "%sCOMMAND: %s '%s'" Params.COMMAND_PREFIX str str2)
 
-let printCommand str =
-     myprintfn (sprintf "%sCOMMAND: %s" Params.COMMAND_PREFIX str)
+let echoCmd str = printfn "%s" str
+
+let printCommand str echo =
+    let str = sprintf "%sCOMMAND: %s" Params.COMMAND_PREFIX str
+    myprintfn str
+    if echo then echoCmd(str)
 
 let printBeliefStr str =
     myprintfn (sprintf "%s%s" Params.BELIEF_PREFIX str)

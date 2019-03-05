@@ -40,28 +40,28 @@ let showSimpleBeliefs term =
     | (true, node) ->
         printCommandWithString "SHOW_GENERAL_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetGeneralBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
 
 let showTemporalBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_TEMPORAL_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
 
 let showHypothesisBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_PRE/POST_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetHypotheses() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
 
 let showGeneralisedBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_VARIABLE_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetVariableBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
 
 let showGoals() =
     printCommandWithString "SHOW_GOALS" ""
@@ -72,38 +72,38 @@ let showNode term =
     | (true, node) ->
         printCommandWithString "SHOW_NODE FOR TERM" (ft term)
         printCommandWithString "TIME NOW = " (SystemTime().ToString())
-        printCommand (sprintf "ATTENTION = [%f] TERM = %s" node.Attention (ft node.Term))
+        printCommand (sprintf "ATTENTION = [%f] TERM = %s" node.Attention (ft node.Term)) false
         printCommandWithString "USE COUNT = " (node.UseCount.ToString())
         printCommandWithString "CREATED = " (node.Created.ToString())
         printCommandWithString "LAST USED = " (node.LastUsed.ToString())
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
     
 let nodeCount() =
-    printCommand "NODE_COUNT"
-    printCommand (sprintf "TOTAL NODE COUNT: %d" (getNodeCount()))
+    printCommand "NODE_COUNT" false
+    printCommand (sprintf "TOTAL NODE COUNT: %d" (getNodeCount())) false
 
 let enableTrace term =
     match getNodeFromTerm term with
     | (true, node) -> 
         printCommandWithString "ENABLE TRACE FOR TERM" (ft term)
         node.Trace <- true
-    | _ -> printCommand "ERROR *** UNENABLE TO SET TRACE FOR TERM ***"
+    | _ -> printCommand "ERROR *** UNENABLE TO SET TRACE FOR TERM ***" false
 
 let disableTrace term =
     match getNodeFromTerm term with
     | (true, node) -> 
         printCommandWithString "DISABLE TRACE FOR TERM" (ft term)
         node.Trace <- false
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
 
 let pauseFlow() =
-    printCommand "PAUSE"
-    printCommand "FLOW PAUSED - USE CONTINUE (C) TO CONTINUE FLOW"
+    printCommand "PAUSE" true
+    printCommand "FLOW PAUSED - USE CONTINUE (C) TO CONTINUE FLOW" true
     (Async.RunSynchronously valveAsync).Flip(SwitchMode.Close) |> ignore
 
 let continueFlow() =
-    printCommand "CONTINUE"
-    printCommand "FLOW CONTINUED - USE PAUSE (P) TO PAUSE FLOW"
+    printCommand "CONTINUE" false
+    printCommand "FLOW CONTINUED - USE PAUSE (P) TO PAUSE FLOW" false
     (Async.RunSynchronously valveAsync).Flip(SwitchMode.Open) |> ignore
 
 let loadFile file =
@@ -116,9 +116,9 @@ let loadFile file =
         System.Threading.Thread.Sleep(2000)
         FileIO.LoadGraph filepath
         ResetTime()
-        printCommand "FILE LOADED"
+        printCommand "FILE LOADED" true
         continueFlow()
-    | _ -> printCommand "ERROR *** FILE DOES NOT EXIST ***"
+    | _ -> printCommand "ERROR *** FILE DOES NOT EXIST ***" true
 
 let saveFile file =
     let filepath = Params.STORAGE_PATH + "\\" + file
@@ -132,22 +132,22 @@ let saveFile file =
         System.Threading.Thread.Sleep(2000)
         systemState.StartTime <- SystemTime()
         FileIO.ExportGraph filepath
-        printCommand "FILE SAVED"
+        printCommand "FILE SAVED" true
         continueFlow()
-    | _ -> printCommand "ERROR *** FILE EXISTS ***"
+    | _ -> printCommand "ERROR *** FILE EXISTS ***" true
 
 let reset() =
-    printCommand "RESET IN PROGRESS..."
+    printCommand "RESET IN PROGRESS..." true
     for i in 1..3 do
         resetSwitch <- true
-        System.Threading.Thread.Sleep(1000)
+        System.Threading.Thread.Sleep(Params.SERVER_RESET_DELAY)
         resetSwitch <- false
     systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
     //systemState.Id := 0L
     systemState.StartTime <- 0L
     ResetTime()
     resetSwitch <- false
-    printCommand "RESET COMPLETE"
+    printCommand "RESET COMPLETE" true
 
 let processCommand (cmd : string) =
     let cmd' = cmd.TrimStart([|'#'|])

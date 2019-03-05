@@ -133,6 +133,8 @@ let Nal1_4_conversion_contrapostion_negation : InferenceFunction = function
     // conversion
     | Inh(p1, s1), Inh(s2, p2) when s1 = s2 && p1 = p2 && s1 <> p1 -> [(Term(Inh, [p1; s1]), cnv, None, [BeliefFromQuestion])]
 
+    | Inh(s1, p1), _ when s1 <> p1 -> [(Term(Inh, [p1; s1]), cnv, None, [Structural])]
+
     // negation
     | Inh(a1, b), a2 when a1 = a2 && a1 <> b -> [(Term(Not, [Term(Inh, [a1; b])]), neg, Some d_neg, [Structural; AllowBackward])]
     | Inh(a, b1), b2 when b1 = b2 && a <> b1 -> [(Term(Not, [Term(Inh, [a; b1])]), neg, Some d_neg, [Structural; AllowBackward])]

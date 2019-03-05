@@ -68,6 +68,7 @@ let ANSWER_ATTENTION_SCALING            = 3.0           // Scale answer attentio
 let DECISION_THRESHOLD                  = 0.65f         // Decision threshold for goal driven operation execution
 let GC_TEMPORAL_NODES_INTERVAL          = 2000.0        // Freq of temporal concept gc in ms
 let GC_TEMPORAL_NODES_DURATION          = 1000L         // Duration of temporal concepts before gc is allowed
+let SERVER_RESET_DELAY                  = 1000          // Server reset command delay betweeen iterations to flush streams
 
 // UI related Parameters
 let STORAGE_PATH                        = "DATA"        // Folder to save and load data to

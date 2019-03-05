@@ -111,6 +111,7 @@
     <Compile Include="Tests\TermUtils\TermUtilsTests.fs" />
     <Compile Include="Tests\Parser\ParserTests.fs" />
     <Compile Include="Program.fs" />
+    <None Include="NAL Scripts\Ontology.NAL" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

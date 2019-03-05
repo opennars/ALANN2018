@@ -93,7 +93,7 @@ let initState term (e : Event) =
     let now = SystemTime()
     {Created = now
      Term = term
-     HostBelief = {Term = term; TV = e.TV.Value; Stamp = e.Stamp} 
+     HostBelief = {Term = term; TV = (if term = e.Term then e.TV.Value else {F = 0.0f; C = 0.0f}); Stamp = e.Stamp} 
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.RESTING_POTENTIAL

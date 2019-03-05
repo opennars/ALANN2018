@@ -250,17 +250,17 @@ let nal5_nal8_implication_based_decomposition6 = function
 
 let nal5_nal8_implication_based_decomposition7 = function
     // propositional decomposition on one premise
-    | Seq([a; b]), _ -> [(a, structuralDed, None, [])
-                         (b, structuralDed, None, [])]
+    | Seq([a; b]), _ -> [(a, structuralDed, None, [Structural])
+                         (b, structuralDed, None, [Structural])]
 
-    | Par([a; b]), _ -> [(a, structuralDed, None, [])
-                         (b, structuralDed, None, [])]
+    | Par([a; b]), _ -> [(a, structuralDed, None, [Structural])
+                         (b, structuralDed, None, [Structural])]
 
-    | And([a; b]), _ -> [(a, structuralDed, None, [])
-                         (b, structuralDed, None, [])]
+    | And([a; b]), _ -> [(a, structuralDed, None, [Structural])
+                         (b, structuralDed, None, [Structural])]
 
-    | Or([a; b]), _  ->[(a, structuralDed, None, [])
-                        (b, structuralDed, None, [])]
+    | Or([a; b]), _  ->[(a, structuralDed, None, [Structural])
+                        (b, structuralDed, None, [Structural])]
 
     | _ -> []
 
