@@ -25,11 +25,16 @@ namespace Pong2
         static string serverAddr = "127.0.0.1";
         static int serverPort = 5000;
         static int clientPort = 5002;
+        static int graphitePort = 8125;
 
         static IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverAddr), serverPort);
         static IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, clientPort);
         static UdpClient outSocket = new UdpClient();
         static UdpClient inSocket = new UdpClient(clientEndPoint);
+
+        static IPEndPoint graphiteEndPoint = new IPEndPoint(IPAddress.Parse(serverAddr), graphitePort);
+        static UdpClient graphiteOutSocket = new UdpClient();
+
         StringBuilder sb = new StringBuilder();
 
         public Form1()
@@ -40,10 +45,18 @@ namespace Pong2
             this.DoubleBuffered = true;
 
             outSocket.Connect(serverEndPoint);
+            graphiteOutSocket.Connect(graphiteEndPoint);
+
             ThreadStart ts = new ThreadStart(Listening);
             Thread th = new Thread(ts);
             th.Start();
         }
+        private void SendMetric(string metric)
+        {
+            var data = Encoding.ASCII.GetBytes(metric);
+            graphiteOutSocket.SendAsync(data, data.Length);
+        }
+
 
         private async void Listening()
         {
@@ -87,7 +100,7 @@ namespace Pong2
             graphics.FillRectangle(redBatBrush, b_x, b_y, 100, 10);
         }
 
-        private bool HitBat()
+        private bool HitBat(int x, int y)
         {
             var bat = new Rectangle(b_x, b_y, 100, 10);
             var ball = new Rectangle(x, y, 10, 10);
@@ -105,6 +118,8 @@ namespace Pong2
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [hit]>!");
                 SendStatement(sb.ToString());
+
+                SendMetric("ALANN.Hit:1|c\n");
             }
 
             return bHit;
@@ -117,28 +132,16 @@ namespace Pong2
 
             int t_y = toolStripStatusLabel1.Height;
 
-            if (HitBat())
+            if (HitBat(newBall_x, newBall_y))
             {
                 dy = -dy;
-            }
-            // temp fix for out of bounds
-            if (x < 0)
-            {
-                x = 0;
-                //dx = 3;
+                y = 10;
             }
 
-            if (y < 0)
+            if (newBall_y <= 0) // miss
             {
-                y = 0;
-                //dy = 2;
-            }
-            // end of fix
+                dy = -dy;
 
-            if (newBall_x <= 0 || newBall_x >= this.ClientSize.Width - 10) dx = -dx;
-            if (newBall_y <= 0 || newBall_y >= this.ClientSize.Height - (10 + t_y)) dy = -dy;
-            if (newBall_y <= 0)
-            {
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [hit]>. {{0.00 0.90}}");
                 SendStatement(sb.ToString());
@@ -148,7 +151,12 @@ namespace Pong2
                 SendStatement(sb.ToString());
 
                 toolStripStatusLabel1.Text = "Missed - boohoo!";
+
+                SendMetric("ALANN.Miss:1|c\n");
             }
+
+            if (newBall_x <= 0 || newBall_x >= this.ClientSize.Width - 10) dx = -dx;
+            if (newBall_y >= this.ClientSize.Height - (10 + t_y)) dy = -dy;
 
             x += dx;
             y += dy;
@@ -193,7 +201,6 @@ namespace Pong2
         {
             var data = Encoding.ASCII.GetBytes(str);
             outSocket.SendAsync(data, data.Length);
-
         }
 
         int tickCount = 0;
