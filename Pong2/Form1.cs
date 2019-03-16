@@ -13,14 +13,18 @@ namespace Pong2
     public partial class Form1 : Form
     {
         Graphics graphics;
-        int x = 150;
-        int y = 100;
-        int dx = 3;
-        int dy = 2;
+        int ball_x = 150;
+        int ball_y = 100;
+        int ball_dx = 3;
+        int ball_dy = 2;
 
-        int b_x = 20;
-        int b_y = 1;
-        int b_dx = 5;
+        int bat_x = 20;
+        int bat_y = 1;
+        int bat_dx = 5;
+
+        readonly int ball_diameter = 10;
+        readonly int bat_width = 50;
+        readonly int bat_height = 10;
 
         static string serverAddr = "127.0.0.1";
         static int serverPort = 5000;
@@ -90,20 +94,20 @@ namespace Pong2
         {
             graphics = e.Graphics;
             SolidBrush blueBallBrush = new SolidBrush(Color.Blue);
-            graphics.FillEllipse(blueBallBrush, x, y, 10, 10);
+            graphics.FillEllipse(blueBallBrush, ball_x, ball_y, ball_diameter, ball_diameter);
         }
 
         private void paintBat(object sender, PaintEventArgs e)
         {
             graphics = e.Graphics;
             SolidBrush redBatBrush = new SolidBrush(Color.Red);
-            graphics.FillRectangle(redBatBrush, b_x, b_y, 100, 10);
+            graphics.FillRectangle(redBatBrush, bat_x, bat_y, bat_width, bat_height);
         }
 
         private bool HitBat(int x, int y)
         {
-            var bat = new Rectangle(b_x, b_y, 100, 10);
-            var ball = new Rectangle(x, y, 10, 10);
+            var bat = new Rectangle(bat_x, bat_y, bat_width, bat_height);
+            var ball = new Rectangle(x, y, ball_diameter, ball_diameter);
 
             bool bHit = !Rectangle.Intersect(bat, ball).IsEmpty;
 
@@ -127,20 +131,20 @@ namespace Pong2
 
         private void MoveBall()
         {
-            int newBall_x = x + dx;
-            int newBall_y = y + dy;
+            int newBall_x = ball_x + ball_dx;
+            int newBall_y = ball_y + ball_dy;
 
             int t_y = toolStripStatusLabel1.Height;
 
             if (HitBat(newBall_x, newBall_y))
             {
-                dy = -dy;
-                y = 10;
+                ball_dy = -ball_dy;
+                ball_y = bat_height;
             }
 
             if (newBall_y <= 0) // miss
             {
-                dy = -dy;
+                ball_dy = -ball_dy;
 
                 sb.Clear();
                 sb.AppendFormat("<BALLPOS --> [hit]>. {{0.00 0.90}}");
@@ -153,45 +157,42 @@ namespace Pong2
                 toolStripStatusLabel1.Text = "Missed - boohoo!";
 
                 SendMetric("ALANN.Miss:1|c\n");
+                var missDistance = Math.Abs(ball_x - bat_x);
+                SendMetric("ALANN.MissDistance:" + missDistance.ToString() + "|c\n");
             }
 
-            if (newBall_x <= 0 || newBall_x >= this.ClientSize.Width - 10) dx = -dx;
-            if (newBall_y >= this.ClientSize.Height - (10 + t_y)) dy = -dy;
+            if (newBall_x <= 0 || newBall_x >= this.ClientSize.Width - ball_diameter) ball_dx = -ball_dx;
+            if (newBall_y >= this.ClientSize.Height - (ball_diameter + t_y)) ball_dy = -ball_dy;
 
-            x += dx;
-            y += dy;
+            ball_x += ball_dx;
+            ball_y += ball_dy;
         }
 
         private void MoveBat()
         {
-            if (b_x < 5 || b_x > (this.ClientRectangle.Width - 100)) b_dx = -b_dx;
-            b_x += b_dx;
+            if(bat_dx > 0 && bat_x >= (this.ClientRectangle.Width - bat_width)) bat_dx = -bat_dx;
+            else if(bat_dx < 0 && bat_x <= 0) bat_dx = -bat_dx;
+
+            bat_x += bat_dx;
         }
 
         private void MoveLeft()
         {
-            if(b_dx > 0) b_dx = -b_dx;
+            if(bat_dx > 0) bat_dx = -bat_dx;
 
             sb.Clear();
             sb.AppendFormat("<[left] --> action>.");
             SendStatement(sb.ToString());
-            //sb.Clear();
-            //sb.AppendFormat("<[left] --> percept>.");
-            //SendStatement(sb.ToString());
         }
 
         private void MoveRight()
         {
-            if (b_dx < 0) b_dx = -b_dx;
+            if (bat_dx < 0) bat_dx = -bat_dx;
 
             sb.Clear();
             sb.AppendFormat("<[right] --> action>.");
             SendStatement(sb.ToString());
-            //sb.Clear();
-            //sb.AppendFormat("<[right] --> percept>.");
-            //SendStatement(sb.ToString());
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -214,38 +215,44 @@ namespace Pong2
 
             if (tickCount % 10 == 0)
             {
-                if ((b_x + 50) < x)
+                if (ball_x < (bat_x + ball_diameter))
                 {
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [left]>. {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [left]>.");
+                    SendStatement(sb.ToString());
+
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [right]>. {{0.0 0.9}}");
+                    SendStatement(sb.ToString());
+
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [equal]>. {{0.0 0.9}}");
+                    SendStatement(sb.ToString());
+                }
+                else if (ball_x > (bat_x + bat_width))
+                {
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [left]>. {{0.0 0.9}}");
+                    SendStatement(sb.ToString());
+
                     sb.Clear();
                     sb.AppendFormat("<BALLPOS --> [right]>.");
                     SendStatement(sb.ToString());
-                }
-                else if ((b_x - 50) > x)
-                {
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [right]>.  {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [equal]>. {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
+
                     sb.Clear();
-                    sb.AppendFormat("<BALLPOS --> [left]>.");
+                    sb.AppendFormat("<BALLPOS --> [equal]>. {{0.0 0.9}}");
                     SendStatement(sb.ToString());
                 }
                 else
                 {
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [right]>. {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
-                    //sb.Clear();
-                    //sb.AppendFormat("<BALLPOS --> [left]>.  {{0.00 0.90}}");
-                    //SendStatement(sb.ToString());
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [left]>. {{0.0 0.9}}");
+                    SendStatement(sb.ToString());
+
+                    sb.Clear();
+                    sb.AppendFormat("<BALLPOS --> [right]>. {{0.0 0.9}}");
+                    SendStatement(sb.ToString());
+
                     sb.Clear();
                     sb.AppendFormat("<BALLPOS --> [equal]>.");
                     SendStatement(sb.ToString());

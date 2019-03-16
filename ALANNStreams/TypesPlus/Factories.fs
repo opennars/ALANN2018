@@ -45,7 +45,7 @@ let makeEventFromBelief eb =
 
 let makeBeliefFromEvent (e : Event) =
     match e with
-    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = e.Stamp}
+    | {EventType = Belief; TV = Some tv} -> {Term = e.Term; TV = tv; Stamp = {e.Stamp with OccurenceTime = SystemTime()}}
     | _ -> failwith "makeBeliefFromEvent: Event is not Belief"
 
 let makeGoalFromEvent (e : Event) =
@@ -65,6 +65,17 @@ let makeVirtualBelief term =
 // EventBelief factories
 
 let makeInferredEvent eb (term, tv) =
+    let stamp1 = eb.Event.Stamp
+    let stamp2 = eb.Belief.Stamp
+    let now = SystemTime()
+    let stamp = {OccurenceTime = now
+                 SC = syntacticComplexity term 
+                 Evidence = merge stamp1.Evidence stamp2.Evidence
+                 Source = Derived}
+
+    {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
+
+let makeTemporalEvent eb (term, tv) =
     let temporalDistanceDiscount eb = 
         let t1 = eb.Event.Stamp.OccurenceTime
         let t2 = eb.Belief.Stamp.OccurenceTime
@@ -80,7 +91,7 @@ let makeInferredEvent eb (term, tv) =
                  Source = Derived}
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
-
+    
 let makeInferredFromQuestionEvent eb (term, tv) =
     let now = SystemTime()
     let stamp = {OccurenceTime = now
@@ -90,7 +101,7 @@ let makeInferredFromQuestionEvent eb (term, tv) =
 
     {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
-let makeStructuralEvent eb (term, tv) =
+let makeStructuralEvent (eb : EventBelief) (term, tv) =
     let now = SystemTime()
     let stamp = {OccurenceTime = now
                  SC = syntacticComplexity term 

@@ -193,10 +193,15 @@ namespace ALANNUI
             {
                 eventsPerSecondStatus.Text = statusMsg;
             }
-            else if (statusMsg.StartsWith("Node"))
+            else if (statusMsg.StartsWith("Node Activations"))
             {
                 ActivationsStatus.Text = statusMsg;
             }
+            else if (statusMsg.StartsWith("Node References"))
+            {
+                ReferenceStatus.Text = statusMsg;
+            }
+
             else if (statusMsg.StartsWith("SystemTime"))
             {
                 timeStatus.Text = statusMsg;
@@ -382,8 +387,15 @@ namespace ALANNUI
 
         private void ResetBtn_Click(object sender, EventArgs e)
         {
-            SendCmdToServer("#RESET");
-            DisableControls(this);
+            if (ServerLive)
+            { 
+                SendCmdToServer("#RESET");
+                DisableControls(this);
+            }
+            else
+            {
+                DisplayWelcomeMessage();
+            }
         }
 
         private void ClearFormBtn_Click(object sender, EventArgs e)

@@ -72,13 +72,15 @@ let processNode state (event : Event) =
         | true -> updateHostBeliefs state event
 
     let now = SystemTime()
-    let inLatencyPeriod = (now - state.LastUsed) <= Params.LATENCY_PERIOD
+    let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
 
     let state = updateAttention state now event
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
     let cond3 = match state.Term with | Temporal _ -> true | _ -> false
+
+    Interlocked.Increment(systemState.References) |> ignore
      
     match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2 || cond3) with
     | true ->  
@@ -87,7 +89,8 @@ let processNode state (event : Event) =
         Interlocked.Increment(systemState.Activations) |> ignore
         (state, processEvent state attention oldBelief event)
 
-    | false -> (state, [])  // inLatencyPeriod or below activation threshold    
+    | false -> 
+        (state, [])  // inLatencyPeriod or below activation threshold    
 
 let initState term (e : Event) = 
     let now = SystemTime()

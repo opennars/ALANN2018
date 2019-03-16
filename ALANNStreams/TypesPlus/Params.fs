@@ -29,7 +29,7 @@ let HORIZON                             = 1.0f          // System Personality Fa
 let CONF_MAX_CLAMP                      = 0.99f         // Clamp value for truth conf to avoid rounding to 1.0f
                                                         
 // Node Related Parameters                              
-let ACTIVATION_THRESHOLD                = 0.70f         // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.80f         // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f         // After firing node attention is reset to this
 let DECAY_RATE                          = 0.10f         // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L            // Concept latency period in milliseconds
@@ -40,6 +40,7 @@ let BELIEF_RANK_POW                     = 1.00          // exp/sc^n ranking wher
 
 // Temporal Related Parameters
 let CONCURRENCY_DURATION                = 80L           // Period when two occurence times are deemed concurrent
+let QUESTION_ANSWER_WINDOW              = 30000L        // Period (in ms) when a previous question can be answered by new input beliefs 
 
 // General Parameters
 let CONFIDENCE                          = 0.90f         // Truth Value confidence component
@@ -57,13 +58,15 @@ let QUEST_LTI                           = 0.95f         // long Term Importance 
 
 let SHALLOW_LTI                         = 0.25f         // long Term Importance value for derived shallow events AKA duration
 let DEEP_LTI                            = 0.85f         // long Term Importance value for derived deep events AKA duration
-let TRAIL_LENGTH                        = 10            // maximum length allowed for inference trail within stamp
+let TRAIL_LENGTH                        = 20            // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20            // Maximum syntactic complexity of general terms
 let MAX_TEMPORAL_SC                     = 100           // Maximum syntactic complexity of temporal terms
 let TERM_DEPTH                          = 5             // depth of term separation
 let ATTENTION_BUFFER_SIZE               = 15            // Maximum number of events in Attention buffer
+let GOAL_BUFFER_SIZE                    = 5             // Maximum number of goals in Goal buffer
 let INPUT_BUFFER_SIZE                   = 100           // Maximum number of events in input buffer
-let MAX_CONCEPTS                        = 100_000       // Maximum number of concepts
+let QUESTION_QUEUE_SIZE                 = 2             // Maximum number of input questions to store in question queue
+let MAX_CONCEPTS                        = 1_000_000     // Maximum number of concepts
 let ANSWER_ATTENTION_SCALING            = 3.0           // Scale answer attention by STI * (1 - C^n) where n is this parameter
 let DECISION_THRESHOLD                  = 0.65f         // Decision threshold for goal driven operation execution
 let GC_TEMPORAL_NODES_INTERVAL          = 2000.0        // Freq of temporal concept gc in ms
@@ -77,7 +80,7 @@ let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for 
 let NOISE_LEVEL                         = 0.00f         // exp(tv) to cut off event print to console
 
 //Streams related Parameters  
-let NUM_TERM_STREAMS                    = 100           // Number of Term streams
+let NUM_TERM_STREAMS                    = 20            // Number of Term streams
 let STREAM_NODE_MEMORY                  = 10_000        // Initial number of nodes to allocate per stream store
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
@@ -87,10 +90,12 @@ let GROUP_BLOCK_SIZE                    = 1_000         // Number of events to f
 let SERVER_ADDR                         = "127.0.0.1"   // ALANN Server IP address (local host by default)
 let CLIENT_ADDR                         = "127.0.0.1"   // ALANN GUI Client IP address (local host by default)
 let SHELL_ADDR                          = "127.0.0.1"   // ALANN Shell Client IP address (local host by default)
+let GRAPHITE_ADDR                       = "127.0.0.1"   // Graphite server local address
 let SERVER_PORT                         = 5000          // Port for server
 let GUI_CLIENT_PORT                     = 5001          // Client port for GUI
 let PONG_CLIENT_PORT                    = 5002          // Client port for pong
 let SHELL_PORT                          = 5003          // Client Port for Shell
+let GRAPHITE_PORT                       = 8125          // UDP port for plaintext Protocol
 
 //Command related prefixes
 let COMMAND_PREFIX                      = "#"           // Start of command message

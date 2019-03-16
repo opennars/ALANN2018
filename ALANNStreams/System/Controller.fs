@@ -76,7 +76,7 @@ type Controller() =
         let rec GCNodesLoop() = async {
             let! _ = Async.AwaitEvent GCtimer.Elapsed
             GCTemporalNodes()
-            //GCGeneralNodes()
+            GCGeneralNodes()
 
             return! GCNodesLoop() 
         }

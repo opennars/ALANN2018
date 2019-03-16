@@ -43,4 +43,4 @@ type GoalStore(generalCapacity) =
         member x.Count = store.Count
         member x.GetGoals() = store.GetBeliefs()
         
-let goalStore = GoalStore(5) :> IGoalStore
+let goalStore = GoalStore(Params.GOAL_BUFFER_SIZE) :> IGoalStore

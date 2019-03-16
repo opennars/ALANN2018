@@ -46,8 +46,8 @@ let termStreams =
 
                 builder.Add(
                     (Flow.Create<Event>()
-                    //|> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)).Async())
-                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)).Async())
+                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)))
+                    //|> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term)))
 
             builder
                 .From(separateTerms)
@@ -57,7 +57,7 @@ let termStreams =
             for stream in 0..(numStreams - 1) do                  
                 builder
                     .From(partition.Out(stream))
-                    .Via((termStream (stream)))
+                    .Via((termStream (stream)).Async())
                     .To(merge.In(stream)) 
                     |> ignore
 

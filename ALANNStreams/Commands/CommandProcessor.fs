@@ -28,6 +28,7 @@ open System.Collections.Concurrent
 open System.IO
 open Akka.Streams.Dsl
 open Types
+open QuestionQueue
 open CommandParser
 open FileIO
 open TermFormatters
@@ -143,7 +144,8 @@ let reset() =
         System.Threading.Thread.Sleep(Params.SERVER_RESET_DELAY)
         resetSwitch <- false
     systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
-    //systemState.Id := 0L
+    systemState.answerDict <- ConcurrentDictionary<string, (string * string * string)>()
+    systemState.questionQueue <- QuestionQueue(Params.QUESTION_QUEUE_SIZE)
     systemState.StartTime <- 0L
     ResetTime()
     resetSwitch <- false

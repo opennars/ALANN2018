@@ -36,12 +36,19 @@ let pongPort = Params.PONG_CLIENT_PORT
 let shellAddr = Params.SHELL_ADDR
 let shellPort = Params.SHELL_PORT
 
+let graphiteAddr = Params.GRAPHITE_ADDR
+let graphitePort = Params.GRAPHITE_PORT
+
 let clientEndPoint = new IPEndPoint(IPAddress.Parse(clientAddr), clientPort)
 let shellEndPoint = new IPEndPoint(IPAddress.Parse(shellAddr), shellPort)
+let graphiteEndPoint = new IPEndPoint(IPAddress.Parse(graphiteAddr), graphitePort)
+
 let outSocketUI = new UdpClient()
 let outSocketShell = new UdpClient();
+let outSocketGraphite = new UdpClient();
 
 outSocketShell.Connect(shellEndPoint)
+outSocketGraphite.Connect(graphiteEndPoint)
 
 let sendMessageToClient (msg : string) =
     let data = Encoding.ASCII.GetBytes(msg)
@@ -63,3 +70,7 @@ pongOutSocket.Connect(pongEndPoint)
 let sendMessageToPong (msg : string) =
     let data = Encoding.ASCII.GetBytes(msg)
     pongOutSocket.SendAsync(data, data.Length) |> ignore
+
+let sendMessageToGraphite (msg : string) =
+    let data = Encoding.ASCII.GetBytes(msg)
+    outSocketGraphite.SendAsync(data, data.Length) |> ignore

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28621.142
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B1156D0E-1C7E-409F-B792-D94B6BD81B0D}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,8 +13,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALANNUI", "ALANNUI\ALANNUI.csproj", "{FFD36D6E-3EC8-4948-B862-FB33A86AEA9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriorityBuffer", "PriorityBuffer\PriorityBuffer.csproj", "{8FF474B1-D6A9-469D-B960-EFFC8486F4AA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDPTester", "UDPTester\UDPTester.csproj", "{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pong2", "Pong2\Pong2.csproj", "{623C18E4-623B-4BB2-9B68-E43C04CED445}"
 EndProject
@@ -66,18 +64,6 @@ Global
 		{8FF474B1-D6A9-469D-B960-EFFC8486F4AA}.Release|x64.Build.0 = Release|Any CPU
 		{8FF474B1-D6A9-469D-B960-EFFC8486F4AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{8FF474B1-D6A9-469D-B960-EFFC8486F4AA}.Release|x86.Build.0 = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|x64.Build.0 = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Debug|x86.Build.0 = Debug|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|x64.ActiveCfg = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|x64.Build.0 = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|x86.ActiveCfg = Release|Any CPU
-		{51D3BADF-6D87-4FF9-A48A-A2854C9D6075}.Release|x86.Build.0 = Release|Any CPU
 		{623C18E4-623B-4BB2-9B68-E43C04CED445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{623C18E4-623B-4BB2-9B68-E43C04CED445}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{623C18E4-623B-4BB2-9B68-E43C04CED445}.Debug|x64.ActiveCfg = Debug|Any CPU

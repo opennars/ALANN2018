@@ -172,6 +172,12 @@ type IGoalStore =
     abstract Count : int
     abstract GetGoals : unit -> seq<Belief>
 
+type IQuestionQueue =
+    abstract Enqueue : Event -> unit
+    abstract Dequeue : unit -> Event option
+    abstract Count : int
+    abstract GetQuestions : unit -> seq<Event>
+    
 type Node     = {Term : Term
                  Beliefs : IStore
                  VirtualBelief : Belief
@@ -208,8 +214,10 @@ type SystemState =
         mutable StartTime : int64
         EventsPerSecond : int ref
         Activations : int ref
+        References : int ref
         mutable stores : ConcurrentDictionary<Term, Node> array
         mutable answerDict : ConcurrentDictionary<string, (string * string * string)>
+        mutable questionQueue : IQuestionQueue
     }
 
 let mutable valveAsync : Async<IValveSwitch> = Unchecked.defaultof<Async<IValveSwitch>>

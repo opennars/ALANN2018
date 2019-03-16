@@ -68,8 +68,7 @@ let mainSink =
         fun builder-> 
             let mergeInput = builder.Add(Merge<Event>(2))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
-            let goalBuffer = Flow.FromGraph(MyBuffer(10).Async())
-            let incrementEvents = Flow.Create<Event>() |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
+            let goalBuffer = Flow.FromGraph(MyBuffer(Params.GOAL_BUFFER_SIZE)).Async()
             let partitionGoals = builder.Add(Partition<Event>(2, fun e -> if e.EventType = Goal then 1 else 0))
             let mergeGoals = builder.Add(Merge<Event>(2))
 
@@ -89,8 +88,25 @@ let mainSink =
                     | _ -> ()
                     e)
 
+            let processInputQuestion =
+                Flow.Create<Event>()
+                |> Flow.map (fun e -> 
+                    match e with
+                    | {EventType = Question} ->
+                        systemState.questionQueue.Enqueue(e)
+                        [e]
+                    | {EventType = Belief} ->
+                        let questions = 
+                            systemState.questionQueue.GetQuestions()
+                            |> Seq.filter (fun q -> (SystemTime() - q.Stamp.OccurenceTime) < Params.QUESTION_ANSWER_WINDOW)
+                            |> Seq.toList
+                        e::questions
+                    | _ -> [e])
+                |> Flow.collect (fun e -> e)
+                
             builder
                 .From(inBuffer)
+                .Via(processInputQuestion)
                 .To(mergeInput.In(0))
                 .From(mergeInput)
                 .Via(resetFlow)
@@ -99,7 +115,7 @@ let mainSink =
                 .To(partitionGoals)
                 .From(partitionGoals.Out(1))
                 .Via(goalBuffer)
-                .Via(processGoal.Async())
+                .Via(processGoal)
                 //.Via(showEvents)
                 .To(mergeGoals.In(1))
 
@@ -108,8 +124,7 @@ let mainSink =
                 .From(mergeGoals)
 
                 .Via(eventLogger)
-                .Via(termStreams.Async())
-                .Via(incrementEvents)
+                .Via(termStreams)
                 //.Via(showEvents)
                 .To(mergeInput.In(1))
                 |> ignore

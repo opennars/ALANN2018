@@ -65,6 +65,7 @@
     <Compile Include="TypesPlus\Evidence.fs" />
     <Compile Include="TypesPlus\ActivePatterns.fs" />
     <Compile Include="TypesPlus\TermUtils.fs" />
+    <Compile Include="TypesPlus\QuestionQueue.fs" />
     <Compile Include="TypesPlus\SystemState.fs" />
     <Compile Include="TypesPlus\Factories.fs" />
     <Compile Include="IO\TermFormatters.fs" />
@@ -84,6 +85,7 @@
     <Compile Include="Inference\InferenceUtils.fs" />
     <Compile Include="Inference\FirstOrderInference.fs" />
     <Compile Include="Inference\HigherOrderInference.fs" />
+    <Compile Include="Inference\HigherOrderInference2.fs" />
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
     <Compile Include="Parser\Parser.fs" />

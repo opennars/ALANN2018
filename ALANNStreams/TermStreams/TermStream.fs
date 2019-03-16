@@ -25,6 +25,7 @@
 module TermStream
 
 open System
+open System.Threading
 open Akkling.Streams
 open Akka.Streams.Dsl
 open Akka.Streams
@@ -73,22 +74,16 @@ let termStream (i) =
                 |> Flow.map createNode
 
             let processEvent = 
-                (Flow.Create<TermEvent>()
-                |> Flow.map processEvent).Async()
-                |> Flow.collect (fun ebs -> ebs)
-
-            let groupAndDelay =
                 Flow.Create<TermEvent>()
                 |> Flow.groupedWithin (Params.GROUP_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
                 |> Flow.collect (fun termEvents -> termEvents)
+                |> Flow.map processEvent
+                |> Flow.collect (fun ebs -> ebs)
+                |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
             
             let deriver = builder.Add(inferenceFlow.Async())
 
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
-
-            let showResult = 
-                Flow.Create<EventBelief>()
-                |> Flow.map (fun eb -> printfn "%A %s %s" eb.Event.EventType (TermFormatters.ft eb.Event.Term) (TermFormatters.ft eb.Belief.Term); eb)
 
             builder
                 .From(preferCreatedTermMerge)
@@ -97,9 +92,7 @@ let termStream (i) =
                 .Via(create)
                 .To(preferCreatedTermMerge.Preferred)
                 .From(partitionExistingTerms.Out(1))
-                .Via(groupAndDelay)
                 .Via(processEvent)
-                //.Via(showResult)
                 .Via(attentionBuffer)
                 .Via(deriver)
                 |> ignore

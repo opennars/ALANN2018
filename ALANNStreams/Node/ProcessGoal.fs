@@ -40,7 +40,7 @@ let postCondition = function | Term(op, [_; postCondition]) when op |> isPredict
 
 let satisfyingBelief state (event : Event) =
     let matches = 
-        state.Beliefs.GetBeliefs()
+        state.Beliefs.GetHypotheses()
         |> Seq.filter (fun b -> (postCondition b.Term) = event.Term)
 
     if Seq.isEmpty matches then
@@ -48,21 +48,22 @@ let satisfyingBelief state (event : Event) =
     else
         Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
 
-let processGoal attention state (event : Event) =
-    match Choice.bestAnswer state event with
-    | Some belief when state.Term = event.Term ->
-        if exp(state.HostBelief.TV) > Params.DECISION_THRESHOLD then
+let processGoal attention (state : Node) (event : Event) =
+    if state.Term = event.Term then
+        if exp(event.TV.Value) > Params.DECISION_THRESHOLD then
             match event.Term with
             | Term(Inh, [Term(IntSet, [Word "left"]); Word "action"]) ->
                 raiseActionExecutionEvent (Actions.MoveLeft)
             | Term(Inh, [Term(IntSet, [Word "right"]); Word "action"]) ->
                 raiseActionExecutionEvent (Actions.MoveRight)
-            | _ -> ()
-
+            | _ -> ()    
             raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
-            let belief = {belief with TV = state.HostBelief.TV}
-            [makeAnsweredEventGoal attention event belief] 
-        else    
-            printfn "Processing inference"
-            getInferenceBeliefs attention state event
-    | _ -> getInferenceBeliefs attention state event
+            [makeAnsweredEventGoal attention event state.HostBelief] 
+        else  
+            match satisfyingBelief state event with
+            | Some belief ->
+                printfn "Processing inference"
+                [makeEventBelief attention event belief]
+            | None ->
+                getInferenceBeliefs attention state event
+    else getInferenceBeliefs attention state event

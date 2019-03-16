@@ -106,6 +106,7 @@ namespace ALANNUI
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.LoadtoolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.ReferenceStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -460,6 +461,7 @@ namespace ALANNUI
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.timeStatus,
             this.eventsPerSecondStatus,
+            this.ReferenceStatus,
             this.ActivationsStatus,
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 774);
@@ -607,6 +609,12 @@ namespace ALANNUI
             this.label8.TabIndex = 33;
             this.label8.Text = "Beliefs";
             // 
+            // ReferenceStatus
+            // 
+            this.ReferenceStatus.Name = "ReferenceStatus";
+            this.ReferenceStatus.Size = new System.Drawing.Size(104, 17);
+            this.ReferenceStatus.Text = "Node References";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -706,6 +714,7 @@ namespace ALANNUI
         private System.Windows.Forms.Button TransformFuncBtn;
         private System.Windows.Forms.Button MatchToSampleBtn;
         private System.Windows.Forms.Button ShowGoalsBtn;
+        private System.Windows.Forms.ToolStripStatusLabel ReferenceStatus;
     }
 }
 

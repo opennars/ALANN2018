@@ -32,6 +32,7 @@ open TermUtils
 open TermFormatters
 open SystemState
 open Events
+open Network
 
 let displayAnswer (answer : Answer) =    
     let answer' = answer.QuestionID + answer.Term
@@ -50,10 +51,29 @@ let displaySolution solution =
     printActor <! PrintMessage (sprintf "?%s" solution)  
 
 let updateStatus() =
+    let getNodeCount() =
+        let rec loop acc n =
+            match n with
+            | 0 -> acc + systemState.stores.[n].Count
+            | _ -> loop (acc + systemState.stores.[n].Count) (n - 1)
+    
+        loop 0 (systemState.stores.GetLength(0) - 1)
+
+    let eventsPerSec = (Interlocked.Exchange(systemState.EventsPerSecond, 0))
+    let activationsPerSec = (Interlocked.Exchange(systemState.Activations, 0))
+    let referencesPerSec = (Interlocked.Exchange(systemState.References, 0))
+
+    sendMessageToGraphite (sprintf "%s:%d|c\n" "ALANN.eventsPerSec" eventsPerSec)
+    sendMessageToGraphite (sprintf "%s:%d|c\n" "ALANN.activationsPerSec" activationsPerSec)
+    sendMessageToGraphite (sprintf "%s:%d|c\n" "ALANN.referencesPerSec" referencesPerSec)
+    sendMessageToGraphite (sprintf "%s:%d|c\n" "ALANN.Nodes" (getNodeCount()))
+    sendMessageToGraphite (sprintf "%s:%d|c\n" "ALANN.ServerRunning" 1)
+
     myprintfn (sprintf "%sSystemTime [%d]" Params.STATUS_PREFIX (SystemTime()))
     myprintfn (sprintf "%sStatus: ALANN Server Running" Params.STATUS_PREFIX)
-    myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.EventsPerSecond, 0)))  
-    myprintfn (sprintf "%sNode Activations %d/s" Params.STATUS_PREFIX (Interlocked.Exchange(systemState.Activations, 0)))  
+    myprintfn (sprintf "%sEvents %d/s" Params.STATUS_PREFIX eventsPerSec)  
+    myprintfn (sprintf "%sNode Activations %d/s" Params.STATUS_PREFIX activationsPerSec)  
+    myprintfn (sprintf "%sNode References %d/s" Params.STATUS_PREFIX referencesPerSec) 
 
 let showTrace (state : Node) e =
     let activationType (e : Event) = if isTemporal e.Term then "TEMPORAL" else "GENERAL"
