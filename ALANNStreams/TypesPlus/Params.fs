@@ -80,7 +80,7 @@ let STATUS_UPDATE_FREQUENCY_MS          = 1_000.0       // Update frequency for 
 let NOISE_LEVEL                         = 0.00f         // exp(tv) to cut off event print to console
 
 //Streams related Parameters  
-let NUM_TERM_STREAMS                    = 20            // Number of Term streams
+let NUM_TERM_STREAMS                    = 50            // Number of Term streams
 let STREAM_NODE_MEMORY                  = 10_000        // Initial number of nodes to allocate per stream store
 let CYCLE_DELAY_MS                      = 1.0           // Number of ms to allow for main cycle delay
 let GROUP_DELAY_MS                      = 1.0           // Number of ms to allow for grouping of events before despatching 
