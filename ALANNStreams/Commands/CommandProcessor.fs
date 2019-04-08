@@ -28,45 +28,44 @@ open System.Collections.Concurrent
 open System.IO
 open Akka.Streams.Dsl
 open Types
-open QuestionQueue
 open CommandParser
 open FileIO
 open TermFormatters
 open CommandUtils
 open SystemState
-open GoalStore
+
+let errorTermNotExist = "ERROR *** TERM DOES NOT EXIST ***"
+let fileExistsError = "ERROR *** FILE EXISTS ***"
+let fileNotExistsError = "ERROR *** FILE DOES NOT EXIST ***"
+let unableSetTraceError = "ERROR *** UNABLE TO SET TRACE FOR TERM ***"
 
 let showSimpleBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_GENERAL_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetGeneralBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
+    | _ -> printCommand errorTermNotExist false
 
 let showTemporalBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_TEMPORAL_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetTemporalBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
+    | _ -> printCommand errorTermNotExist false
 
 let showHypothesisBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_PRE/POST_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetHypotheses() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
+    | _ -> printCommand errorTermNotExist false
 
 let showGeneralisedBeliefs term =
     match getNodeFromTerm term with
     | (true, node) ->
         printCommandWithString "SHOW_VARIABLE_BELIEFS FOR TERM" (ft term)
         showBeliefs node (List.sortBy (fun b -> -exp(b.TV)) [for b in node.Beliefs.GetVariableBeliefs() -> b])
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
-
-let showGoals() =
-    printCommandWithString "SHOW_GOALS" ""
-    showGoals (List.sortBy (fun b -> -exp(b.TV)) [for g in goalStore.GetGoals() -> g])
+    | _ -> printCommand errorTermNotExist false
 
 let showNode term =
     match getNodeFromTerm term with
@@ -77,7 +76,7 @@ let showNode term =
         printCommandWithString "USE COUNT = " (node.UseCount.ToString())
         printCommandWithString "CREATED = " (node.Created.ToString())
         printCommandWithString "LAST USED = " (node.LastUsed.ToString())
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
+    | _ -> printCommand errorTermNotExist false
     
 let nodeCount() =
     printCommand "NODE_COUNT" false
@@ -88,14 +87,14 @@ let enableTrace term =
     | (true, node) -> 
         printCommandWithString "ENABLE TRACE FOR TERM" (ft term)
         node.Trace <- true
-    | _ -> printCommand "ERROR *** UNENABLE TO SET TRACE FOR TERM ***" false
+    | _ -> printCommand unableSetTraceError false
 
 let disableTrace term =
     match getNodeFromTerm term with
     | (true, node) -> 
         printCommandWithString "DISABLE TRACE FOR TERM" (ft term)
         node.Trace <- false
-    | _ -> printCommand "ERROR *** TERM DOES NOT EXIST ***" false
+    | _ -> printCommand errorTermNotExist false
 
 let pauseFlow() =
     printCommand "PAUSE" true
@@ -119,7 +118,7 @@ let loadFile file =
         ResetTime()
         printCommand "FILE LOADED" true
         continueFlow()
-    | _ -> printCommand "ERROR *** FILE DOES NOT EXIST ***" true
+    | _ -> printCommand fileNotExistsError true
 
 let saveFile file =
     let filepath = Params.STORAGE_PATH + "\\" + file
@@ -135,7 +134,7 @@ let saveFile file =
         FileIO.ExportGraph filepath
         printCommand "FILE SAVED" true
         continueFlow()
-    | _ -> printCommand "ERROR *** FILE EXISTS ***" true
+    | _ -> printCommand fileExistsError true
 
 let reset() =
     printCommand "RESET IN PROGRESS..." true
@@ -145,7 +144,6 @@ let reset() =
         resetSwitch <- false
     systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
     systemState.answerDict <- ConcurrentDictionary<string, (string * string * string)>()
-    systemState.questionQueue <- QuestionQueue(Params.QUESTION_QUEUE_SIZE)
     systemState.StartTime <- 0L
     ResetTime()
     resetSwitch <- false
@@ -158,7 +156,6 @@ let processCommand (cmd : string) =
     | Show_Temporal_Beliefs(term) -> showTemporalBeliefs term
     | Show_Hypothesis_Beliefs(term) -> showHypothesisBeliefs term
     | Show_Generalised_Beliefs(term) -> showGeneralisedBeliefs term
-    | Show_Goals -> showGoals()
     | Show_Node(term) -> showNode(term)
     | Node_Count -> nodeCount()
     | Enable_Trace(term) -> enableTrace term

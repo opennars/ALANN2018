@@ -46,16 +46,16 @@ let inf (f, swap) eb =
     let matchToEvent = function
         | (term, tf1, tf2, conds) ->
             match eb.Event.EventType with
-            | Belief when List.contains (concurrency()) conds && eb.Belief.Stamp.Source <> Virtual -> [makeTemporalEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
-            | Belief when List.contains Structural conds -> [makeStructuralEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Belief when not(List.contains GoalOnly conds) && not(List.contains QuestionOnly conds) && not(containsTemporalCond conds) && eb.Belief.Stamp.Source <> Virtual -> [makeInferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
-            | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeInferredFromQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
-            | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
-            | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestionEvent eb term]
-            | Question when List.contains Structural conds -> [makeQuestionStructuralEvent eb term]
-            | Goal when List.contains (concurrency()) conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeGoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
-            | Goal when List.contains GoalOnly conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeGoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
-            | Quest when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeQuestEvent eb term]
+            | Belief when List.contains (concurrency()) conds && eb.Belief.Stamp.Source <> Virtual -> [makeEvent TemporalEvent eb (term, tf1(eb.Event.TV.Value, eb.Belief.TV))]
+            | Belief when List.contains Structural conds -> [makeEvent StructuralEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
+            | Belief when not(List.contains GoalOnly conds) && not(List.contains QuestionOnly conds) && not(containsTemporalCond conds) && eb.Belief.Stamp.Source <> Virtual -> [makeEvent InferredEvent eb (term, (tf1(eb.Event.TV.Value, eb.Belief.TV)))]
+            | Question when List.contains BeliefFromQuestion conds && eb.Belief.Stamp.Source <> Virtual -> [makeEvent InferredQuestionEvent eb (term, tf1(eb.Belief.TV, eb.Belief.TV))]
+            | Question when List.contains QuestionOnly conds && eb.Belief.Stamp.Source <> Virtual -> [makeEvent QuestionEvent eb (term, {F = 0.0f; C = 0.0f})]
+            | Question when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeEvent QuestionEvent eb (term, {F = 0.0f; C = 0.0f})]
+            | Question when List.contains Structural conds -> [makeEvent QuestionStructuralEvent eb (term, {F = 0.0f; C = 0.0f})]
+            | Goal when List.contains (concurrency()) conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeEvent GoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
+            | Goal when List.contains GoalOnly conds && Option.isSome tf2 && eb.Belief.Stamp.Source <> Virtual -> [makeEvent GoalEvent eb (term, tf2.Value(eb.Event.TV.Value, eb.Belief.TV))]
+            | Quest when List.contains AllowBackward conds && eb.Belief.Stamp.Source <> Virtual -> [makeEvent QuestEvent eb (term, {F = 0.0f; C = 0.0f})]
             | _ -> []
 
     let matches f eb =

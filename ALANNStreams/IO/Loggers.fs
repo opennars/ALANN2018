@@ -67,5 +67,5 @@ let log2 e =
         last <- now
     e
 
-let eventLogger = Flow.Create<Event>() |> Flow.map log2
+let eventSampler = Flow.Create<Event>() |> Flow.map log2
 

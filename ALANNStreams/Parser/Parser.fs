@@ -178,8 +178,8 @@ let psentence_ws = ws >>. psentence .>> ws
 
 let makeStamp eType term = 
     match eType with
-    | Belief | Goal -> {OccurenceTime = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; Source = User}
-    | Question | Quest -> {OccurenceTime = SystemTime(); SC = syntacticComplexity term; Evidence = [ID()]; Source = User}
+    | Belief | Goal -> {OccurenceTime = SystemTime(); SC = synComp term; Evidence = [ID()]; Source = User}
+    | Question | Quest -> {OccurenceTime = SystemTime(); SC = synComp term; Evidence = [ID()]; Source = User}
 
 // Event parser
 let inputAV = 

@@ -28,7 +28,6 @@ open System.Collections.Concurrent
 open System.Threading
 open System.Diagnostics
 open Types
-open QuestionQueue
 
 let mutable systemState = 
     {
@@ -37,9 +36,8 @@ let mutable systemState =
         EventsPerSecond = ref 0
         Activations = ref 0
         References = ref 0
-        stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
+        stores = [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
         answerDict = ConcurrentDictionary<string, (string * string * string)>()
-        questionQueue = QuestionQueue(Params.QUESTION_QUEUE_SIZE)
     }
 
 let ID() = Interlocked.Increment(systemState.Id)
@@ -60,8 +58,6 @@ let GCTemporalNodes() =
                     store.TryRemove(key) |> ignore
                     deleted <- deleted + 1
                 | _ -> ()
-
-        //printfn "\tGC Temporal Concepts - removed %d nodes" deleted
     with 
     | ex -> printfn "Error in GCTemporalNodes %s" ex.Message
 
@@ -88,9 +84,6 @@ let GCGeneralNodes() =
 
                 for node in nodesToDelete do
                     store.TryRemove(node.Term) |> ignore
-                    //printfn "Deleted %d" node.LastUsed
                     deleted <- deleted + 1
-
-        //printfn "\tGC General Concepts - removed %d nodes" deleted
     with 
-    | ex -> printfn "Error in GCGenerlNodes %s" ex.Message
+    | ex -> printfn "Error in GCGeneralNodes %s" ex.Message

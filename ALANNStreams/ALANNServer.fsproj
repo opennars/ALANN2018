@@ -65,7 +65,6 @@
     <Compile Include="TypesPlus\Evidence.fs" />
     <Compile Include="TypesPlus\ActivePatterns.fs" />
     <Compile Include="TypesPlus\TermUtils.fs" />
-    <Compile Include="TypesPlus\QuestionQueue.fs" />
     <Compile Include="TypesPlus\SystemState.fs" />
     <Compile Include="TypesPlus\Factories.fs" />
     <Compile Include="IO\TermFormatters.fs" />
@@ -78,8 +77,6 @@
     <Compile Include="IO\ActionExecution.fs" />
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
-    <Compile Include="Containers\GoalStore.fs" />
-    <Compile Include="Containers\NodeStore.fs" />
     <Compile Include="Inference\Unify.fs" />
     <Compile Include="Inference\TruthFunctions.fs" />
     <Compile Include="Inference\InferenceUtils.fs" />
@@ -101,7 +98,6 @@
     <Compile Include="TermStreams\TermStreams.fs" />
     <Compile Include="Commands\CommandUtils.fs" />
     <Compile Include="Commands\CommandProcessor.fs" />
-    <Compile Include="System\GoalRevision.fs" />
     <Compile Include="System\ALANNLobe.fs" />
     <Compile Include="System\Controller.fs" />
     <Compile Include="Tests\TermFormatters\TermFormattersTests.fs" />

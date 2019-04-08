@@ -34,11 +34,8 @@ open Parser
 open ALANNSystem
 open Loggers
 open PriorityBuffer
-open System.Threading
 open SystemState
 open TermFormatters
-open GoalStore
-open GoalRevision
 
 let valveFlow =    
     GraphDsl.Create(
@@ -68,15 +65,6 @@ let mainSink =
         fun builder-> 
             let mergeInput = builder.Add(Merge<Event>(2))
             let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
-            let goalBuffer = Flow.FromGraph(MyBuffer(Params.GOAL_BUFFER_SIZE)).Async()
-            let partitionGoals = builder.Add(Partition<Event>(2, fun e -> if e.EventType = Goal then 1 else 0))
-            let mergeGoals = builder.Add(Merge<Event>(2))
-
-            let processGoal = 
-                Flow.Create<Event>() 
-                |> Flow.map (fun g -> reviseGoal goalStore g)
-                |> Flow.collect (fun g -> g)      
-                |> Flow.filter (fun g -> g.TV.Value.F > 0.25f)
 
             let showEvents =
                 Flow.Create<Event>()
@@ -88,42 +76,13 @@ let mainSink =
                     | _ -> ()
                     e)
 
-            let processInputQuestion =
-                Flow.Create<Event>()
-                |> Flow.map (fun e -> 
-                    match e with
-                    | {EventType = Question} ->
-                        systemState.questionQueue.Enqueue(e)
-                        [e]
-                    | {EventType = Belief} ->
-                        let questions = 
-                            systemState.questionQueue.GetQuestions()
-                            |> Seq.filter (fun q -> (SystemTime() - q.Stamp.OccurenceTime) < Params.QUESTION_ANSWER_WINDOW)
-                            |> Seq.toList
-                        e::questions
-                    | _ -> [e])
-                |> Flow.collect (fun e -> e)
-                
             builder
                 .From(inBuffer)
-                .Via(processInputQuestion)
                 .To(mergeInput.In(0))
                 .From(mergeInput)
                 .Via(resetFlow)
                 .Via(valveFlow)
-
-                .To(partitionGoals)
-                .From(partitionGoals.Out(1))
-                .Via(goalBuffer)
-                .Via(processGoal)
-                //.Via(showEvents)
-                .To(mergeGoals.In(1))
-
-                .From(partitionGoals.Out(0))
-                .To(mergeGoals.In(0))
-                .From(mergeGoals)
-
-                .Via(eventLogger)
+                .Via(eventSampler)
                 .Via(termStreams)
                 //.Via(showEvents)
                 .To(mergeInput.In(1))

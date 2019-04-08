@@ -25,6 +25,7 @@
 module Types
 
 open System.Collections.Concurrent
+open System.Collections.Generic
 open Akka.Streams.Dsl
 open Akkling
 
@@ -70,6 +71,15 @@ type Stamp = {OccurenceTime : SysTime
               Source : Source}
 
 type SearchDepth = Deep | Shallow 
+
+type InferredEventType = | InferredEvent
+                         | TemporalEvent
+                         | InferredQuestionEvent
+                         | StructuralEvent
+                         | QuestionEvent
+                         | GoalEvent
+                         | QuestEvent
+                         | QuestionStructuralEvent
 
 let inline exp ({F = f; C = c}) = c * (f - 0.5f) + 0.5f // to avoid forward reference
 
@@ -177,16 +187,25 @@ type IQuestionQueue =
     abstract Dequeue : unit -> Event option
     abstract Count : int
     abstract GetQuestions : unit -> seq<Event>
+
+type IConcurrentTermSet =
+    abstract GetEnumerator : unit -> IEnumerator<Term>
+    abstract Remove : Term -> bool
+    abstract Count : int
+    abstract IsEmpty : bool
+    abstract Add : Term -> IConcurrentTermSet
+    abstract Clear : unit -> unit
+    abstract Contains : Term -> bool
     
-type Node     = {Term : Term
-                 Beliefs : IStore
-                 VirtualBelief : Belief
-                 Created : SysTime
-                 mutable HostBelief : Belief
-                 mutable Attention : float32
-                 mutable LastUsed : SysTime
-                 mutable UseCount : int64
-                 mutable Trace : bool}
+and Node = {Term : Term
+            Beliefs : IStore
+            VirtualBelief : Belief
+            Created : SysTime
+            mutable HostBelief : Belief
+            mutable Attention : float32
+            mutable LastUsed : SysTime
+            mutable UseCount : int64
+            mutable Trace : bool}
 
 type Message = | ProcessEvent of Event
                | PrintMessage of string
@@ -208,6 +227,8 @@ type Command = | Show_Simple_Beliefs of Term
                | Reset
                | Unknown
 
+type InvertedIndex = ConcurrentDictionary<Term, IConcurrentTermSet>               
+
 type SystemState =
     {
         Id : int64 ref
@@ -217,7 +238,6 @@ type SystemState =
         References : int ref
         mutable stores : ConcurrentDictionary<Term, Node> array
         mutable answerDict : ConcurrentDictionary<string, (string * string * string)>
-        mutable questionQueue : IQuestionQueue
     }
 
 let mutable valveAsync : Async<IValveSwitch> = Unchecked.defaultof<Async<IValveSwitch>>

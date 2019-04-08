@@ -57,12 +57,11 @@ let processGoal attention (state : Node) (event : Event) =
             | Term(Inh, [Term(IntSet, [Word "right"]); Word "action"]) ->
                 raiseActionExecutionEvent (Actions.MoveRight)
             | _ -> ()    
-            raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
+            //raiseDisplaySolutionEvent (sprintf "Executing solution for %s!" (ft event.Term))
             [makeAnsweredEventGoal attention event state.HostBelief] 
         else  
             match satisfyingBelief state event with
             | Some belief ->
-                printfn "Processing inference"
                 [makeEventBelief attention event belief]
             | None ->
                 getInferenceBeliefs attention state event

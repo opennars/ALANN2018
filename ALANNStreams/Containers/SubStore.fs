@@ -50,7 +50,7 @@ type SubStore(n : int, ranking : Belief -> float32) =
     let deleteMinBelief() =
         let (deleted, h) = q.DeleteMin()
         let h = ref h
-        match d.Remove(makeKey deleted, h ) with
+        match d.Remove(deleted.Term, h ) with
         | true -> ()
         | false -> failwith "ConceptStore.Insert() : failed to remove on maxSize"    
         !h

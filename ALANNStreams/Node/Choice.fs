@@ -29,7 +29,6 @@ open Unify
 open TruthFunctions
 open TermFormatters
 open Events
-open TermUtils
 
 let maxTV (b1 : Belief) (b2 : Belief) = 
     let cond1 = b1.TV.C > b2.TV.C 
@@ -56,7 +55,7 @@ let selectiveAnswer state (event : Event) =
     if Seq.isEmpty matches then
         None
     else
-        Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(b.Stamp.SC))) matches)
+        Some(Seq.maxBy (fun (b : Belief) -> exp b.TV / (float32(System.Math.Pow(float(b.Stamp.SC), Params.BELIEF_RANK_POW)))) matches)
 
 let isBetterThan aTV bTV =
     let cond1 = bTV.C >= aTV.C 

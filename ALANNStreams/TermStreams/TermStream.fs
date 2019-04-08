@@ -24,7 +24,6 @@
 
 module TermStream
 
-open System
 open System.Threading
 open Akkling.Streams
 open Akka.Streams.Dsl
@@ -44,17 +43,11 @@ let termStream (i) =
                     | (true, node) ->
                         let (node', ebs) = processNode node e
                         match systemState.stores.[i].TryUpdate(t, node', node) with
-                        | false -> 
-                            //failwith "ProcessEvent failed with node update"
-                            []
-                        | _ -> ebs
-                    | (false, _) -> 
-                        //failwith "ProcessEvent failed with node get"
-                        []
+                        | false -> [] //failwith "processEvent: TryUpdate failed"
+                        | true -> ebs
+                    | (false, _) -> [] //failwith "processEvent: TryGetValue failed"
                 with
-                    | ex -> 
-                        //printfn "processEvent failed %s" ex.Message
-                        []
+                    | ex -> []
 
             let createNode {Term =  t; Event = e} = 
                 match systemState.stores.[i].TryAdd(t, createNode (t, e)) with
@@ -75,8 +68,6 @@ let termStream (i) =
 
             let processEvent = 
                 Flow.Create<TermEvent>()
-                |> Flow.groupedWithin (Params.GROUP_BLOCK_SIZE) (TimeSpan.FromMilliseconds(Params.GROUP_DELAY_MS))
-                |> Flow.collect (fun termEvents -> termEvents)
                 |> Flow.map processEvent
                 |> Flow.collect (fun ebs -> ebs)
                 |> Flow.map(fun e ->Interlocked.Increment(systemState.EventsPerSecond) |> ignore; e)
@@ -84,6 +75,9 @@ let termStream (i) =
             let deriver = builder.Add(inferenceFlow.Async())
 
             let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
+            //let attentionBuffer =
+            //    Flow.Create<EventBelief>()
+            //    |> Flow.buffer OverflowStrategy.DropHead Params.ATTENTION_BUFFER_SIZE
 
             builder
                 .From(preferCreatedTermMerge)
@@ -92,10 +86,9 @@ let termStream (i) =
                 .Via(create)
                 .To(preferCreatedTermMerge.Preferred)
                 .From(partitionExistingTerms.Out(1))
-                .Via(processEvent)
+                .Via(processEvent.Async())
                 .Via(attentionBuffer)
                 .Via(deriver)
                 |> ignore
 
-            FlowShape<TermEvent, Event>(preferCreatedTermMerge.In(0), deriver.Outlet)
-        ).Named("TermStream")
+            FlowShape<TermEvent, Event>(preferCreatedTermMerge.In(0), deriver.Outlet))

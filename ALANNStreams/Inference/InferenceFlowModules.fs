@@ -80,11 +80,14 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
     let numModules = Array.length modules
     let broadcast = builder.Add(Broadcast<EventBelief>(numModules))
     let mergeModules = builder.Add(Merge<Event>(numModules))
+
     let truthFilter event = Option.isNone event.TV || event.TV |> Option.exists (fun tv -> tv.C >= Params.MINIMUM_CONFIDENCE)
+
     let complexityFilter = function
         | {Event.Term = term; Event.Stamp = {SC = sc}} when isTemporal term && sc < Params.MAX_TEMPORAL_SC -> true
         | {Event.Stamp = {SC = sc}} when sc < Params.MAX_GENERAL_SC -> true
         | _ -> false
+
     let validTermFilter = function
         | {Event.Term = Term(op, [s; p])} when isTemporalOp op || s <> p -> true
         | _ -> true

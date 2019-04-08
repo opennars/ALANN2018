@@ -252,7 +252,7 @@ namespace ALANNUI
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
                 EchoCmd("", str);
-                Thread.Sleep(20);
+                //Thread.Sleep(50);
             }
             EchoCmd(SampleLoadedStr, "");
         }
@@ -387,15 +387,8 @@ namespace ALANNUI
 
         private void ResetBtn_Click(object sender, EventArgs e)
         {
-            if (ServerLive)
-            { 
                 SendCmdToServer("#RESET");
                 DisableControls(this);
-            }
-            else
-            {
-                DisplayWelcomeMessage();
-            }
         }
 
         private void ClearFormBtn_Click(object sender, EventArgs e)

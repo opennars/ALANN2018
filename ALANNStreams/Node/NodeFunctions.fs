@@ -32,6 +32,8 @@ open TermUtils
 open Evidence
 open SystemState
 
+let inhibit {F = f; C = c} = if f < 0.5f then {F = -(1.0f - f); C = c} else {F = f; C = c} 
+
 let makeEventBelief attention event (belief : Belief) =
     {Attention = attention * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Shallow
@@ -72,16 +74,16 @@ let updateLinks state event =
     match event with
     | {Event.EventType = Belief; TV = Some(eTV)} ->
         let newBelief = makeBeliefFromEvent event
-        match state.Beliefs.TryGetValue(makeKey newBelief) with
+        match state.Beliefs.TryGetValue(newBelief.Term) with
         | Some oldBelief when isRevisable oldBelief newBelief ->
             let belief' = makeRevisedBelief oldBelief newBelief
-            state.Beliefs.Update(makeKey belief', belief')
+            state.Beliefs.Update(belief'.Term, belief')
             (Some oldBelief, state)
         | Some oldBelief when eTV |> isBetterThan oldBelief.TV -> 
-            state.Beliefs.Update(makeKey newBelief, newBelief)
+            state.Beliefs.Update(newBelief.Term, newBelief)
             (Some oldBelief, state)
         | None ->
-            state.Beliefs.Insert(makeKey newBelief, newBelief)
+            state.Beliefs.Insert(newBelief.Term, newBelief)
             (Some newBelief, state)
         | _ -> (None, state) // Exists but not better truth or revisable
     | _ -> (None, state) // Not a belief
