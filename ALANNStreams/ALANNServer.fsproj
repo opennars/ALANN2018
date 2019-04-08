@@ -82,7 +82,6 @@
     <Compile Include="Inference\InferenceUtils.fs" />
     <Compile Include="Inference\FirstOrderInference.fs" />
     <Compile Include="Inference\HigherOrderInference.fs" />
-    <Compile Include="Inference\HigherOrderInference2.fs" />
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
     <Compile Include="Parser\Parser.fs" />
@@ -183,17 +182,6 @@
       <ItemGroup>
         <Reference Include="Akkling.Streams">
           <HintPath>..\packages\Akkling.Streams\lib\net452\Akkling.Streams.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1')">
-      <ItemGroup>
-        <Reference Include="Argu">
-          <HintPath>..\packages\Argu\lib\net45\Argu.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
