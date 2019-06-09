@@ -7,7 +7,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ALANNStreams", "ALANNStream
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriorityBuffer", "PriorityBuffer\PriorityBuffer.csproj", "{6E6D1A9E-D0D1-4BBD-A57D-4E17DA5FBA18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALANNShell2", "ALANNShell2\ALANNShell2.csproj", "{21B46D56-E54B-4048-B66B-3B65B9E58924}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALANNShell", "ALANNShell2\ALANNShell.csproj", "{21B46D56-E54B-4048-B66B-3B65B9E58924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
