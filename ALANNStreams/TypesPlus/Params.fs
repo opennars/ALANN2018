@@ -85,11 +85,11 @@ let SERVER_ADDR                         = "127.0.0.1"   // ALANN Server IP addre
 let CLIENT_ADDR                         = "127.0.0.1"   // ALANN GUI Client IP address (local host by default)
 let SHELL_ADDR                          = "127.0.0.1"   // ALANN Shell Client IP address (local host by default)
 let GRAPHITE_ADDR                       = "127.0.0.1"   // Graphite server local address
-let SERVER_PORT                         = 5000          // Port for server
-let GUI_CLIENT_PORT                     = 5001          // Client port for GUI
-let PONG_CLIENT_PORT                    = 5002          // Client port for pong
-let SHELL_PORT                          = 5003          // Client Port for Shell
-let GRAPHITE_PORT                       = 8125          // UDP port for plaintext Protocol
+let SERVER_PORT                         = 6000          // Port for server
+let GUI_CLIENT_PORT                     = 6001          // Client port for GUI
+let PONG_CLIENT_PORT                    = 6002          // Client port for pong
+let SHELL_PORT                          = 6003          // Client Port for Shell
+let GRAPHITE_PORT                       = 6125          // UDP port for plaintext Protocol
 
 //Command related prefixes
 let COMMAND_PREFIX                      = "#"           // Start of command message

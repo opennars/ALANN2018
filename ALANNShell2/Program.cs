@@ -13,16 +13,16 @@ namespace ALANNShell
     public class Shell
     {
         static readonly string serverAddr = "127.0.0.1";
-        static readonly int serverPort = 5000;
+        static readonly int serverPort = 6000;
         static readonly string clientAddr = "127.0.0.1";
-        static readonly int clientPort = 5003;
+        static readonly int clientPort = 6003;
 
         static IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverAddr), serverPort);
         static IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, clientPort);
         static UdpClient outSocket = new UdpClient();
         static UdpClient inSocket = new UdpClient(clientEndPoint);
 
-        static readonly string logPath = @"d:\logs\ALANNShell.log";
+        static readonly string logPath = @"ALANNShell.log";
 
         public Shell()
         {

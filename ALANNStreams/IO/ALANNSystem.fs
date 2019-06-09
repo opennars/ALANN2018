@@ -38,7 +38,7 @@ let behavior3 (m:Actor<_>) =
         let! msg = m.Receive ()
         match msg with
         | PrintMessage str ->
-            sendMessageToClient str
+            System.Console.WriteLine str
         | _ -> failwith "Unexpected message in print actor"   // This rule is never matched
         return! loop ()
     }
