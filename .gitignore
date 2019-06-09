@@ -259,3 +259,19 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# DotNetCore build and obj folders:
+/ALANNShell2/bin
+/ALANNShell2/obj
+
+/ALANNStreams/bin
+/ALANNStreams/obj
+
+/ALANNUI/bin
+/ALANNUI/obj
+
+/Pong2/bin
+/Pong2/obj
+
+/PriorityBuffer/bin
+/PriorityBuffer/obj
