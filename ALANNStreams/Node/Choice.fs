@@ -30,23 +30,6 @@ open TruthFunctions
 open TermFormatters
 open Events
 
-let maxTV (b1 : Belief) (b2 : Belief) = 
-    let cond1 = b1.TV.C > b2.TV.C 
-    let cond2 = (b1.TV.C = b2.TV.C) && (b1.TV.F > b2.TV.F)
-    match cond1 || cond2 with
-    | true -> b1
-    | false -> b2
-
-let bestAnswer state (event : Event) =
-    let matches =
-        state.Beliefs.GetBeliefs()
-        |> Seq.filter (fun b -> b.Term = event.Term)
-
-    if Seq.isEmpty matches then
-        None
-    else
-        Some(Seq.reduce maxTV matches)
-
 let selectiveAnswer state (event : Event) =
     let matches = 
         state.Beliefs.GetBeliefs()
