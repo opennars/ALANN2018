@@ -22,7 +22,7 @@ namespace ALANNShell
         static UdpClient outSocket = new UdpClient();
         static UdpClient inSocket = new UdpClient(clientEndPoint);
 
-        static readonly string logPath = @"ALANNShell.log";
+        static readonly string logPath = @"d:\logs\ALANNShell.log";
 
         public Shell()
         {

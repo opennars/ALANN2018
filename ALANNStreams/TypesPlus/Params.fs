@@ -89,7 +89,7 @@ let SERVER_PORT                         = 5000          // Port for server
 let GUI_CLIENT_PORT                     = 5001          // Client port for GUI
 let PONG_CLIENT_PORT                    = 5002          // Client port for pong
 let SHELL_PORT                          = 5003          // Client Port for Shell
-let GRAPHITE_PORT                       = 5125          // UDP port for plaintext Protocol
+let GRAPHITE_PORT                       = 8125          // UDP port for plaintext Protocol
 
 //Command related prefixes
 let COMMAND_PREFIX                      = "#"           // Start of command message
