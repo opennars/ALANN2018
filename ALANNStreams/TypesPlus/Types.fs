@@ -172,30 +172,6 @@ type IStore =
     abstract GetTemporalBeliefs : unit -> seq<Belief>
     abstract GetGeneralBeliefs : unit -> seq<Belief>
     abstract GetVariableBeliefs : unit -> seq<Belief>
-
-type IGoalStore =
-    abstract Contains : Key -> bool
-    abstract Insert : Key * Belief -> unit
-    abstract Update : Key * Belief -> unit
-    abstract TryGetValue : Key -> Belief option
-    abstract Clear : unit -> unit
-    abstract Count : int
-    abstract GetGoals : unit -> seq<Belief>
-
-type IQuestionQueue =
-    abstract Enqueue : Event -> unit
-    abstract Dequeue : unit -> Event option
-    abstract Count : int
-    abstract GetQuestions : unit -> seq<Event>
-
-type IConcurrentTermSet =
-    abstract GetEnumerator : unit -> IEnumerator<Term>
-    abstract Remove : Term -> bool
-    abstract Count : int
-    abstract IsEmpty : bool
-    abstract Add : Term -> IConcurrentTermSet
-    abstract Clear : unit -> unit
-    abstract Contains : Term -> bool
     
 and Node = {Term : Term
             Beliefs : IStore
@@ -226,8 +202,6 @@ type Command = | Show_Simple_Beliefs of Term
                | Save of string
                | Reset
                | Unknown
-
-type InvertedIndex = ConcurrentDictionary<Term, IConcurrentTermSet>               
 
 type SystemState =
     {
