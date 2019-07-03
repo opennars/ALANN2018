@@ -13,6 +13,13 @@ Adaptive Logic And Neural Network (ALANN) is an alternative control theory and d
 4. Run paket update
 5. Build solution
 
+## Alternatively using DotNetCore
+
+1. Install .NET Core 2.2 from https://dotnet.microsoft.com/download
+2. git clone https://github.com/opennars/ALANN2018.git
+3. cd ALANN2018
+4. dotnet build GraphServer2018DotNetCore.sln
+
 ## How To Run
 1. Run ALANNStreams in a console
 2. Run the ALANNUI in Windows (accept the Firewall access to port 5000)
