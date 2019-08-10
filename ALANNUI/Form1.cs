@@ -252,7 +252,7 @@ namespace ALANNUI
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
                 EchoCmd("", str);
-                //Thread.Sleep(50);
+                //Thread.Sleep(10);
             }
             EchoCmd(SampleLoadedStr, "");
         }
@@ -264,7 +264,7 @@ namespace ALANNUI
                 var data = Encoding.ASCII.GetBytes(str);
                 outSocket.SendAsync(data, data.Length);
                 EchoCmd("", str);
-                Thread.Sleep(20);
+                //Thread.Sleep(10);
             }
         }
 
@@ -495,14 +495,14 @@ namespace ALANNUI
 
         string[] TransformStimulusFuncTest =
         {
+            "<(\"Coffee\" * \"Juice\") --> opposite>.",
             "<([bad] * [good]) --> opposite>.",
             "<juice --> [good]>.",
             "<\"Juice\" <-> juice>.",
-            "<(\"Coffee\" * \"Juice\") --> opposite>.",
             "<(\"Beer\" * \"Juice\") --> better>.",
             "<(better / _ [good]) <-> [great]>.",
-            "<\"Beer\" --> [great]>?",
-            "<\"Coffee\" --> [bad]>?"
+            "<\"Coffee\" --> [bad]>?",
+            "<\"Beer\" --> [great]>?"
         };
 
         string[] Samples =

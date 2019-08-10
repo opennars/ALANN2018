@@ -85,8 +85,13 @@ let updateLinks state event =
         | None ->
             state.Beliefs.Insert(newBelief.Term, newBelief)
             (Some newBelief, state)
-        | _ -> (None, state) // Exists but not better truth or revisable
+        | Some oldBelief -> (Some oldBelief, state) // Exists but not better truth or revisable
     | _ -> (None, state) // Not a belief
+
+let decayTruth (state: Node) now tv =
+    let lambda = float(1.0f / 100.0f)
+    let delta = float(now - state.LastUsed)
+    {F = tv.F; C = tv.C * float32(Math.Exp(-lambda * delta))}
 
 let updateHostBeliefs state event =    
     match event with
@@ -110,7 +115,7 @@ let forget (state : Node) now =
 
 let updateAttention state now event =
     let attention = forget state now
-    let sti = max (_or (attention, event.AV.STI)) Params.RESTING_POTENTIAL
+    let sti = _or (attention, event.AV.STI)
     {state with Attention = sti}
 
 let getInferenceBeliefs attention state event = 

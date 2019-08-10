@@ -89,7 +89,8 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         | _ -> false
 
     let validTermFilter = function
-        | {Event.Term = Term(op, [s; p])} when isTemporalOp op || s <> p -> true
+        | {Event.Term = TemporalTerm _} -> true
+        | {Event.Term = Term(op, [s; p])} when s <> p -> true
         | _ -> true
 
     for j in 0..(numModules - 1) do 
@@ -104,7 +105,7 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
 
         builder                    
             .From(broadcast.Out(j))
-            .Via(flow)
+            .Via(flow.Async())
             .To(mergeModules.In(j))                                       
             |> ignore
 

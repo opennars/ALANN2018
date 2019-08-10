@@ -32,8 +32,8 @@ open Expecto
 let test1 =
     testList "SubtermTests" [
         testCase "SubtermTest1" <| fun () ->
-            let t1 = Term(PreImp, [Term(Inh, [Term(Prod, [Word "not_included"; Var(IVar, "2")]); Word "smaller"]); Term(Inh, [Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]); Word "larger"])])
-            let expected = [Term(PreImp, [Term(Inh, [Term(Prod, [Word "not_included"; Var(IVar, "2")]); Word "smaller"]); Term(Inh, [Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]); Word "larger"])]);
+            let t1 = TemporalTerm(PreImp, [Term(Inh, [Term(Prod, [Word "not_included"; Var(IVar, "2")]); Word "smaller"]); Term(Inh, [Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]); Word "larger"])], 0s)
+            let expected = [TemporalTerm(PreImp, [Term(Inh, [Term(Prod, [Word "not_included"; Var(IVar, "2")]); Word "smaller"]); Term(Inh, [Term(Prod, [Var(IVar, "2"); Var(IVar, "1")]); Word "larger"])], 0s);
                             Term(Inh, [Term(Prod, [Word "not_included"; Var(IVar, "2")]); Word "smaller"]);
                             Term(Prod, [Word "not_included"; Var(IVar, "2")]);
                             Word "smaller";

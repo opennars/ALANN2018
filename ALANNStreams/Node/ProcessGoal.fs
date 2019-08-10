@@ -28,7 +28,6 @@ module ProcessGoal
 open Types
 open NodeFunctions
 open TermUtils
-open TermFormatters
 open Events
 
 let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
@@ -36,7 +35,7 @@ let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelec
 let isPredictiveOp = function | PreImp | ConImp -> true | _ -> false
 
 // find max choice (unifies ? =/> G)
-let postCondition = function | Term(op, [_; postCondition]) when op |> isPredictiveOp -> postCondition | term -> term
+let postCondition = function | TemporalTerm(op, [_; postCondition], i) when op |> isPredictiveOp -> postCondition | term -> term
 
 let satisfyingBelief state (event : Event) =
     let matches = 

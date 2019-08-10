@@ -171,14 +171,14 @@ let structuralInference : InferenceFunction = function
     | Inh(IntDif(a, b), m1), m2 when m1 = m2 -> [(Term(Inh, [a; m1]), beliefStructuralDed, None, [Structural])]
     | Inh(m1, ExtDif(a, b)), m2 when m1 = m2 -> [(Term(Inh, [m1; a]), beliefStructuralDed, None, [Structural])]
 
-    | Inh(Prod(a, b), m), _ -> [(Term(Inh, [a; Term(ExtImg, [m; Word "_"; b])]), identity, None, [Structural])   
-                                (Term(Inh, [b; Term(ExtImg, [m; a; Word "_"])]), identity, None, [Structural])]
-    | Inh(m, Prod(a, b)), _ -> [(Term(Inh, [Term(IntImg, [m; Word "_"; b]); a]), identity, None, [Structural])   
-                                (Term(Inh, [Term(IntImg, [m; a; Word "_"]); b]), identity, None, [Structural])]
-    | Inh(ai, ExtImg(m, a, Word "_")), _ -> [(Term(Inh, [Term(Prod, [a; ai]); m]), identity, None, [Structural])
-                                             (Term(Inh, [a; Term(ExtImg, [m; Word "_"; ai])]), identity, None, [Structural])   ]
-    | Inh(ai, ExtImg(m, Word "_", b)), _ -> [(Term(Inh, [Term(Prod, [ai; b]); m]), identity, None, [Structural])
-                                             (Term(Inh, [b; Term(ExtImg, [m; ai; Word "_"])]), identity, None, [Structural])   ]
+    | Inh(Prod(a, b), m), _ when a <> Word "_" && b <> Word "_" -> [(Term(Inh, [a; Term(ExtImg, [m; Word "_"; b])]), identity, None, [Structural])   
+                                                                    (Term(Inh, [b; Term(ExtImg, [m; a; Word "_"])]), identity, None, [Structural])]
+    | Inh(m, Prod(a, b)), _ when a <> Word "_" && b <> Word "_" -> [(Term(Inh, [Term(IntImg, [m; Word "_"; b]); a]), identity, None, [Structural])   
+                                                                    (Term(Inh, [Term(IntImg, [m; a; Word "_"]); b]), identity, None, [Structural])]
+    | Inh(ai, ExtImg(m, a, Word "_")), _ when a <> Word "_" -> [(Term(Inh, [Term(Prod, [a; ai]); m]), identity, None, [Structural])
+                                                                (Term(Inh, [a; Term(ExtImg, [m; Word "_"; ai])]), identity, None, [Structural])   ]
+    | Inh(ai, ExtImg(m, Word "_", b)), _ when b <> Word "_" -> [(Term(Inh, [Term(Prod, [ai; b]); m]), identity, None, [Structural])
+                                                                (Term(Inh, [b; Term(ExtImg, [m; ai; Word "_"])]), identity, None, [Structural])   ]
     | Inh(IntImg(m, a, Word "_"), ai), _ -> [(Term(Inh, [m; Term(Prod, [a; ai])]), identity, None, [Structural])
                                              (Term(Inh, [Term(IntImg, [m; Word "_"; ai]); a]), identity, None, [Structural])]
     | Inh(IntImg(m, Word "_", b), ai), _ -> [(Term(Inh, [m; Term(Prod, [ai; b])]), identity, None, [Structural])
@@ -194,18 +194,18 @@ let structuralInference2 = function
     | Inh(a, c1), Inh(b, IntSet([c2])) when c1 = c2 && a <> b && a <> c1  -> [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [c1; Term(IntSet, [c2])])]), int, None, [])]
     | _ -> []
 
-let RFTRules = function
-    // mutual entailment
-    //| Inh(Prod(a, b), r), _ -> [(Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [r; Word "_"; b])])]), identity, None, [Structural])]
-    // Combinatorial mutual entailment
-    | Inh(Prod(a, m1), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
-                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
-    | Inh(Prod(m1, a), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
-                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
-    | Inh(Prod(a, m1), rx), Inh(Prod(b, m2), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
-                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+//let RFTRules = function
+//    // mutual entailment
+//    //| Inh(Prod(a, b), r), _ -> [(Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [r; Word "_"; b])])]), identity, None, [Structural])]
+//    // Combinatorial mutual entailment
+//    | Inh(Prod(a, m1), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+//                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+//    | Inh(Prod(m1, a), rx), Inh(Prod(m2, b), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+//                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
+//    | Inh(Prod(a, m1), rx), Inh(Prod(b, m2), ry) when m1 = m2 ->  [(Term(Inh, [Term(Prod, [a; b]); Term(Prod, [rx; ry])]), identity, None, [Structural; AllowBackward])
+//                                                                   (Term(Inh, [Term(Prod, [b; a]); Term(Prod, [b; Term(ExtImg, [Term(Prod, [rx; ry]); Word "_"; b])])]), identity, None, [Structural; AllowBackward])]
 
-    | _ -> []
+//    | _ -> []
 
 
 let backwardDrivenForwardInference = function

@@ -48,20 +48,6 @@ let ResetTime() = timer.Restart()
 
 let mutable resetSwitch = false
 
-let GCTemporalNodes() =
-    let mutable deleted = 0
-    try
-        for store in systemState.stores do
-            for key in store.Keys do
-                match key with
-                | Temporal(n) when n < SystemTime() - Params.GC_TEMPORAL_NODES_DURATION -> 
-                    store.TryRemove(key) |> ignore
-                    deleted <- deleted + 1
-                | _ -> ()
-    with 
-    | ex -> printfn "Error in GCTemporalNodes %s" ex.Message
-
-
 let GCGeneralNodes() =
     let mutable deleted = 0
     let maxNodesPerStream = Params.MAX_CONCEPTS / Params.NUM_TERM_STREAMS

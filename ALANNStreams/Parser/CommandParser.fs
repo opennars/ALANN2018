@@ -30,8 +30,7 @@ open Events
 open Parser
 
 let file_name = many1CharsTill anyChar (skipNewline <|> eof)
-let temporal_term = pint64 |>> fun a -> Temporal(a)
-let term_ws = temporal_term <|> pterm
+let term_ws = pterm
 
 let show_simple_beliefs = (str_ws "SHOW_SIMPLE_BELIEFS" <|> str_ws "SSB") >>. term_ws |>> fun t -> Show_Simple_Beliefs(t)
 let show_temporal_beliefs = (str_ws "SHOW_TEMPORAL_BELIEFS" <|> str_ws "STB") >>. term_ws |>> fun t -> Show_Temporal_Beliefs(t)

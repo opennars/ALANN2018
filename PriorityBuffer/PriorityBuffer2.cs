@@ -29,21 +29,21 @@ using C5;
 
 namespace PriorityBuffer2
 {
-    public class MyBuffer<T> : GraphStage<FlowShape<T, T>>
+    public class PriorityBuffer<T> : GraphStage<FlowShape<T, T>>
     {
         int _size;
         float _selectionFactor;
 
         private sealed class Logic : GraphStageLogic
         {
-            private readonly MyBuffer<T> _buffer;
+            private readonly PriorityBuffer<T> _buffer;
             private readonly IIndexedSorted<T> _queue;
             private bool _downstreamWaiting = false;
             private int _size;
             private float _selectionfactor;
             private static Random rnd = new Random();
 
-            public Logic(MyBuffer<T> buffer, int n, float selectionFactor) : base(buffer.Shape)
+            public Logic(PriorityBuffer<T> buffer, int n, float selectionFactor) : base(buffer.Shape)
             {
                 _buffer = buffer;
                 _queue = new TreeBag<T>();
@@ -113,7 +113,7 @@ namespace PriorityBuffer2
             }
         }
 
-        public MyBuffer(int n, float selectionFactor)
+        public PriorityBuffer(int n, float selectionFactor)
         {
             _size = n;
             _selectionFactor = selectionFactor;

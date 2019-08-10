@@ -142,31 +142,31 @@ let tests5 =
             Expect.equal (testp pcompound_term_ws " ( 1 * ( 2 * 3 ) ) ") expected "Incorrect nested product"
 
         testCase "CompoundTermTest6" <| fun () ->
-            let expected = Some (Term(Par, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(Par, [Word "a"; Word "b"], 0s))
             Expect.equal (testp pcompound_term_ws " ( a ; b ) ") expected "Incorrect par"
 
         testCase "CompoundTermTest6a" <| fun () ->
-            let expected = Some (Term(Par, [Word "b"; Term(Par, [Word "a"; Word "c"])]))
+            let expected = Some (TemporalTerm(Par, [Word "b"; TemporalTerm(Par, [Word "a"; Word "c"], 0s)], 0s))
             Expect.equal (testp pcompound_term_ws " ( b ; ( a ; c ) ) ") expected "Incorrect nested par"
 
         testCase "CompoundTermTest7" <| fun () ->
-            let expected = Some (Term(Seq, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(Seq, [Word "a"; Word "b"], 0s))
             Expect.equal (testp pcompound_term_ws " ( a , b ) ") expected "Incorrect seq"
 
         testCase "CompoundTermTest7a" <| fun () ->
-            let expected = Some (Term(Seq, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(Seq, [Word "a"; Word "b"], 0s))
             Expect.equal (testp pcompound_term_ws "(a, b)") expected "Incorrect seq"
 
         testCase "CompoundTermTest7b" <| fun () ->
-            let expected = Some (Term(Seq, [Word "a"; Term(Seq, [Word "b"; Word "c"])]))
+            let expected = Some (TemporalTerm(Seq, [Word "a"; TemporalTerm(Seq, [Word "b"; Word "c"], 0s)], 0s))
             Expect.equal (testp pcompound_term_ws " ( a , ( b , c) ) ") expected "Incorrect nested seq"
 
         testCase "CompoundTermTest7c" <| fun () ->
-            let expected = Some (Term(Seq, [Word "a"; Term(Seq, [Word "b"; Word "c"])]))
+            let expected = Some (TemporalTerm(Seq, [Word "a"; TemporalTerm(Seq, [Word "b"; Word "c"], 0s)], 0s))
             Expect.equal (testp pcompound_term_ws "(a,(b,c))") expected "Incorrect nested seq"
 
         testCase "CompoundTermTest7d" <| fun () ->
-            let expected = Some (Term(Seq, [Term(Seq, [Word "a"; Word "b"]); Word "c"]))
+            let expected = Some (TemporalTerm(Seq, [TemporalTerm(Seq, [Word "a"; Word "b"], 0s); Word "c"], 0s))
             Expect.equal (testp pcompound_term_ws "((a,b),c)") expected "Incorrect nested seq"
 
         testCase "CompoundTermTest8" <| fun () ->
@@ -194,17 +194,17 @@ let tests5 =
             Expect.equal (testp pcompound_term_ws " ( a ~ b ) ") expected "Incorrect extInt"
 
         testCase "CompoundTermTest14" <| fun () ->
-            let expected = Some (Term(Par, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])]))
+            let expected = Some (TemporalTerm(Par, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])], 0s))
             Expect.equal (testp pcompound_term_ws " (<a --> b> ; <b --> c>) ") expected "Incorrect par term"
 
         testCase "CompoundTermTest15" <| fun () ->
-            let t1 = Term (Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])] )
-            let t2 = Term (Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])] )
-            let expected = Some (Term(Seq, [t1; t2]))
+            let t1 = TemporalTerm (Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])], 0s )
+            let t2 = TemporalTerm (Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])], 0s )
+            let expected = Some (TemporalTerm(Seq, [t1; t2], 0s))
             Expect.equal (testp pcompound_term_ws " ((<a --> b> , <b --> c>) , (<a --> b> , <b --> c>)) ") expected "Incorrect par term"
 
         testCase "CompoundTermTest16" <| fun () ->
-            let expected = Some (Term(Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])]))
+            let expected = Some (TemporalTerm(Seq, [Term(Inh, [Word "a"; Word "b"]); Term(Inh, [Word "b"; Word "c"])], 0s))
             Expect.equal (testp pcompound_term_ws " (<a --> b> , <b --> c>) ") expected "Incorrect seq term"
     ]
 
@@ -240,23 +240,23 @@ let tests6 =
             Expect.equal (testp statement " < a <=> b > ") expected "Incorrect equ"
 
         testCase "StatementExprTest8" <| fun () ->
-            let expected = Some (Term(ConEqu, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(ConEqu, [Word "a"; Word "b"], 0s))
             Expect.equal (testp statement " < a <|> b > ") expected "Incorrect conEqu"
 
         testCase "StatementExprTest9" <| fun () ->
-            let expected = Some (Term(PreEqu, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(PreEqu, [Word "a"; Word "b"], 0s))
             Expect.equal (testp statement " < a <+> b > ") expected "Incorrect preEqu"
 
         testCase "StatementExprTest10" <| fun () ->
-            let expected = Some (Term(PreImp, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(PreImp, [Word "a"; Word "b"], 0s))
             Expect.equal (testp statement " < a =+> b > ") expected "Incorrect preImp"
 
         testCase "StatementExprTest11" <| fun () ->
-            let expected = Some (Term(ConImp, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(ConImp, [Word "a"; Word "b"], 0s))
             Expect.equal (testp statement " < a =|> b > ") expected "Incorrect conImp"
 
         testCase "StatementExprTest12" <| fun () ->
-            let expected = Some (Term(RetImp, [Word "a"; Word "b"]))
+            let expected = Some (TemporalTerm(RetImp, [Word "a"; Word "b"], 0s))
             Expect.equal (testp statement " < a =-> b > ") expected "Incorrect retImp"
     ]
 

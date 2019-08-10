@@ -57,7 +57,6 @@ let termStream (i) =
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if systemState.stores.[i].ContainsKey(t) then 1 else 0))
             let createableNode = function 
-                | {TermEvent.Term = Temporal(_)} -> true
                 | {Term = _; Event = e} when e.EventType = Belief -> true
                 | _ -> false
             
@@ -74,10 +73,7 @@ let termStream (i) =
             
             let deriver = builder.Add(inferenceFlow.Async())
 
-            let attentionBuffer = Flow.FromGraph(MyBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
-            //let attentionBuffer =
-            //    Flow.Create<EventBelief>()
-            //    |> Flow.buffer OverflowStrategy.DropHead Params.ATTENTION_BUFFER_SIZE
+            let attentionBuffer = Flow.FromGraph(PriorityBuffer(Params.ATTENTION_BUFFER_SIZE).Async())
 
             builder
                 .From(preferCreatedTermMerge)
@@ -86,7 +82,7 @@ let termStream (i) =
                 .Via(create)
                 .To(preferCreatedTermMerge.Preferred)
                 .From(partitionExistingTerms.Out(1))
-                .Via(processEvent.Async())
+                .Via(processEvent)
                 .Via(attentionBuffer)
                 .Via(deriver)
                 |> ignore

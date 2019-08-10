@@ -145,6 +145,7 @@ let reset() =
     systemState.stores <- [|for i in 0..(Params.NUM_TERM_STREAMS - 1) -> new ConcurrentDictionary<Term, Node>(Params.NUM_TERM_STREAMS, Params.STREAM_NODE_MEMORY)|]
     systemState.answerDict <- ConcurrentDictionary<string, (string * string * string)>()
     systemState.StartTime <- 0L
+    systemState.Id <- ref 0L
     ResetTime()
     resetSwitch <- false
     printCommand "RESET COMPLETE" true

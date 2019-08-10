@@ -46,37 +46,33 @@ let rec ft t =
     | And(lst) -> "(" + separateList lst " && " + ")"
     | Or(lst) -> "(" + separateList lst " || " + ")"
     | Imp(s, p) -> "<" + ft s + " ==> " + ft p + ">"
-    | PreImp(s, p) -> "<" + ft s + " =+> " + ft p + ">"
+    | PreImp(s, p, i) -> "[" + i.ToString() + "]<" + ft s + " =+> " + ft p + ">"
     | ConImp(s, p) -> "<" + ft s + " =|> "+ ft p + ">"
-    | RetImp(s, p) -> "<" + ft s + " =-> " + ft p + ">"
+    | RetImp(s, p, i) -> "[" + i.ToString() + "]<" + ft s + " =-> " + ft p + ">"
     | Equ(s, p) -> "<" + ft s + " <=> " + ft p + ">"
-    | ConEqu(s, p) -> "<" + ft s + " <|> "+ ft p + ">"
-    | PreEqu(s, p) -> "<" + ft s + " <+> " + ft p + ">"
+    | ConEqu(s, p, i) -> "<" + ft s + " <|> "+ ft p + ">"
+    | PreEqu(s, p, i) -> "<" + ft s + " <+> " + ft p + ">"
     | Inh(s, p) -> "<" + ft s + " --> " + ft p + ">"
     | Sim(s, p) -> "<" + ft s + " <-> " + ft p + ">"
     | Oper(lst) -> "^(" + separateList lst " " + ")"
-    //| ExtSet(lst) when lst = [] -> "{" + separateList lst " " + "}"
     | ExtSet(lst) -> "{" + separateList lst " " + "}"
-    //| IntSet(lst) when lst = [] -> "[" + separateList lst " " + "]"
     | IntSet(lst) -> "[" + separateList lst " " + "]"
     | ExtInt(lst) -> "(" + separateList lst " & " + ")"
     | IntInt(lst) -> "(" + separateList lst " | " + ")"
     | ExtDif(a, b) -> "(" + ft a + " - " + ft b + ")"
     | IntDif(a, b) -> "(" + ft a + " ~ " + ft b + ")"
     | Prod(a, b) -> "(" + separateList [a; b] " * " + ")"
-    | Par(lst) -> "(" + separateList lst " ; " + ")"
-    | Seq(lst) -> "(" + separateList lst " , " + ")"
+    | Par(a, b, _) -> "(" + separateList [a; b] "; " + ")"
+    | Seq(a, b, i) -> "(" + separateList [a; b] ", " + ")"
     | ExtImg(a, b, c) -> "(" + ft a + " / "+ separateList [b; c] " " + ")"
     | IntImg(a, b, c) -> "(" + ft a + " \\ "+ separateList [b; c] " " + ")"
     | Word(c) ->  c
     | Var(IVar, c) -> "$" + c
     | Var(DVar, c) -> "#" + c
     | Var(QVar, c) -> "?" + c
-    | Temporal(n) -> "Temporal(" + n.ToString() + ")"
-    | Interval(n) -> "+" + n.ToString()
-    | _ -> "Unknown type Error"
+    | _ -> "Unknown type Error: " + t.ToString()
 
 let formatEvent e = sprintf "%A %s %s %s %s" e.EventType (av e.AV) (match e.TV with | Some tv -> truth tv | _ -> "None") (ft e.Term) (Trail e.Stamp.Evidence)
 
-let formatBelief (b : Belief) = sprintf "@%d %s %s %s" (b.Stamp.OccurenceTime) (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) 
-let formatGoal (g : Belief) = sprintf "@%d %s %s! %s" (g.Stamp.OccurenceTime) (truth g.TV) (ft g.Term) (Trail g.Stamp.Evidence) 
+let formatBelief (b : Belief) = sprintf "@%07d %s %s %s" (b.Stamp.OccurenceTime) (truth b.TV) (ft b.Term) (Trail b.Stamp.Evidence) 
+let formatGoal (g : Belief) = sprintf "@%07d %s %s! %s" (g.Stamp.OccurenceTime) (truth g.TV) (ft g.Term) (Trail g.Stamp.Evidence) 

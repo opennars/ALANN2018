@@ -29,18 +29,18 @@ using C5;
 
 namespace PriorityBuffer
 {
-    public class MyBuffer<T> : GraphStage<FlowShape<T, T>>
+    public class PriorityBuffer<T> : GraphStage<FlowShape<T, T>>
     {
         int _size;
 
         private sealed class Logic : GraphStageLogic
         {
-            private readonly MyBuffer<T> _buffer;
+            private readonly PriorityBuffer<T> _buffer;
             private readonly IPriorityQueue<T> _queue;
             private bool _downstreamWaiting = false;
             private int _size;
 
-            public Logic(MyBuffer<T> buffer, int n) : base(buffer.Shape)
+            public Logic(PriorityBuffer<T> buffer, int n) : base(buffer.Shape)
             {
                 _buffer = buffer;
                 _queue = new IntervalHeap<T>();
@@ -102,7 +102,7 @@ namespace PriorityBuffer
             }
         }
 
-        public MyBuffer(int n)
+        public PriorityBuffer(int n)
         {
             _size = n;
 

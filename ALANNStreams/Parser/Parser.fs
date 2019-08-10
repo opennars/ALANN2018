@@ -65,9 +65,6 @@ let pstringliteral =
 
 let pword_ws = pstringliteral .>> ws 
 
-// Interval parser
-let interval_ws = str_ws "+" >>. pint32 .>> ws |>> fun i -> Interval(i)
-
 // TV, DV and AV parsers
 let ptruth  = between (str_ws "{") (str_ws "}") (tuple2 pfloat_ws pfloat_ws) |>> fun (f, c) -> {F = float32(f); C = float32(c)}
 let pav     = between (str_ws "[") (str_ws "]") (tuple2 pfloat_ws pfloat_ws) |>> fun (s, l) -> {STI = float32(s); LTI = float32(l)}
@@ -116,8 +113,8 @@ let matchOpToTerm a b c =
   | "&" -> Term(ExtInt, sort [a; hd])
   | "-" -> Term(ExtDif, [a; hd])
   | "~" -> Term(IntDif, [a; hd])
-  | "," -> Term(Seq, [a; hd])
-  | ";" -> Term(Par, [a; hd])
+  | "," -> TemporalTerm(Seq, [a; hd], 0s)
+  | ";" -> TemporalTerm(Par, [a; hd], 0s)
   | "*" -> Term(Prod, [a; hd])
   | "&&" -> Term(And, sort [a; hd])
   | "||" -> Term(Or, sort [a; hd])
@@ -151,18 +148,20 @@ let statement =
           | "--]" -> Term(Inh, [a; Term(IntSet, [c])])
           | "{-]" -> Term(Inh, [Term(ExtSet, [a]); Term(IntSet, [c])])
           | "==>" -> Term(Imp, [a; c])
-          | "=+>" -> Term(PreImp, [a; c])
-          | "=|>" -> Term(ConImp, [a; c])
-          | "=->" -> Term(RetImp, [a; c])
+          | "=+>" -> TemporalTerm(PreImp, [a; c], 0s)
+          | "=|>" -> TemporalTerm(ConImp, [a; c], 0s)
+          | "=->" -> TemporalTerm(RetImp, [a; c], 0s)
           | "<=>" -> Term(Equ, [a; c])  
-          | "<+>" -> Term(PreEqu, [a; c]) 
-          | "<|>" -> Term(ConEqu, [a; c])  
+          | "<+>" -> TemporalTerm(PreEqu, [a; c], 0s) 
+          | "<|>" -> TemporalTerm(ConEqu, [a; c], 0s)  
           | _ -> failwith "Unexpected copula type in Parser"))
 
 let statement_ws = statement .>> ws
 
-do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement_ws; interval_ws]
+//do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement_ws; interval_ws]
+do ptermRef      := choice [pword_ws; pvariable_ws; pset_ws; pneg_ws; pcompound_term_ws; statement_ws]
 do pstatementRef := pterm <|> statement
+
  
 // EventType parsers
 let pbeliefType   = (str_ws ".") |>> (fun _ -> Belief)

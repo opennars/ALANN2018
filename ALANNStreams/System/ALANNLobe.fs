@@ -36,6 +36,7 @@ open Loggers
 open PriorityBuffer
 open SystemState
 open TermFormatters
+open SequenceBuilder
 
 let valveFlow =    
     GraphDsl.Create(
@@ -63,9 +64,24 @@ let resetFlow =
 let mainSink = 
     GraphDsl.Create(
         fun builder-> 
-            let mergeInput = builder.Add(Merge<Event>(2))
-            let inBuffer = builder.Add(Flow.FromGraph(MyBuffer(Params.INPUT_BUFFER_SIZE)))
+            let mergeInput = builder.Add(MergePreferred<Event>(1))
+            let inBuffer = builder.Add(Flow.FromGraph(PriorityBuffer(Params.INPUT_BUFFER_SIZE)))
 
+            // seqBuilder takes consecutive events in the input stream and forms sequence
+            // terms with the relevant interval between events. Sequences are only formed 
+            // between pairs of 'beliefs'
+            let seqBuilder =
+                Flow.Create<Event>()
+                |> Flow.scan (fun (state : Event list) e -> 
+                    match state with
+                    | [hd] | [hd;_]-> 
+                        match makeSequence hd e with
+                        | [] -> [e]
+                        | seq -> e::seq
+                    | _ -> [e]) []
+                |> Flow.collect (fun events -> events)
+
+            // For debugging purposes only
             let showEvents =
                 Flow.Create<Event>()
                 |> Flow.map (fun e -> 
@@ -78,14 +94,15 @@ let mainSink =
 
             builder
                 .From(inBuffer)
-                .To(mergeInput.In(0))
+                .Via(seqBuilder)
+                .To(mergeInput.Preferred)
                 .From(mergeInput)
                 .Via(resetFlow)
                 .Via(valveFlow)
                 .Via(eventSampler)
                 .Via(termStreams)
-                //.Via(showEvents)
-                .To(mergeInput.In(1))
+                //.Via(showEvents)          // Uncomment for debugging
+                .To(mergeInput.In(0))
                 |> ignore
 
             SinkShape<Event>(inBuffer.Inlet)
