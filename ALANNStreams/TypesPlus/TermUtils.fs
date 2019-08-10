@@ -29,15 +29,16 @@ open Evidence
 open System.Linq
 
 // Get sub terms to a recursive depth of Params.TERM_DEPTH
-//let terms term depth = 
+//let terms term = 
 //    let rec loop level term = seq {
-//        if level < depth then
+//        if level < Params.TERM_DEPTH then
 //            match term with
-//            | Word "_" | Var(_, _) | Interval _ -> ()
+//            | Word "_" | Var(_, _) -> ()
 
 //            | Word _ -> 
 //                yield term
 
+//            | TemporalTerm(_, x, _)
 //            | Term(_, x) -> 
 //                yield term
 //                for t in x do
@@ -52,21 +53,18 @@ open System.Linq
 let terms term = 
     let rec loop acc term =
         match term with
-        | Word "_" | Var(_, _) | Interval _ -> acc
+        //| Word "_" | Var(_, _) | Interval _ -> acc
+        | Word "_" | Var(_, _) -> acc
         | Word _ -> term::acc
-        | Term(_, lst) -> term::List.fold loop acc lst
-        | _ -> failwith "Unexpected Temporal term in terms()"
+        | TemporalTerm(_, lst, _) | Term(_, lst) -> term::List.fold loop acc lst
 
     loop [] term |> Seq.toList |> List.distinct
 
 let rec synComp st =
     match st with
-    | Term(_, lst) -> 1 + List.fold (fun sum t -> sum + synComp(t)) 0 lst
+    | TemporalTerm(_, lst, _) | Term(_, lst) -> 1 + List.fold (fun sum t -> sum + synComp(t)) 0 lst
     | Var( _) -> 2
     | Word _ -> 1
-    | Temporal _ -> 1
-    | Interval _ -> 1
-    | _ -> failwith "Unexpected Term Type in syntacticComplexity()"
 
 let noCommonSubterm s p =    
     let rec flatten acc term =
@@ -85,14 +83,15 @@ let isIntSet = function | Term(IntSet, _) -> true | _ -> false
 let isAtomic = function | Word _ -> true | _ -> false
 let isSet t = isExtSet t || isIntSet t
 let isSetOrAtomic t = isSet t || isAtomic t
-let isImp = function | Term(Imp, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) -> true | _ -> false
-let isEqu = function | Term(Equ, _) | Term(PreEqu, _) | Term(ConEqu, _) -> true | _ -> false
-let isTemporal = function | Term(ConEqu, _) | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) | Term(Par, _) | Term(Seq, _) -> true | _ -> false
-let isPredictiveTemporal = function | Term(PreEqu, _) | Term(PreImp, _) | Term(ConImp, _) | Term(RetImp, _) -> true | _ -> false
-let isImplicationOp = function Imp |PreImp | ConImp | RetImp -> true | _ -> false
+let isImp = function | Term(Imp, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
+let isEqu = function | Term(Equ, _) | TemporalTerm(PreEqu, _, _) | TemporalTerm(ConEqu, _, _) -> true | _ -> false
+//let isTemporal = function | TemporalTerm(ConEqu, _, _) | Term(PreEqu, _, _) | Term(PreImp, _, _) | Term(ConImp, _, _) | Term(RetImp, _, _) | Term(Par, _, _) | TemporalTerm(Seq, _, _) -> true | _ -> false
+let isTemporal = function | TemporalTerm _ -> true | _ -> false
+let isPredictiveTemporal = function | TemporalTerm(PreEqu, _, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
+let isImplicationOp = function Imp -> true | _ -> false
+let isTemporalImplication = function |PreImp | ConImp | RetImp -> true | _ -> false
 let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
-let isCopula = function | Inh | Sim | Imp | Equ | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
-let isHypothesis = function | Term(op, _) when isImplicationOp op -> true | _ -> false
+let isHypothesis = function | Term(Imp, _) -> true | TemporalTerm(op, _, _) when isTemporalImplication op -> true | _ -> false
 let isNotImpOrEqu s = not(isImp s || isEqu s)
 let isVar = function | Var(_) -> true | _ -> false
 let notSet a = not (isExtSet a || isIntSet a)
@@ -105,24 +104,23 @@ let from s lst = match listLess s lst with | [a] -> a | _ -> failwith "Failure i
  
 let rec containsVars = function
     | Var(_, _) -> true
-    | Word _ | Interval _ -> false
-    | Term(_, lst) -> List.exists containsVars lst
-    | _ -> failwith "Unexpected Temporal term in containsVars()"
+    | Word _ -> false
+    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsVars lst
+
 
 let rec containsQueryVars = function
     | Var(QVar, _) -> true
     | Var(_, _) -> false
-    | Word _ | Interval _ -> false
-    | Term(_, lst) -> List.exists containsQueryVars lst
-    | _ -> failwith "Unexpected Temporal term in containsQueryVars()"
+    | Word _ -> false
+    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsQueryVars lst
 
 let reduce = function
     | Term(IntInt, hd::tl) when tl = [] ->  hd
     | Term(ExtInt, hd::tl) when tl = [] ->  hd
     | Term(And, hd::tl) when tl = [] -> hd
     | Term(Or, hd::tl) when tl = [] -> hd
-    | Term(Seq, hd::tl) when tl = [] -> hd
-    | Term(Par, hd::tl) when tl = [] -> hd
+    | TemporalTerm(Seq, hd::tl, _) when tl = [] -> hd
+    | TemporalTerm(Par, hd::tl, _) when tl = [] -> hd
     | term -> term
 
 let isSelective t = containsQueryVars t

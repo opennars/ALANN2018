@@ -57,40 +57,39 @@ let processEvent state attention oldBelief event =
 
     match event.EventType with
     | Belief | Question ->
-        match state.Term with
-        | Temporal(_) -> eventBeliefsPlus oldBelief // No virtual term for Temporal concepts
-        | _ -> (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
+        (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
     | Goal ->
         eventBeliefsPlus oldBelief
     | _ -> []
 
 let processNode state (event : Event) =
 
+    let now = SystemTime()
+    let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
+
     let (oldBelief, state) =
         match state.Term = event.Term with
         | false -> updateLinks state event
         | true -> updateHostBeliefs state event
 
-    let now = SystemTime()
-    let inLatencyPeriod = (now - state.LastUsed) < Params.LATENCY_PERIOD
-
-    let state = updateAttention state now event
+    let state = if inLatencyPeriod then state else updateAttention state now event
+    //let state = updateAttention state now event
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
-    let cond3 = match state.Term with | Temporal _ -> true | _ -> false
 
     Interlocked.Increment(systemState.References) |> ignore
      
-    match state.Attention > Params.ACTIVATION_THRESHOLD && (cond1 || cond2 || cond3) with
-    | true ->  
+    match (state.Attention > Params.ACTIVATION_THRESHOLD && cond1) || cond2 with
+    | true -> 
+        Interlocked.Increment(systemState.Activations) |> ignore
         let attention = state.Attention
         let state = {state with Attention = Params.RESTING_POTENTIAL; LastUsed = now; UseCount = state.UseCount + 1L}
-        Interlocked.Increment(systemState.Activations) |> ignore
         (state, processEvent state attention oldBelief event)
 
     | false -> 
-        (state, [])  // inLatencyPeriod or below activation threshold    
+        // inLatencyPeriod or below activation threshold
+        (state, [])
 
 let initState term (e : Event) = 
     let now = SystemTime()
@@ -102,7 +101,8 @@ let initState term (e : Event) =
      Attention = Params.RESTING_POTENTIAL
      LastUsed = SystemTime()
      UseCount = 0L
-     Trace = false}
+     Trace = false
+}
     
 let createNode (t, e : Event) = 
     initState t e

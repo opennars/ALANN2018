@@ -44,6 +44,8 @@ let main argv =
     printfn ""
     printfn "\tConfiguring..."
     printfn ""
+    printfn "\tBuilding %d parallel streams..." Params.NUM_TERM_STREAMS
+    printfn ""
 
     let controller = new Controller()
 

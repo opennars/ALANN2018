@@ -25,7 +25,6 @@
 module Types
 
 open System.Collections.Concurrent
-open System.Collections.Generic
 open Akka.Streams.Dsl
 open Akkling
 
@@ -36,20 +35,21 @@ type OpCode =
     | Prod      | ExtImg    | IntImg                // NAL 4
     | Not       | And       | Or                    // NAL 5
     | Imp       | Equ                               // NAL 5
+    | Oper                                          // NAL 8
+
+type TemporalOp =
     | PreImp    | ConImp    | RetImp                // NAL 7
     | ConEqu    | PreEqu                            // NAL 7
     | Par       | Seq                               // NAL 7
-    | Oper                                          // NAL 8
+
 
 type VarCode   = | QVar | DVar | IVar
+type Interval = int16
 
 type Term      = | Word of string 
                  | Var of VarCode * string 
                  | Term of OpCode * Term list
-                 | Temporal of int64
-                 | Interval of int32
-                 | Fail                             // For unification
-
+                 | TemporalTerm of TemporalOp * Term list * Interval
 
 type TV = {F : float32; C : float32}    // Acts as DV for goals
 type AV = {STI : float32; LTI : float32}
@@ -205,7 +205,7 @@ type Command = | Show_Simple_Beliefs of Term
 
 type SystemState =
     {
-        Id : int64 ref
+        mutable Id : int64 ref
         mutable StartTime : int64
         EventsPerSecond : int ref
         Activations : int ref

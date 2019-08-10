@@ -69,13 +69,12 @@ type Controller() =
             return! statusLoop()
         }
 
-        // Garbage collection loop to maintain Node capcity limit
-        let GCtimer = new System.Timers.Timer(Params.GC_TEMPORAL_NODES_INTERVAL, Enabled = true)
+        // Garbage collection loop to maintain Node capacity limit
+        let GCtimer = new System.Timers.Timer(Params.GC_GENERAL_NODES_INTERVAL, Enabled = true)
         GCtimer.AutoReset <- true
 
         let rec GCNodesLoop() = async {
             let! _ = Async.AwaitEvent GCtimer.Elapsed
-            GCTemporalNodes()
             GCGeneralNodes()
 
             return! GCNodesLoop() 

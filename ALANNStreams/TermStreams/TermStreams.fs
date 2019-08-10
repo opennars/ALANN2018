@@ -40,10 +40,7 @@ let termStreams =
             let merge = builder.Add(Merge<Event>(numStreams))
             
             let separateTerms =  
-                let createTermList (event : Event) = 
-                    match event with
-                    | {Event.EventType = Belief} as event -> Temporal(event.Stamp.OccurenceTime)::terms event.Term
-                    | event -> terms event.Term
+                let createTermList (event : Event) = terms event.Term
 
                 builder.Add(
                     (Flow.Create<Event>()
@@ -54,7 +51,7 @@ let termStreams =
                 .To(partition)                
                 |> ignore
 
-            for stream in 0..(numStreams - 1) do                  
+            for stream in 0..(numStreams - 1) do
                 builder
                     .From(partition.Out(stream))
                     .Via((termStream (stream)).Async())

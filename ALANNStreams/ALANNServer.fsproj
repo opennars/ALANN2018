@@ -84,6 +84,7 @@
     <Compile Include="Inference\HigherOrderInference.fs" />
     <Compile Include="Inference\InferenceFlowModules.fs" />
     <Compile Include="Inference\InferenceFlow.fs" />
+    <Compile Include="Inference\SequenceBuilder.fs" />
     <Compile Include="Parser\Parser.fs" />
     <Compile Include="Parser\CommandParser.fs" />
     <Compile Include="Node\Choice.fs" />

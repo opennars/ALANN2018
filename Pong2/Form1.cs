@@ -229,7 +229,7 @@ namespace Pong2
                     sb.AppendFormat("<BALLPOS --> [equal]>. {{0.0 0.9}}");
                     SendStatement(sb.ToString());
                 }
-                else if (ball_x > (bat_x + bat_width))
+                else if (ball_x > (bat_x + bat_width + ball_diameter))
                 {
                     sb.Clear();
                     sb.AppendFormat("<BALLPOS --> [left]>. {{0.0 0.9}}");

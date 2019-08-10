@@ -32,6 +32,13 @@ open SystemState
 let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
 let makeStamp sc ev src = {OccurenceTime = SystemTime(); SC = sc; Evidence = ev; Source = src}
 
+let calculateInterval eb =
+    match (eb.Event.Term, eb.Belief.Term) with
+    | TemporalTerm(_, _, i1), TemporalTerm(_, _, i2) -> i1 + i2
+    | TemporalTerm(_, _, i1), virtualterm -> i1   
+    | virtualTerm, TemporalTerm(_, _, i1) -> i1   
+    | _ -> failwith "Unexpected non-TemporalTerm"
+
 // Event factories
 let makeEventFromBelief eb =
     {EventType = Belief; Term = eb.Belief.Term; TV = Some eb.Belief.TV; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = eb.Belief.Stamp; Solution = None}
@@ -62,6 +69,8 @@ let makeEvent eventType eb (term, tv) =
 
     | TemporalEvent ->
         let stamp = makeStamp (synComp term) (merge eb.Event.Stamp.Evidence eb.Belief.Stamp.Evidence) Derived
+        let newInterval = calculateInterval eb
+        let term = match term with | TemporalTerm(op, terms, i) -> TemporalTerm(op, terms, newInterval) | _ -> term
         {EventType = Belief; Term = term; TV = Some tv; AV = {STI = eb.Attention; LTI = makeLTI eb.Depth}; Stamp = stamp; Solution = None}
 
     | InferredQuestionEvent ->
