@@ -72,8 +72,7 @@ let processNode state (event : Event) =
         | false -> updateLinks state event
         | true -> updateHostBeliefs state event
 
-    let state = if inLatencyPeriod then state else updateAttention state now event
-    //let state = updateAttention state now event
+    let state = if inLatencyPeriod then {state with Attention = event.AV.STI} else updateAttention state now event
 
     let cond1 = not inLatencyPeriod
     let cond2 = event.EventType = Question && event.Stamp.Source = User
@@ -98,7 +97,7 @@ let initState term (e : Event) =
      HostBelief = {Term = term; TV = (if term = e.Term then e.TV.Value else {F = 0.0f; C = 0.0f}); Stamp = e.Stamp} 
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
-     Attention = Params.RESTING_POTENTIAL
+     Attention = Params.NOVELTY_BIAS
      LastUsed = SystemTime()
      UseCount = 0L
      Trace = false

@@ -24,22 +24,25 @@
 
 module Params
 
+open System
+
 // System resources
 let numLogicalProcessors = System.Environment.ProcessorCount
 let memSize = System.Environment.WorkingSet
 
 // NAL Related Parameters
 let HORIZON                             = 1.0f                      // System Personality Factor
-let CONF_MAX_CLAMP                      = 0.99f                     // Clamp value for truth conf to avoid rounding to 1.0f
+let CONF_MAX_CLAMP                      = 1.0f - Single.Epsilon     // Clamp value for truth conf to avoid rounding to 1.0f
                                                                     
 // Node Related Parameters                                          
 let ACTIVATION_THRESHOLD                = 0.70f                     // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f                     // After firing node attention is reset to this
+let NOVELTY_BIAS                        = 0.50f                     // New concepts get biased attention as novel
 let DECAY_RATE                          = 0.10f                     // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L                        // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 50                        // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 50                        // Max number of temporal beliefs per node
-let PRE_POST_BELIEF_CAPACITY            = 50                        // Max number of Pre and Post condition beliefs per node
+let GENERAL_BELIEF_CAPACITY             = 25                        // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 25                        // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 25                        // Max number of Pre and Post condition beliefs per node
 let BELIEF_RANK_POW                     = 1.00                      // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
@@ -49,7 +52,7 @@ let MAX_INTERVAL_LENGTH                 = 1000L                     // Maximum l
 // General Parameters
 let CONFIDENCE                          = 0.90f                     // Truth Value confidence component
 let FREQUENCY                           = 1.00f                     // Truth Value frequency component
-let MINIMUM_CONFIDENCE                  = 0.01f                     // don't accept inference results with confidence below this Value
+let MINIMUM_CONFIDENCE                  = 0.10f                     // don't accept inference results with confidence below this Value
 let MINIMUM_STI                         = 0.01f                     // filter STI below this threhold
 let BELIEF_STI                          = 0.90f                     // Short Term Importance default Value for user entered events AKA priority
 let BELIEF_LTI                          = 0.75f                     // long Term Importance default Value for user entered events AKA duration
@@ -60,8 +63,8 @@ let QUESTION_LTI                        = 0.999f                    // long Term
 let QUEST_STI                           = 1.00f                     // Short Term Importance default Value for user entered events AKA priority
 let QUEST_LTI                           = 0.95f                     // long Term Importance default Value for user entered events AKA duration
 
-let SHALLOW_LTI                         = 0.35f                     // long Term Importance value for derived shallow events AKA duration
-let DEEP_LTI                            = 0.75f                     // long Term Importance value for derived deep events AKA duration
+let SHALLOW_LTI                         = 0.30f                     // long Term Importance value for derived shallow events AKA duration
+let DEEP_LTI                            = 0.50f                     // long Term Importance value for derived deep events AKA duration
 let TRAIL_LENGTH                        = 30                        // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20                        // Maximum syntactic complexity of general terms
 let MAX_TEMPORAL_SC                     = 100                       // Maximum syntactic complexity of temporal terms
@@ -81,7 +84,7 @@ let NOISE_LEVEL                         = 0.00f                     // exp(tv) t
 
 //Streams related Parameters  
 //let NUM_TERM_STREAMS                    = numLogicalProcessors * 10 // Number of Term streams
-let NUM_TERM_STREAMS                    = 100                       // Number of Term streams
+let NUM_TERM_STREAMS                    = 50                        // Number of Term streams
 let STREAM_NODE_MEMORY                  = 10_000                    // Initial number of nodes to allocate per stream store
 let GROUP_DELAY_MS                      = 1.0                       // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 10_000                    // Number of events to form a minor stream block

@@ -85,7 +85,7 @@ type Controller() =
         moveTimer.AutoReset <- true
 
         let rnd = new Random()
-        let rec moveLoop(n) = async {
+        let rec motorBabble(n) = async {
             // random moves for 20 minutes
             if n > (5 * 60 * 20) then
                 ()
@@ -97,11 +97,11 @@ type Controller() =
                 else
                     sendMessageToPong("right")
 
-                return! moveLoop(n + 1) 
+                return! motorBabble(n + 1) 
         }
 
         mainLoop() |> Async.Start       // start main message loop
         statusLoop() |> Async.Start     // start status update loop
         GCNodesLoop() |> Async.Start    // start gc loop
 
-        moveLoop(0) |> Async.Start       // Random actions for Pong development *** Experimental ***
+        motorBabble(0) |> Async.Start       // Random actions for Pong development *** Experimental ***
