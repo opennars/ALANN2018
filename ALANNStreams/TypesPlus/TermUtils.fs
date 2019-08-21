@@ -53,7 +53,6 @@ open System.Linq
 let terms term = 
     let rec loop acc term =
         match term with
-        //| Word "_" | Var(_, _) | Interval _ -> acc
         | Word "_" | Var(_, _) -> acc
         | Word _ -> term::acc
         | TemporalTerm(_, lst, _) | Term(_, lst) -> term::List.fold loop acc lst
@@ -85,7 +84,6 @@ let isSet t = isExtSet t || isIntSet t
 let isSetOrAtomic t = isSet t || isAtomic t
 let isImp = function | Term(Imp, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
 let isEqu = function | Term(Equ, _) | TemporalTerm(PreEqu, _, _) | TemporalTerm(ConEqu, _, _) -> true | _ -> false
-//let isTemporal = function | TemporalTerm(ConEqu, _, _) | Term(PreEqu, _, _) | Term(PreImp, _, _) | Term(ConImp, _, _) | Term(RetImp, _, _) | Term(Par, _, _) | TemporalTerm(Seq, _, _) -> true | _ -> false
 let isTemporal = function | TemporalTerm _ -> true | _ -> false
 let isPredictiveTemporal = function | TemporalTerm(PreEqu, _, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
 let isImplicationOp = function Imp -> true | _ -> false

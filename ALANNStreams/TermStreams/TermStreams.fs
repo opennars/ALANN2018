@@ -40,11 +40,9 @@ let termStreams =
             let merge = builder.Add(Merge<Event>(numStreams))
             
             let separateTerms =  
-                let createTermList (event : Event) = terms event.Term
-
                 builder.Add(
-                    (Flow.Create<Event>()
-                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| createTermList e)))
+                    Flow.Create<Event>()
+                    |> Flow.collect (fun e -> List.map (fun t -> {Term = t; Event = e}) <| terms e.Term))
 
             builder
                 .From(separateTerms)

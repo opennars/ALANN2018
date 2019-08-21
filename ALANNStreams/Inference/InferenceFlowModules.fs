@@ -93,12 +93,14 @@ let inferenceFlowModules modules = GraphDsl.Create(fun builder ->
         | {Event.Term = Term(op, [s; p])} when s <> p -> true
         | _ -> true
 
+    let lowAttentionFilter (eb : EventBelief) = eb.Attention > Params.MINIMUM_STI && eb.Event.AV.STI > Params.MINIMUM_STI
+
     for j in 0..(numModules - 1) do 
         let flow =
             Flow.Create<EventBelief>() 
-            |> Flow.filter (fun eb -> eb.Attention > Params.MINIMUM_STI && eb.Event.AV.STI > Params.MINIMUM_STI)
+            |> Flow.filter lowAttentionFilter
             |> Flow.map (fun eb -> eb.Event::(inf modules.[j] eb))  // add event to inference results
-            |> Flow.collect (fun e -> e)
+            |> Flow.collect id
             |> Flow.filter truthFilter
             |> Flow.filter complexityFilter
             |> Flow.filter validTermFilter
