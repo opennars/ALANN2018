@@ -106,6 +106,12 @@ let continueFlow() =
     printCommand "FLOW CONTINUED - USE PAUSE (P) TO PAUSE FLOW" false
     (Async.RunSynchronously valveAsync).Flip(SwitchMode.Open) |> ignore
 
+let saveGraph() =
+    pauseFlow()
+    printCommand "SAVING GRAPH" false
+    ToCSV.ToCSV(systemState)
+    continueFlow()
+
 let loadFile file =
     let filepath = Params.STORAGE_PATH + "\\" + file
 
@@ -161,6 +167,7 @@ let processCommand (cmd : string) =
     | Node_Count -> nodeCount()
     | Enable_Trace(term) -> enableTrace term
     | Disable_Trace(term) -> disableTrace term
+    | Save_Graph -> saveGraph()
     | Pause -> pauseFlow()
     | Continue -> continueFlow()
     | Load(file) -> loadFile(file)
