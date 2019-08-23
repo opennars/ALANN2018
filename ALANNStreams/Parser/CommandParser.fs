@@ -42,6 +42,7 @@ let show_node = (str_ws "SHOW_NODE" <|> str_ws "SN") >>. term_ws |>> fun t -> Sh
 let node_count = (str_ws "NODE_COUNT" <|> str_ws "NC") |>> fun _ -> Node_Count
 let enable_trace = (str_ws "ENABLE_TRACE" <|> str_ws "ET") >>. term_ws |>> fun t -> Enable_Trace(t)
 let disable_trace = (str_ws "DISABLE_TRACE" <|> str_ws "DT") >>. term_ws  |>> fun t -> Disable_Trace(t)
+let save_graph = (str_ws "SAVE_GRAPH" <|> str_ws "SGR") |>> fun _ -> Save_Graph
 let pause = (str_ws "PAUSE" <|> str_ws "P") |>> fun _ -> Pause
 let continue_flow = (str_ws "CONTINUE" <|> str_ws "C") |>> fun _ -> Continue
 let load = (str_ws "LOAD" <|> str_ws "L") >>. file_name |>> fun file -> Load(file)
@@ -57,6 +58,7 @@ let pcmd = show_simple_beliefs
            <|> node_count 
            <|> enable_trace 
            <|> disable_trace 
+           <|> save_graph
            <|> pause 
            <|> continue_flow 
            <|> load 

@@ -399,6 +399,10 @@ namespace ALANNUI
             inputRTB.Text = "";
             inferenceRTB.Text = "";
         }
+        private void SaveGraphBtn_Click(object sender, EventArgs e)
+        {
+            SendCmdToServer("#SGR");
+        }
 
         string[] CatBlueSkyTest =
         {
@@ -665,6 +669,8 @@ namespace ALANNUI
          "<(bird * seed) --> eats>.",
          "<{tweety} --> (eats / _ seed)>?"
         };
+
+
     }
 }
 

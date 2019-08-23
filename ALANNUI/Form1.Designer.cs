@@ -89,6 +89,7 @@ namespace ALANNUI
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.timeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.eventsPerSecondStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ReferenceStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.ActivationsStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.catBlueSkyTestBtn = new System.Windows.Forms.Button();
@@ -106,7 +107,7 @@ namespace ALANNUI
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.LoadtoolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.ReferenceStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.SaveGraphBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -432,6 +433,7 @@ namespace ALANNUI
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.SaveGraphBtn);
             this.groupBox4.Controls.Add(this.ShowGoalsBtn);
             this.groupBox4.Controls.Add(this.termNameTB);
             this.groupBox4.Controls.Add(this.groupBox3);
@@ -481,6 +483,12 @@ namespace ALANNUI
             this.eventsPerSecondStatus.Name = "eventsPerSecondStatus";
             this.eventsPerSecondStatus.Size = new System.Drawing.Size(88, 17);
             this.eventsPerSecondStatus.Text = "Events: [0]/sec";
+            // 
+            // ReferenceStatus
+            // 
+            this.ReferenceStatus.Name = "ReferenceStatus";
+            this.ReferenceStatus.Size = new System.Drawing.Size(104, 17);
+            this.ReferenceStatus.Text = "Node References";
             // 
             // ActivationsStatus
             // 
@@ -609,11 +617,15 @@ namespace ALANNUI
             this.label8.TabIndex = 33;
             this.label8.Text = "Beliefs";
             // 
-            // ReferenceStatus
+            // SaveGraphBtn
             // 
-            this.ReferenceStatus.Name = "ReferenceStatus";
-            this.ReferenceStatus.Size = new System.Drawing.Size(104, 17);
-            this.ReferenceStatus.Text = "Node References";
+            this.SaveGraphBtn.Location = new System.Drawing.Point(16, 129);
+            this.SaveGraphBtn.Name = "SaveGraphBtn";
+            this.SaveGraphBtn.Size = new System.Drawing.Size(75, 23);
+            this.SaveGraphBtn.TabIndex = 28;
+            this.SaveGraphBtn.Text = "Save Graph";
+            this.SaveGraphBtn.UseVisualStyleBackColor = true;
+            this.SaveGraphBtn.Click += new System.EventHandler(this.SaveGraphBtn_Click);
             // 
             // Form1
             // 
@@ -715,6 +727,7 @@ namespace ALANNUI
         private System.Windows.Forms.Button MatchToSampleBtn;
         private System.Windows.Forms.Button ShowGoalsBtn;
         private System.Windows.Forms.ToolStripStatusLabel ReferenceStatus;
+        private System.Windows.Forms.Button SaveGraphBtn;
     }
 }
 

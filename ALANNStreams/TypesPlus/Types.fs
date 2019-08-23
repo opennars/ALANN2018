@@ -196,6 +196,7 @@ type Command = | Show_Simple_Beliefs of Term
                | Node_Count
                | Enable_Trace of Term
                | Disable_Trace of Term
+               | Save_Graph
                | Pause
                | Continue
                | Load of string

@@ -75,6 +75,7 @@
     <Compile Include="IO\Reporting.fs" />
     <Compile Include="IO\FileIO.fs" />
     <Compile Include="IO\ActionExecution.fs" />
+    <Compile Include="IO\ToCSV.fs" />
     <Compile Include="Containers\SubStore.fs" />
     <Compile Include="Containers\Store.fs" />
     <Compile Include="Inference\Unify.fs" />
