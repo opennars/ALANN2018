@@ -9,7 +9,7 @@ Example belief graph from 'cat likes cod' sample:
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/cat_likes_cod.png">
 
-The belief graph (.svg format) can be viewed in Google Chrome for detailed analysis. The .svg imgage file is avaible in the 'img' folder.
+The belief graph (.svg format) can be viewed in Google Chrome for detailed analysis. The .svg image file is avaible in the 'img' folder.
 
 ## How To Build
 
