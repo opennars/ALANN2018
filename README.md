@@ -101,6 +101,7 @@ The ALANN Server accepts a range of commands to support run time control and ins
 #SHOW_TEMPORAL_BELIEFS (#STB) "term" - show the temporal beliefs for the specified node
 #SHOW_HYPOTHESIS_BELIEFS (#SHB) "term" - show the hypothesis beliefs for the specified node
 #SHOW_GENERALISED_BELIEFS (#SGB) "term" - show the generalised beliefs for the specified node
+#SAVE_GRAPH (#SGR) - save belief graph to graph.csv in application folder
 ```
 ## Project Details
 The system is developed in F# and uses Akka Streams as a framework, along with FParsec (combinatorial Parser). 
