@@ -109,6 +109,8 @@ The implementation of the inference rules uses the beautiful Rule meta language 
 
 ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets). Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
 
+For further detail see: https://www.researchgate.net/publication/335444185_ALANN_An_event_driven_control_mechanism_for_a_non-axiomatic_reasoning_system_NARS
+
 The most significant differences are related to the attention mechanism. In OpenNARS there are two key aspects to activation spreading; firstly, term links, which connects concepts (related to the depth of sub terms in the concept host term) and secondly, inference results which cause concept activation as a by-product of their derivation.  In ALANN there are no term links and activation spreading is entirely due to event distribution and inference spreading. So activation spreading is totally controlled by inference.
 
 The removal of intervals from the grammar is based on a working theory that a sufficiently rich context is sufficient to disambiguate temporal relations. Although this has to be coupled with an attention mechanism that can form primary temporal orders such as A =/> B.
