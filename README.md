@@ -5,9 +5,11 @@ Adaptive Logic And Neural Network (ALANN) is an alternative control theory and d
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
-System architecure:
+The ALANN System is built using a reactive streams model (Akka streams). The lobe architecture is as follows:
 
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN_Lobe_Architecture_1.png)
+
+See below for further details.
 
 Example belief graph from \'cat likes cod\' sample:
 
