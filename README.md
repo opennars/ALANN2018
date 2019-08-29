@@ -5,6 +5,10 @@ Adaptive Logic And Neural Network (ALANN) is an alternative control theory and d
 
 <img src="https://github.com/opennars/ALANN2018/blob/master/img/NARS_Visualisation.gif" width="500" height="450">
 
+Example belief graph from cat likes cod sample:
+
+![alt text](https://github.com/opennars/ALANN2018/blob/master/img/cat_likes_cod.png)
+
 ## How To Build
 
 1. Clone the solution in Visual Studio (2017 Community Edition)
