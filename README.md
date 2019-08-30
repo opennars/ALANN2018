@@ -113,7 +113,7 @@ The implementation of the inference rules uses the beautiful Rule meta language 
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%201.png)
 ![alt text](https://github.com/opennars/ALANN2018/blob/master/img/ALANN%20System%20Architecture%202.png)
 
-ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets). Unlike in NARS, all ‘tasks’ in the system are considered events. The anticipation mechanism, for revising failed hypotheses, is replaced with an alternative approach called assumption of failure.
+ALANN is an event driven system that incorporates aspects of neural networks into the design. The logic is still fundamentally based on NAL with two constraints, namely, compound terms are restricted to a binary representation (excluding sets). Unlike in NARS, all ‘tasks’ in the system are considered events.
 
 For further detail see: https://www.researchgate.net/publication/335444185_ALANN_An_event_driven_control_mechanism_for_a_non-axiomatic_reasoning_system_NARS
 
