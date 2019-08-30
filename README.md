@@ -19,7 +19,7 @@ The belief graph (.svg format) can be viewed in Google Chrome for detailed analy
 
 ## How To Build
 
-1. Clone the solution in Visual Studio (2017 Community Edition)
+1. Clone the solution in Visual Studio (2017 Community Edition or later)
 2. Install paket in the solution directory https://fsprojects.github.io/Paket/installation.html#Installation-per-repository
 3. Run paket install
 4. Run paket update
