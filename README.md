@@ -76,7 +76,8 @@ decimal-integer ::== ['-' | '+'] digit-sequence
 digit-sequence ::== digit {digit}
 real-number ::== ['-' | '+'] digit-sequence '.' digit-sequence
 truth ::== ‘{ floatTuple ‘}’
-desire ::== floatTupleattention ::== ‘[‘ floatTuple ‘]’
+desire ::== floatTuple
+attention ::== ‘[‘ floatTuple ‘]’
 floatTuple ::== real-number real-number	 
 ```
 
