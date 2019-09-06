@@ -60,7 +60,7 @@ question ::== statement ‘?’
 quest ::== statement '@'
 statement ::== ‘<’ term copula term ‘>’
 compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
-term ::== word | interval | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
+term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
 binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
@@ -69,7 +69,6 @@ independent-variable ::== ‘#’ word
 dependent-variable ::== ‘$’ word
 query-variable ::== ‘?’ word
 word ::== string-literal | decimal-integer | real-number
-interval ::== '+' digit-sequence
 string-literal ::== leading-identifier {identifier | digit | '_'}
 leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
 identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
