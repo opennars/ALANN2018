@@ -67,12 +67,12 @@ let test1 =
         testCase "TermFormatTest6" <| fun () ->            
             let expected = "<<a --> b> =+> <b --> c>>"
             let term = parseTerm expected
-            Expect.equal (ft term) expected "Incorrect format"
+            Expect.containsAll (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest7" <| fun () ->            
             let expected = "<<a --> b> =-> <b --> c>>"
             let term = parseTerm expected
-            Expect.equal (ft term) expected "Incorrect format"
+            Expect.containsAll (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest8" <| fun () ->            
             let expected = "<<a --> b> =|> <b --> c>>"
@@ -87,7 +87,7 @@ let test1 =
         testCase "TermFormatTest10" <| fun () ->            
             let expected = "<<a --> b> <+> <b --> c>>"
             let term = parseTerm expected
-            Expect.equal (ft term) expected "Incorrect format"
+            Expect.containsAll (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest11" <| fun () ->            
             let expected = "(a && b)"
@@ -145,12 +145,12 @@ let test1 =
             Expect.equal (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest22" <| fun () ->            
-            let expected = "(a ; b)"
+            let expected = "(a; b)"
             let term = parseTerm expected
             Expect.equal (ft term) expected "Incorrect format"
 
         testCase "TermFormatTest23" <| fun () ->            
-            let expected = "(a , b)"
+            let expected = "(a, b)"
             let term = parseTerm expected
             Expect.equal (ft term) expected "Incorrect format"
     ]

@@ -44,7 +44,7 @@ let ToCSV systemState =
         csv.WriteField(ft term, true)
 
     let writeRecord node =
-        csv.WriteField(ft node.Term, true);
+        writeField node.Term
     
         for belief in node.Beliefs.GetBeliefs() do
             writeField belief.Term

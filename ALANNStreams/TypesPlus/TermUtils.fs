@@ -28,28 +28,7 @@ open Types
 open Evidence
 open System.Linq
 
-// Get sub terms to a recursive depth of Params.TERM_DEPTH
-//let terms term = 
-//    let rec loop level term = seq {
-//        if level < Params.TERM_DEPTH then
-//            match term with
-//            | Word "_" | Var(_, _) -> ()
-
-//            | Word _ -> 
-//                yield term
-
-//            | TemporalTerm(_, x, _)
-//            | Term(_, x) -> 
-//                yield term
-//                for t in x do
-//                    yield! loop (level + 1) t
-//            | _ -> failwith "Unexpected Temporal term in terms()"
-//        else
-//            ()
-//    }
-
-//    loop 0 term |> Seq.toList |> List.distinct
-
+// Return all sub terms including parent term
 let terms term = 
     let rec loop acc term =
         match term with
@@ -59,12 +38,14 @@ let terms term =
 
     loop [] term |> Seq.toList |> List.distinct
 
+// Calculate syntactic complexity of term
 let rec synComp st =
     match st with
     | TemporalTerm(_, lst, _) | Term(_, lst) -> 1 + List.fold (fun sum t -> sum + synComp(t)) 0 lst
     | Var( _) -> 2
     | Word _ -> 1
 
+// Test for no common subterms in term
 let noCommonSubterm s p =    
     let rec flatten acc term =
         match term with
@@ -75,42 +56,32 @@ let noCommonSubterm s p =
 
     (flatten [] s).Intersect(flatten [] p).Count() = 0
 
+// General utils
 let inline sort lst = lst |> List.sort
 
-let isExtSet = function | Term(ExtSet, _) -> true | _ -> false
-let isIntSet = function | Term(IntSet, _) -> true | _ -> false
+// Revision related utils
+let isRevisable (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Stamp.Evidence    
+
+// Term related utils
 let isAtomic = function | Word _ -> true | _ -> false
-let isSet t = isExtSet t || isIntSet t
-let isSetOrAtomic t = isSet t || isAtomic t
 let isImp = function | Term(Imp, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
 let isEqu = function | Term(Equ, _) | TemporalTerm(PreEqu, _, _) | TemporalTerm(ConEqu, _, _) -> true | _ -> false
 let isTemporal = function | TemporalTerm _ -> true | _ -> false
-let isPredictiveTemporal = function | TemporalTerm(PreEqu, _, _) | TemporalTerm(PreImp, _, _) | TemporalTerm(ConImp, _, _) | TemporalTerm(RetImp, _, _) -> true | _ -> false
-let isImplicationOp = function Imp -> true | _ -> false
 let isTemporalImplication = function |PreImp | ConImp | RetImp -> true | _ -> false
-let isTemporalOp = function | PreImp | ConImp | RetImp | ConEqu | PreEqu -> true | _ -> false
 let isHypothesis = function | Term(Imp, _) -> true | TemporalTerm(op, _, _) when isTemporalImplication op -> true | _ -> false
 let isNotImpOrEqu s = not(isImp s || isEqu s)
-let isVar = function | Var(_) -> true | _ -> false
+
+// set related utils
+let isExtSet = function | Term(ExtSet, _) -> true | _ -> false
+let isIntSet = function | Term(IntSet, _) -> true | _ -> false
+let isSet t = isExtSet t || isIntSet t
 let notSet a = not (isExtSet a || isIntSet a)
 let union a b = Set.toList <| Set.union (Set.ofList a) (Set.ofList b) |> sort
-let intersection a b = Set.toList <| Set.intersect (Set.ofList a) (Set.ofList b) |> sort
+//let intersection a b = Set.toList <| Set.intersect (Set.ofList a) (Set.ofList b) |> sort
 let difference a b = Set.toList <| Set.difference (Set.ofList a) (Set.ofList b) |> sort
-let isMember s lst = List.contains s lst 
-let listLess s lst = List.except [s] lst
-let from s lst = match listLess s lst with | [a] -> a | _ -> failwith "Failure in from() - Non binary term" 
- 
-let rec containsVars = function
-    | Var(_, _) -> true
-    | Word _ -> false
-    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsVars lst
 
+let intersection (a: 'a seq) (b: 'b seq) = a.Intersect(b) |> Seq.toList |> sort
 
-let rec containsQueryVars = function
-    | Var(QVar, _) -> true
-    | Var(_, _) -> false
-    | Word _ -> false
-    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsQueryVars lst
 
 let reduce = function
     | Term(IntInt, hd::tl) when tl = [] ->  hd
@@ -121,6 +92,30 @@ let reduce = function
     | TemporalTerm(Par, hd::tl, _) when tl = [] -> hd
     | term -> term
 
+// List related utils
+let isMember s lst = List.contains s lst 
+let listLess s lst = List.except [s] lst
+let from s lst = match listLess s lst with | [a] -> a | _ -> failwith "Failure in from() - Non binary term" 
+ 
+// Var related utils
+let isVar = function | Var(_) -> true | _ -> false
+
+let rec containsVars = function
+    | Var(_, _) -> true
+    | Word _ -> false
+    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsVars lst
+
+let rec containsQueryVars = function
+    | Var(QVar, _) -> true
+    | Var(_, _) -> false
+    | Word _ -> false
+    | TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsQueryVars lst
+
+let rec containsDepVars = function
+| Var(DVar, _) -> true
+| Var(_, _) -> false
+| Word _ -> false
+| TemporalTerm(_, lst, _) | Term(_, lst) -> List.exists containsDepVars lst
+
 let isSelective t = containsQueryVars t
 
-let isRevisable (b1 : Belief) (b2 : Belief) = nonOverlap b1.Stamp.Evidence b2.Stamp.Evidence    

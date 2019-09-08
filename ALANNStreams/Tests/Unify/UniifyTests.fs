@@ -38,68 +38,68 @@ let parseTerm str =
 [<Tests>]
 let test1 =
     testSequenced <| 
-        testList "FormatTests" [
-            testCase "FormatTest1" <| fun () ->   
+        testList "UnifyTests" [
+            testCase "UnifyTest1" <| fun () ->   
                 let t1 = parseTerm "<{a} --> b>"
                 let q1 = parseTerm "<?what --> b>"         
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest2" <| fun () ->   
+            testCase "UnifyTest2" <| fun () ->   
                 let t1 = parseTerm "(cat && mouse)"
                 let q1 = parseTerm "(#1 && #2)"         
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest3" <| fun () ->   
+            testCase "UnifyTest3" <| fun () ->   
                 let t1 = parseTerm "<<a --> x> ==> <a --> y>>"
                 let q1 = parseTerm "<<$1 --> x> ==> <$1 --> y>>"       
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest4" <| fun () ->   
+            testCase "UnifyTest4" <| fun () ->   
                 let t1 = parseTerm "<<a --> x> ==> <b --> x>>"
                 let q1 = parseTerm "<<a --> $1> ==> <b --> $1>>"       
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest5" <| fun () ->   
+            testCase "UnifyTest5" <| fun () ->   
                 let t1 = parseTerm "<<(a * b) --> c> ==> <d --> e>>"
                 let q1 = parseTerm "<<?what --> c> ==> <d --> e>>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest6" <| fun () ->   
+            testCase "UnifyTest6" <| fun () ->   
                 let t1 = parseTerm "<<(a * b) --> c> ==> <d --> e>>"
                 let q1 = parseTerm "<<(a * ?what) --> c> ==> <d --> e>>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest7" <| fun () ->   
+            testCase "UnifyTest7" <| fun () ->   
                 let t1 = parseTerm "<<(a * b) --> c> ==> <d --> e>>"
                 let q1 = parseTerm "<<(a * b) --> c> ==> ?what>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest8" <| fun () ->   
+            testCase "UnifyTest8" <| fun () ->   
                 let t1 = parseTerm "<<(a * b) --> c> ==> <d --> e>>"
                 let q1 = parseTerm "<<(a * b) --> c> ==> <d --> ?what>>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest9" <| fun () ->   
+            testCase "UnifyTest9" <| fun () ->   
                 let t1 = parseTerm "<<(a * b) --> c> ==> <d --> e>>"
                 let q1 = parseTerm "<?what ==> <d --> e>>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest10" <| fun () ->   
+            testCase "UnifyTest10" <| fun () ->   
                 let t1 = parseTerm "<<$x --> bird> ==> <$x --> flyer>>"
                 let q1 = parseTerm "<<$y --> bird> ==> <$y --> flyer>>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
 
-            testCase "FormatTest11" <| fun () ->   
+            testCase "UnifyTest11" <| fun () ->   
                 let t1 = parseTerm "<{Tweety} --> [with_wings]>"
                 let q1 = parseTerm "<$x --> [with_wings]>"
                 let expected = true

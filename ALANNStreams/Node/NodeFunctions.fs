@@ -32,8 +32,6 @@ open TermUtils
 open Evidence
 open SystemState
 
-let inhibit {F = f; C = c} = if f < 0.5f then {F = -(1.0f - f); C = c} else {F = f; C = c} 
-
 let makeEventBelief attention event (belief : Belief) =
     {Attention = attention * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Shallow
@@ -45,7 +43,7 @@ let makeAnsweredEventBelief attention event (belief : Belief) =
     {Attention = attention
      Depth = SearchDepth.Deep
      Answer = true
-     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.SHALLOW_LTI}; Solution = Some belief}
+     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.EXPLORE}; Solution = Some belief}
      Belief = belief}
 
 let makeAnsweredEventGoal attention event (belief : Belief) =
@@ -53,7 +51,7 @@ let makeAnsweredEventGoal attention event (belief : Belief) =
     {Attention = (min 1.0f attention)  
      Depth = SearchDepth.Deep
      Answer = true
-     Event = {event with Stamp = stamp; TV = Some {F = _not belief.TV.F; C = belief.TV.C}; AV = {event.AV with STI = attention; LTI = Params.SHALLOW_LTI}; Solution = Some belief}
+     Event = {event with Stamp = stamp; TV = Some {F = _not belief.TV.F; C = belief.TV.C}; AV = {event.AV with STI = attention; LTI = Params.EXPLORE}; Solution = Some belief}
      Belief = belief}
     
 let updateStamp st1 st2 = 

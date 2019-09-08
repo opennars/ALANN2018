@@ -29,7 +29,7 @@ open Evidence
 open TermUtils
 open SystemState
 
-let makeLTI depth = if depth = SearchDepth.Deep then Params.DEEP_LTI else Params.SHALLOW_LTI
+let makeLTI depth = if depth = SearchDepth.Deep then Params.EXPLOIT  else Params.EXPLORE    
 let makeStamp sc ev src = {OccurenceTime = SystemTime(); SC = sc; Evidence = ev; Source = src}
 
 let calculateInterval eb =

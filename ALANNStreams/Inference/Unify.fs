@@ -81,7 +81,7 @@ let unify x y =
 
     match unifyRec (isSelective x) x y (Some Map.empty) with | Some map -> map |> Map.toList | _ -> []
 
-let unifies x y = unify x y <> []
+let unifies x y = (x = y) || unify x y <> []
 
 //
 // makeSubstitutions - recursively apply substitutions from subs list to r e.g. R{S/T}
