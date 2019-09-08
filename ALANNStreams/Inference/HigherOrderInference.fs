@@ -280,11 +280,11 @@ let nal5_nal8_implication_based_decomposition7 (t1, t2) =
         //| Par([a; b]), _ -> [(a, structuralDed, None, [Structural])
         //                     (b, structuralDed, None, [Structural])]
     
-        | And([a; b]), _ -> [(a, structuralDed, None, [Structural])
-                             (b, structuralDed, None, [Structural])]
+        | And([a; b]), _ when  not(containsDepVars t1) -> [(a, pnn, None, [Structural])
+                                                           (b, pnn, None, [Structural])]
     
-        | Or([a; b]), _  ->[(a, structuralDed, None, [Structural])
-                            (b, structuralDed, None, [Structural])]
+        | Or([a; b]), _  when  not(containsDepVars t1)  ->[(a, npp, None, [Structural])
+                                                           (b, npp, None, [Structural])]
     
         | _ -> []
     else []
@@ -455,11 +455,11 @@ let nal6_multiple_variable_introduction = function
     | _ -> []
 
 let nal6_variable_elimination = function
-    | b, And([a; c]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [BeliefOnly])]
-    | b, And([c; a]) when unifies b a -> [(substUnify c b a, anon_ana, Some strong, [BeliefOnly])]
+    | b, (And([a; c]) as belief) when unifies b a -> [(substUnify belief b a, anon_ana, Some strong, [BeliefOnly])]
+    | b, (And([c; a]) as belief) when unifies b a -> [(substUnify belief b a, anon_ana, Some strong, [BeliefOnly])]
 
-    | And([c; a]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [GoalOnly])]
-    | And([a; c]), b when unifies b a -> [(substUnify c b a, ded, Some strong, [GoalOnly])]
+    | And([c; a]) as goal, b when unifies b a -> [(substUnify goal b a, ded, Some strong, [GoalOnly])]
+    | And([a; c]) as goal, b when unifies b a -> [(substUnify goal b a, ded, Some strong, [GoalOnly])]
 
     | b, Imp(a, c) when unifies b a -> [(substUnify c b a, ded, Some ind, [])]
     //| b, PreImp(a, c, i) when unifies b a -> [(substUnify c b a, ded, Some ind, [IsTemporal])]
@@ -484,13 +484,22 @@ let nal6_variable_elimination = function
 let nal7_temporal_inference  = function
     //| Seq(a1, c, i), a2 when a1 = a2 && isNotImpOrEqu a1 && isNotImpOrEqu c -> [(TemporalTerm(PreImp, [a1; c], i), structuralInt, None, [IsTemporal])]
     //| Seq(a, c1, i), c2 when c1 = c2 && isNotImpOrEqu a && isNotImpOrEqu c1 -> [(TemporalTerm(PreImp, [a; c1], i), structuralInt, None, [IsTemporal])]
-    | Par(a1, c, _), a2 when a1 = a2 && isNotImpOrEqu a1 -> [(TemporalTerm(ConImp, [a1; c], 0s), structuralInt, None, [IsTemporal])]
-    | Par(a, c1, _), c2 when c1 = c2 && isNotImpOrEqu a -> [(TemporalTerm(ConImp, [a; c1], 0s), structuralInt, None, [IsTemporal])]
+    | Par(a1, c, _), _ when isNotImpOrEqu a1 -> [(TemporalTerm(ConImp, [a1; c], 0s), structuralInt, None, [IsTemporal])]
+    | Par(a, c1, _), _ when isNotImpOrEqu a -> [(TemporalTerm(ConImp, [a; c1], 0s), structuralInt, None, [IsTemporal])]
 
     | Par(b2, c, _), Par(a, b1, _) when b1 = b2 -> [(TemporalTerm(ConImp, [a; c], 0s), ded, None, [IsTemporal])]
 
-    | ConImp(a, c1), c2 when c1 = c2 -> [(TemporalTerm(Par, sort [a; c1], 0s), structuralInt, None, [IsTemporal])]
-    | ConImp(a1, c), a2 when a1 = a2 -> [(TemporalTerm(Par, sort [a1; c], 0s), structuralInt, None, [IsTemporal])]
+    | ConImp(a, c1), _ -> [(TemporalTerm(Par, sort [a; c1], 0s), structuralInt, None, [IsTemporal])]
+    | ConImp(a1, c), _ -> [(TemporalTerm(Par, sort [a1; c], 0s), structuralInt, None, [IsTemporal])]
+
+    //| Par(a1, c, _), a2 when a1 = a2 && isNotImpOrEqu a1 -> [(TemporalTerm(ConImp, [a1; c], 0s), structuralInt, None, [IsTemporal])]
+    //| Par(a, c1, _), c2 when c1 = c2 && isNotImpOrEqu a -> [(TemporalTerm(ConImp, [a; c1], 0s), structuralInt, None, [IsTemporal])]
+
+    //| Par(b2, c, _), Par(a, b1, _) when b1 = b2 -> [(TemporalTerm(ConImp, [a; c], 0s), ded, None, [IsTemporal])]
+
+    //| ConImp(a, c1), c2 when c1 = c2 -> [(TemporalTerm(Par, sort [a; c1], 0s), structuralInt, None, [IsTemporal])]
+    //| ConImp(a1, c), a2 when a1 = a2 -> [(TemporalTerm(Par, sort [a1; c], 0s), structuralInt, None, [IsTemporal])]
+
 
     //| s, p when s <> p && isNotImpOrEqu p && isNotImpOrEqu s -> [
     //                                                               //(Term(ConImp, [s; p]), temporal_ind, None, [IsTemporal])

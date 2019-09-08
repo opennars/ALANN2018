@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 
-using System;
 using Akka.Streams;
 using Akka.Streams.Stage;
 using C5;

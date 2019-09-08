@@ -59,13 +59,13 @@ let BELIEF_LTI                          = 0.75f                     // long Term
 let GOAL_STI                            = 1.00f                     // Short Term Importance default Value for user entered events AKA priority
 let GOAL_LTI                            = 0.95f                     // long Term Importance default Value for user entered events AKA duration
 let QUESTION_STI                        = 1.00f                     // Short Term Importance default Value for user entered events AKA priority
-let QUESTION_LTI                        = 0.999f                    // long Term Importance default Value for user entered events AKA duration
+let QUESTION_LTI                        = 0.99f                     // long Term Importance default Value for user entered events AKA duration
 let QUEST_STI                           = 1.00f                     // Short Term Importance default Value for user entered events AKA priority
 let QUEST_LTI                           = 0.95f                     // long Term Importance default Value for user entered events AKA duration
 
-let SHALLOW_LTI                         = 0.30f                     // long Term Importance value for derived shallow events AKA duration
-let DEEP_LTI                            = 0.50f                     // long Term Importance value for derived deep events AKA duration
-let TRAIL_LENGTH                        = 30                        // maximum length allowed for inference trail within stamp
+let EXPLORE                             = 0.30f                     // long Term Importance value for derived shallow events AKA duration
+let EXPLOIT                             = 0.50f                     // long Term Importance value for derived deep events AKA duration
+let TRAIL_LENGTH                        = 20                        // maximum length allowed for inference trail within stamp
 let MAX_GENERAL_SC                      = 20                        // Maximum syntactic complexity of general terms
 let MAX_TEMPORAL_SC                     = 100                       // Maximum syntactic complexity of temporal terms
 let ATTENTION_BUFFER_SIZE               = 2                         // Maximum number of events in Attention buffer
@@ -74,7 +74,6 @@ let MAX_CONCEPTS                        = 1_000_000                 // Maximum n
 let DECISION_THRESHOLD                  = 0.65f                     // Decision threshold for goal driven operation execution
 let GC_GENERAL_NODES_INTERVAL           = 2000.0                    // Freq of concept gc in ms
 let SERVER_RESET_DELAY                  = 1000                      // Server reset command delay betweeen iterations to flush streams
-let TERM_DEPTH                          = 4                         // Get sub terms to a recursive depth of TERM_DEPTH (NOT USED)
 
 // UI related Parameters
 let STORAGE_PATH                        = "DATA"                    // Folder to save and load data to
@@ -84,7 +83,7 @@ let NOISE_LEVEL                         = 0.00f                     // exp(tv) t
 
 //Streams related Parameters  
 //let NUM_TERM_STREAMS                    = numLogicalProcessors * 10 // Number of Term streams
-let NUM_TERM_STREAMS                    = 50                        // Number of Term streams
+let NUM_TERM_STREAMS                    = 200                       // Number of Term streams
 let STREAM_NODE_MEMORY                  = 10_000                    // Initial number of nodes to allocate per stream store
 let GROUP_DELAY_MS                      = 1.0                       // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 10_000                    // Number of events to form a minor stream block

@@ -345,7 +345,7 @@ let test1 =
             let tv2 = {F = 1.0f; C = 0.9f}
             let t1 = parseEvent <|  "<s <-> p>." + truth tv1 
             let t2 = parseEvent <|  "<s --> p>." + truth tv1 
-            let expected = [("<s <-> p>", Some <| structuralInt(tv1, tv2))]
+            let expected = [("<s <-> p>", Some <| structuralAbd(tv1, tv2))]
             Expect.equal (testInfFunc Nal1_3_EquivalenceAndImplication t1 t2)  expected "Nal1_3_EquivalenceAndImplication: 1b failed"
 
         testCase "Nal1_3_EquivalenceAndImplication: 1" <| fun () ->   
