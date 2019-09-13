@@ -41,7 +41,7 @@ let processQuestion attention state (event : Event) =
             getInferenceBeliefs attention state event
 
     | Selective ->
-        if state.Term = event.Term && not(containsVars state.HostBelief.Term) then
+        if state.Term = event.Term && not(containsVars state.HostBelief.Term) && not(containsVars event.Term) then
             tryPrintAnswer event state.HostBelief
             [makeAnsweredEventBelief attention event state.HostBelief]
         else // not host term so send event to host to get host truth

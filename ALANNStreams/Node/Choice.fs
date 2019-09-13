@@ -29,6 +29,7 @@ open Unify
 open TruthFunctions
 open TermFormatters
 open Events
+open TermUtils
 
 let maxTV (b1 : Belief) (b2 : Belief) = 
     let cond1 = b1.TV.C > b2.TV.C 
@@ -50,7 +51,7 @@ let bestAnswer state (event : Event) =
 let selectiveAnswer state (event : Event) =
     let matches = 
         state.Beliefs.GetBeliefs()
-        |> Seq.filter (fun b -> unifies event.Term b.Term)
+        |> Seq.filter (fun b -> unifies event.Term b.Term && not(containsVars b.Term) )
 
     if Seq.isEmpty matches then
         None
