@@ -74,7 +74,7 @@ let unify x y =
             | x, Var(IVar, _) when not(selective) -> unifyVar y x map
             | Var(DVar, _), y when not(selective) -> unifyVar x y map
             | x, Var(DVar, _) when not(selective) -> unifyVar y x map
-
+        
             | _ -> None
 
     // Main function body here

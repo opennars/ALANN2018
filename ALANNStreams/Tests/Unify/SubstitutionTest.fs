@@ -52,4 +52,10 @@ let test1 =
                 let expected = parseStatement "<(<{Tweety} --> [chirping]> && <{Tweety} --> [with_wings]>) ==> <{Tweety} --> bird>>"
                 Expect.equal  (substUnify t3 t1 t2) expected "Incorrect format"  
 
+            testCase "SubstitutionTest3" <| fun () ->   
+                let t1 = parseStatement "(<{($a * 0)} --> tokenAtEnum> && <{($b * 3)} --> tokenAtEnum>)"
+                let t2 = parseStatement "(<{((frogo & ta) * 0)} --> #1> && <{((to & te) * 3)} --> #1>)"         
+                let t3 = parseStatement "(<{($a * 0)} --> tokenAtEnum> && <{($b * 3)} --> tokenAtEnum>)"
+                let expected = parseStatement "(<{((frogo & ta) * 0)} --> tokenAtEnum> && <{((to & te) * 3)} --> tokenAtEnum>)"
+                Expect.equal  (substUnify t3 t1 t2) expected "Incorrect format"  
         ]

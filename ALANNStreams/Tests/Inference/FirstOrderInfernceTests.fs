@@ -104,13 +104,85 @@ let test1 =
             let expected = [("<b --> a>", Some <| ind(tv1, tv2))]
             Expect.equal (testInfFunc firstOrderSyllogisitic t1 t2) expected "FirstOrderSyllogistic: ind failed"
 
-        testCase "Immediate: cnv" <| fun () ->   
+        testCase "Nal1_4_conversion_contrapostion_negation_test1" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "<p --> s>?"
+            let t2 = parseEvent <|  "<s --> p>." + truth tv1
+            let expected = [("<p --> s>", Some <| cnv(tv1, tv1))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: cnv failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test2" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
             let t1 = parseEvent <|  "<s --> p>." + truth tv1
             let t2 = parseEvent <|  "<z --> z>." + truth tv1 
             let expected = [("<p --> s>", Some <| cnv(tv1, tv2))]
             Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: cnv failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test3" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "<a --> b>." + truth tv1
+            let t2 = parseEvent <|  "a." + truth tv1 
+            let expected = [("--<a --> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test4" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "<a --> b>." + truth tv1
+            let t2 = parseEvent <|  "b." + truth tv1 
+            let expected = [("--<a --> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test5" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "--<a --> b>." + truth tv1
+            let t2 = parseEvent <|  "a." + truth tv1 
+            let expected = [("<a --> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test6" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "--<a --> b>." + truth tv1
+            let t2 = parseEvent <|  "b." + truth tv1 
+            let expected = [("<a --> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test7" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "<a <-> b>." + truth tv1
+            let t2 = parseEvent <|  "a." + truth tv1 
+            let expected = [("--<a <-> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test8" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "<a <-> b>." + truth tv1
+            let t2 = parseEvent <|  "b." + truth tv1 
+            let expected = [("--<a <-> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test9" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "--<a <-> b>." + truth tv1
+            let t2 = parseEvent <|  "a." + truth tv1 
+            let expected = [("<a <-> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
+
+        testCase "Nal1_4_conversion_contrapostion_negation_test10" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let t1 = parseEvent <|  "--<a <-> b>." + truth tv1
+            let t2 = parseEvent <|  "b." + truth tv1 
+            let expected = [("<a <-> b>", Some <| d_neg(tv1, tv2))]
+            Expect.equal (testInfFunc Nal1_4_conversion_contrapostion_negation t1 t2) expected "Immediate: neg failed"
       
         testCase "similaritySyllogisitic: com1" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}

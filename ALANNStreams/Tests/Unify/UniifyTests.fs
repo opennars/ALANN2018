@@ -104,4 +104,16 @@ let test1 =
                 let q1 = parseTerm "<$x --> [with_wings]>"
                 let expected = true
                 Expect.equal  (unifies t1 q1) expected "Incorrect format"
+
+            testCase "UnifyTest12" <| fun () ->   
+                let t1 = parseTerm "(<{($a * 0)} --> tokenAtEnum> && <{($b * 3)} --> tokenAtEnum>)"
+                let q1 = parseTerm "(<{((frogo & ta) * 0)} --> #1> && <{((to & te) * 3)} --> #1>)"
+                let expected = true
+                Expect.equal  (unifies t1 q1) expected "Incorrect format"
+
+            testCase "UnifyTest13" <| fun () ->   
+                let t1 = parseTerm "(<{($a * 0)} --> tokenAtEnum> && <{($b * 3)} --> tokenAtEnum>)"
+                let q1 = parseTerm "(<{((frogo & ta) * 0)} --> #1> && <{((to & te) * 3)} --> #1>)"
+                let expected = true
+                Expect.equal  (unifies t1 q1) expected "Incorrect format"
         ]
