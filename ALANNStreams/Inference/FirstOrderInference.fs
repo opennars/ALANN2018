@@ -88,6 +88,13 @@ let setDecomposition = function
     | Inh(m1, s), Inh(m2, IntInt(lst)) when m1 = m2 && isMember s lst && listLess s lst <> [] -> [(Term(Inh, [m1; reduce(Term(IntInt, listLess s lst))]), npp, None, [])]
     | Inh(m1, s1), Inh(m2, ExtDif(s2, p)) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [m1; p]), pnp, None, [])]
     | Inh(m1, s1), Inh(m2, ExtDif(p, s2)) when m1 = m2 && s1 = s2 && p <> m1 -> [(Term(Inh, [m1; p]), nnn, None, [])]
+
+    | Inh(ExtSet([s]), m1), Inh(ExtSet(lst), m2) when m1 = m2 && isMember s lst && List.length lst > 1 -> [(Term(Inh, [Term(ExtSet, [s]); m1]), structuralDed, None, [BeliefFromQuestion])]
+    | Inh(IntSet([s]), m1), Inh(IntSet(lst), m2) when m1 = m2 && isMember s lst && List.length lst > 1 -> [(Term(Inh, [Term(IntSet, [s]); m1]), structuralDed, None, [BeliefFromQuestion])]
+
+    | Inh(m1, ExtSet([s])), Inh(m2, ExtSet(lst)) when m1 = m2 && isMember s lst && List.length lst > 1 -> [(Term(Inh, [m1; Term(ExtSet, [s])]), structuralDed, None, [BeliefFromQuestion])]
+    | Inh(m1, IntSet([s])), Inh(m2, IntSet(lst)) when m1 = m2 && isMember s lst && List.length lst > 1 -> [(Term(Inh, [m1; Term(IntSet, [s])]), structuralDed, None, [BeliefFromQuestion])]
+
     | _ -> []
 
 let InheritanceSetComprehension = function

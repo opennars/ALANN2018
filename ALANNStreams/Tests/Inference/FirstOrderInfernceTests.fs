@@ -384,6 +384,70 @@ let test1 =
             let expected = [("<m --> p>", Some <| nnn(tv1, tv2))]
             Expect.equal (testInfFunc setDecomposition t1 t2)  expected "setDecomposition: nnn2 failed"
 
+        testCase "setDecomposition: backward1" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<{a} --> c>?"
+            let t2 = parseEvent <|  "<{a b} --> c>." + truth tv1 
+            let expected = [("<{a} --> c>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward1 failed"
+
+        testCase "setDecomposition: backward2" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<{b} --> c>?"
+            let t2 = parseEvent <|  "<{a b} --> c>." + truth tv1 
+            let expected = [("<{b} --> c>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward2 failed"
+
+        testCase "setDecomposition: backward3" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<c --> {a}>?"
+            let t2 = parseEvent <|  "<c --> {a b}>." + truth tv1 
+            let expected = [("<c --> {a}>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward3 failed"
+
+        testCase "setDecomposition: backward4" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<c --> {b}>?"
+            let t2 = parseEvent <|  "<c --> {a b}>." + truth tv1 
+            let expected = [("<c --> {b}>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward4 failed"
+
+        testCase "setDecomposition: backward5" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<[a] --> c>?"
+            let t2 = parseEvent <|  "<[a b] --> c>." + truth tv1 
+            let expected = [("<[a] --> c>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward5 failed"
+
+        testCase "setDecomposition: backward6" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<[b] --> c>?"
+            let t2 = parseEvent <|  "<[a b] --> c>." + truth tv1 
+            let expected = [("<[b] --> c>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward6 failed"
+
+        testCase "setDecomposition: backward7" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<c --> [a]>?"
+            let t2 = parseEvent <|  "<c --> [a b]>." + truth tv1 
+            let expected = [("<c --> [a]>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward7 failed"
+
+        testCase "setDecomposition: backward8" <| fun () ->   
+            let tv1 = {F = 1.0f; C = 0.9f}
+            let tv2 = {F = 1.0f; C = 0.9f}
+            let q1 = parseEvent <|  "<c --> [b]>?"
+            let t2 = parseEvent <|  "<c --> [a b]>." + truth tv1 
+            let expected = [("<c --> [b]>", Some <| structuralDed(tv1, tv2))]
+            Expect.equal (testInfFunc setDecomposition q1 t2)  expected "setDecomposition: backward8 failed"
+
         testCase "InheritanceSetComprehension: Int" <| fun () ->   
             let tv1 = {F = 1.0f; C = 0.9f}
             let tv2 = {F = 1.0f; C = 0.9f}
