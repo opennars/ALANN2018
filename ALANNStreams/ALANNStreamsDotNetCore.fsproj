@@ -18,6 +18,7 @@
     <Compile Include="TypesPlus\SystemState.fs" />
     <Compile Include="TypesPlus\Factories.fs" />
     <Compile Include="IO\TermFormatters.fs" />
+    <Compile Include="IO\ToCSV.fs" />
     <Compile Include="IO\PrintUtils.fs" />
     <Compile Include="IO\Network.fs" />
     <Compile Include="IO\ALANNSystem.fs" />
@@ -30,6 +31,7 @@
     <Compile Include="Inference\Unify.fs" />
     <Compile Include="Inference\TruthFunctions.fs" />
     <Compile Include="Inference\InferenceUtils.fs" />
+    <Compile Include="Inference\SequenceBuilder.fs" />
     <Compile Include="Inference\FirstOrderInference.fs" />
     <Compile Include="Inference\HigherOrderInference.fs" />
     <Compile Include="Inference\InferenceFlowModules.fs" />
