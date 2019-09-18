@@ -1,10 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="TypesPlus\Actions.fs" />
@@ -60,6 +61,7 @@
     <Compile Include="Program.fs" />
     <None Include="NAL Scripts\Ontology.NAL" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Akkling" Version="0.9.3" />
     <PackageReference Include="Akkling.Streams" Version="0.9.3" />
@@ -72,8 +74,9 @@
     <PackageReference Include="NewtonSoft.Json" Version="12.0.2" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\PriorityBuffer\PriorityBufferDotNetCore.csproj" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+
 </Project>
