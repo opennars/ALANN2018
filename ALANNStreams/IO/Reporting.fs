@@ -39,11 +39,11 @@ let displayAnswer (answer : Answer) =
     match systemState.answerDict.TryGetValue answer' with
     | (false, _) ->
         match systemState.answerDict.TryAdd(answer', (answer.Prefix, answer.Term, answer.TV)) with
-        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
+        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + "." + answer.TV))
         | _ -> printfn "Add failed"; ()
     | (true, ((_, _, tv) as existing)) when tv < answer.TV -> 
         match systemState.answerDict.TryUpdate(answer', (answer.Prefix, answer.Term, answer.TV), existing) with
-        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + answer.TV))
+        | true -> printActor <! PrintMessage (sprintf "?%s" (answer.Prefix + answer.Term + "." + answer.TV))
         | _ -> printfn "Update failed";()
     | _ -> ()
 
