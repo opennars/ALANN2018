@@ -83,7 +83,7 @@ let NOISE_LEVEL                         = 0.00f                     // exp(tv) t
 
 //Streams related Parameters  
 //let NUM_TERM_STREAMS                    = numLogicalProcessors * 10 // Number of Term streams
-let NUM_TERM_STREAMS                    = 50                        // Number of Term streams
+let NUM_TERM_STREAMS                    = 200                       // Number of Term streams
 let STREAM_NODE_MEMORY                  = 10_000                    // Initial number of nodes to allocate per stream store
 let GROUP_DELAY_MS                      = 1.0                       // Number of ms to allow for grouping of events before despatching 
 let GROUP_BLOCK_SIZE                    = 10_000                    // Number of events to form a minor stream block
