@@ -44,6 +44,7 @@
     <Compile Include="Node\ProcessBelief.fs" />
     <Compile Include="Node\ProcessGoal.fs" />
     <Compile Include="Node\ProcessQuest.fs" />
+    <Compile Include="Node\ProcessEvent.fs" />
     <Compile Include="Node\Node.fs" />
     <Compile Include="TermStreams\TermStream.fs" />
     <Compile Include="TermStreams\TermStreams.fs" />
