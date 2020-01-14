@@ -42,17 +42,15 @@ let termStream (i) =
                     match systemState.stores.[i].TryGetValue(t) with
                     | (true, node) ->
                         let (node', ebs) = processNode node e
-                        match systemState.stores.[i].TryUpdate(t, node', node) with
-                        | false -> [] //failwith "processEvent: TryUpdate failed"
-                        | true -> ebs
+                        systemState.stores.[i].TryUpdate(t, node', node) |> ignore
+                        ebs
                     | (false, _) -> [] //failwith "processEvent: TryGetValue failed"
                 with
                     | ex -> []
 
             let createNode {Term =  t; Event = e} = 
-                match systemState.stores.[i].TryAdd(t, createNode (t, e)) with
-                | true -> {Term = t; Event = e}
-                | false -> failwith "createNode failed to create node"
+                systemState.stores.[i].TryAdd(t, createNode e t) |> ignore
+                {Term = t; Event = e}
 
             let preferCreatedTermMerge = builder.Add(MergePreferred<TermEvent>(1))
             let partitionExistingTerms = builder.Add(Partition<TermEvent>(2, fun {Term = t} -> if systemState.stores.[i].ContainsKey(t) then 1 else 0))

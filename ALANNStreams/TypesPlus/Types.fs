@@ -177,6 +177,7 @@ and Node = {Term : Term
             Beliefs : IStore
             VirtualBelief : Belief
             Created : SysTime
+            //mutable HostUserQuestion : Event option
             mutable HostBelief : Belief
             mutable Attention : float32
             mutable LastUsed : SysTime

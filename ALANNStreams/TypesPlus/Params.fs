@@ -35,14 +35,14 @@ let HORIZON                             = 1.0f                      // System Pe
 let CONF_MAX_CLAMP                      = 1.0f - Single.Epsilon     // Clamp value for truth conf to avoid rounding to 1.0f
                                                                     
 // Node Related Parameters                                          
-let ACTIVATION_THRESHOLD                = 0.70f                     // Minimum concept STI for concept activation
+let ACTIVATION_THRESHOLD                = 0.80f                     // Minimum concept STI for concept activation
 let RESTING_POTENTIAL                   = 0.25f                     // After firing node attention is reset to this
 let NOVELTY_BIAS                        = 0.50f                     // New concepts get biased attention as novel
-let DECAY_RATE                          = 0.10f                     // Lambda decay rate for node forgetting - higher value -> slower decay
+let DECAY_RATE                          = 2.00f                     // Lambda decay rate for node forgetting - higher value -> slower decay
 let LATENCY_PERIOD                      = 1L                        // Concept latency period in milliseconds
-let GENERAL_BELIEF_CAPACITY             = 25                        // Max number of general beliefs per node
-let TEMPORAL_BELIEF_CAPACITY            = 25                        // Max number of temporal beliefs per node
-let PRE_POST_BELIEF_CAPACITY            = 25                        // Max number of Pre and Post condition beliefs per node
+let GENERAL_BELIEF_CAPACITY             = 10                        // Max number of general beliefs per node
+let TEMPORAL_BELIEF_CAPACITY            = 10                        // Max number of temporal beliefs per node
+let PRE_POST_BELIEF_CAPACITY            = 10                        // Max number of Pre and Post condition beliefs per node
 let BELIEF_RANK_POW                     = 1.00                      // exp/sc^n ranking where n is this parameter
 
 // Temporal Related Parameters
@@ -66,8 +66,8 @@ let QUEST_LTI                           = 0.95f                     // long Term
 let EXPLORE                             = 0.30f                     // long Term Importance value for derived shallow events AKA duration
 let EXPLOIT                             = 0.50f                     // long Term Importance value for derived deep events AKA duration
 let TRAIL_LENGTH                        = 20                        // maximum length allowed for inference trail within stamp
-let MAX_GENERAL_SC                      = 20                        // Maximum syntactic complexity of general terms
-let MAX_TEMPORAL_SC                     = 100                       // Maximum syntactic complexity of temporal terms
+let MAX_GENERAL_SC                      = 15                        // Maximum syntactic complexity of general terms
+let MAX_TEMPORAL_SC                     = 10                        // Maximum syntactic complexity of temporal terms
 let ATTENTION_BUFFER_SIZE               = 2                         // Maximum number of events in Attention buffer
 let INPUT_BUFFER_SIZE                   = 100                       // Maximum number of events in input buffer
 let MAX_CONCEPTS                        = 1_000_000                 // Maximum number of concepts

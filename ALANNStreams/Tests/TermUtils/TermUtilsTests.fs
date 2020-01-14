@@ -76,4 +76,13 @@ let test1 =
                             Word "tash"
                             Word "human"]
             Expect.containsAll (terms t1) expected "Incorrect subterms"
+
+        testCase "SubtermTest7" <| fun () ->
+            let t1 = Term(Inh, [Term(Prod, [Word "cat"; Term(IntSet, [Word "blue"])]); Word "likes"])
+            let expected = [Term(Inh, [Term(Prod, [Word "cat"; Term(IntSet, [Word "blue"])]); Word "likes"])
+                            Term(IntSet, [Word "blue"])
+                            Term(Prod, [Word "cat"; Term(IntSet, [Word "blue"])])
+                            Word "cat"
+                            Word "likes"]
+            Expect.containsAll (terms t1) expected "Incorrect subterms"
     ]

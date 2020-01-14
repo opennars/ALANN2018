@@ -40,10 +40,10 @@ let makeEventBelief attention event (belief : Belief) =
      Belief = belief}
 
 let makeAnsweredEventBelief attention event (belief : Belief) =
-    {Attention = attention
+    {Attention = attention * TruthFunctions.exp(belief.TV)
      Depth = SearchDepth.Deep
      Answer = true
-     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C); LTI = Params.EXPLORE}; Solution = Some belief}
+     Event = {event with AV = {event.AV with STI = event.AV.STI * (1.0f - belief.TV.C) * event.AV.LTI}; Solution = Some belief}
      Belief = belief}
 
 let makeAnsweredEventGoal attention event (belief : Belief) =
@@ -51,7 +51,7 @@ let makeAnsweredEventGoal attention event (belief : Belief) =
     {Attention = (min 1.0f attention)  
      Depth = SearchDepth.Deep
      Answer = true
-     Event = {event with Stamp = stamp; TV = Some {F = _not belief.TV.F; C = belief.TV.C}; AV = {event.AV with STI = attention; LTI = Params.EXPLORE}; Solution = Some belief}
+     Event = {event with Stamp = stamp; TV = Some {F = _not belief.TV.F; C = belief.TV.C}; AV = {event.AV with STI = attention * event.AV.LTI}; Solution = Some belief}
      Belief = belief}
     
 let updateStamp st1 st2 = 
@@ -117,10 +117,9 @@ let updateAttention state now event =
     {state with Attention = sti}
 
 let getInferenceBeliefs attention state event = 
-    // Check for non overlapping evidence, make event belief pair for deriver
-    let makeInferenceEventBeliefs (s : seq<Belief>) =
-        Seq.toList s
-        |> List.filter (fun belief -> nonOverlap event.Stamp.Evidence belief.Stamp.Evidence)
-        |> List.map (makeEventBelief attention event)
-
-    makeInferenceEventBeliefs (state.Beliefs.GetBeliefs())
+    let nonOverlapCheck event (belief : Belief) = nonOverlap event.Stamp.Evidence belief.Stamp.Evidence
+        
+    state.Beliefs.GetBeliefs()        
+    |> Seq.toList
+    |> List.filter (nonOverlapCheck event)
+    |> List.map (makeEventBelief attention event)

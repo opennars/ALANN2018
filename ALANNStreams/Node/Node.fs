@@ -28,39 +28,9 @@ open Types
 open Store
 open Factories
 open NodeFunctions
-open ProcessBelief
-open ProcessQuestion
-open ProcessGoal
-open ProcessQuest
-open Reporting
 open System.Threading
 open SystemState
-open Evidence
-
-let processEvent state attention oldBelief event =
-    
-    if state.Trace then showTrace state event
-
-    let createEventBeliefs state = function
-        | {Event.EventType = Question} as event -> processQuestion attention state event
-        | {Event.EventType = Belief} as event   -> processBelief attention state event
-        | {Event.EventType = Goal} as event     -> processGoal attention state event
-        | {Event.EventType = Quest} as event    -> processQuest attention state event
-
-    let eventBeliefs = createEventBeliefs state event
-
-    let eventBeliefsPlus (belief : Belief option) = 
-        match belief with
-        | Some belief when nonOverlap event.Stamp.Evidence belief.Stamp.Evidence -> 
-            (makeEventBelief attention event belief)::eventBeliefs
-        | _ -> eventBeliefs
-
-    match event.EventType with
-    | Belief | Question ->
-        (makeEventBelief attention event state.VirtualBelief)::(eventBeliefsPlus oldBelief)     // add virtual EventBelief for structural Inference
-    | Goal ->
-        eventBeliefsPlus oldBelief
-    | _ -> []
+open ProcessEvent
 
 let processNode state (event : Event) =
 
@@ -72,14 +42,11 @@ let processNode state (event : Event) =
         | false -> updateLinks state event
         | true -> updateHostBeliefs state event
 
-    let state = if inLatencyPeriod then {state with Attention = event.AV.STI} else updateAttention state now event
-
-    let cond1 = not inLatencyPeriod
-    let cond2 = event.EventType = Question && event.Stamp.Source = User
+    let state = updateAttention state now event
 
     Interlocked.Increment(systemState.References) |> ignore
      
-    match (state.Attention > Params.ACTIVATION_THRESHOLD && cond1) || cond2 with
+    match (state.Attention > Params.ACTIVATION_THRESHOLD && not inLatencyPeriod) with
     | true -> 
         Interlocked.Increment(systemState.Activations) |> ignore
         let attention = state.Attention
@@ -90,7 +57,8 @@ let processNode state (event : Event) =
         // inLatencyPeriod or below activation threshold
         (state, [])
 
-let initState term (e : Event) = 
+     
+let initState (e : Event) term = 
     let now = SystemTime()
     {Created = now
      Term = term
@@ -98,12 +66,12 @@ let initState term (e : Event) =
      Beliefs = Store(Params.GENERAL_BELIEF_CAPACITY, Params.TEMPORAL_BELIEF_CAPACITY, Params.PRE_POST_BELIEF_CAPACITY) :> IStore
      VirtualBelief = makeVirtualBelief term
      Attention = Params.NOVELTY_BIAS
-     LastUsed = SystemTime()
+     LastUsed = now
      UseCount = 0L
      Trace = false
 }
     
-let createNode (t, e : Event) = 
-    initState t e
+let createNode event term = 
+    initState event term
 
 

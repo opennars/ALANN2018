@@ -27,4 +27,5 @@ module ProcessBelief
 open Types
 open NodeFunctions
 
-let processBelief attention state (event : Event) = getInferenceBeliefs attention state event
+let processBelief attention (state : Node) (event : Event) = 
+    getInferenceBeliefs attention state event

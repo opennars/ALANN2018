@@ -32,6 +32,10 @@ open TermUtils
 let (|Selective|NonSelective|) t = if isSelective t then Selective else NonSelective
 
 let processQuestion attention state (event : Event) =
+
+    //if state.Term = event.Term && event.Stamp.Source = User then
+    //    state.HostUserQuestion <- Some event
+
     match event.Term with    
     | NonSelective ->                                      
         if state.Term = event.Term then
