@@ -60,7 +60,7 @@ question ::== statement '?'
 statement ::== '<' term copula term '>'
 compound-term ::== '(' term operator term ')'
 term ::== word | variable | set | compound-term | statement | '--'  '(' term ')'
-set ::== '{' {term}+ '}' | '[' {term}+ ']'
+set ::== '{' {term} '}' | '[' {term} ']'
 operator ::== '&&' | '||' '&/' | ',' | '&|' | ';' | '&' | '|'| '*' | '-' | '~' | '/1' | '/2' | '\1' | '\2'
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=/>' | '=->' | #=\>' | '=|>' | '<+>' | '</>' | '<|>'
 variable ::== '$' identifier | '#' identifier | '?' identifier 
