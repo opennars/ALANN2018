@@ -65,7 +65,7 @@ operator ::== '&&' | '||' '&/' | ',' | '&|' | ';' | '&' | '|'| '*' | '-' | '~' |
 copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=/>' | '=->' | #=\>' | '=|>' | '<+>' | '</>' | '<|>'
 variable ::== '$' identifier | '#' identifier | '?' identifier 
 word ::== string-literal | integer | real
-string-literal ::== leading-identifier {identifier}+
+string-literal ::== leading-identifier {identifier}
 leading-identifier ::== letter | '_' | '”' | '''
 identifier ::== letter | digit | '_' | '”' | '''
 integer ::== ['-' | '+'] digit-sequence
