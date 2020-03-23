@@ -53,32 +53,28 @@ https://github.com/opennars/ALANN2018/tree/master/ALANNStreams/Tests/Inference)
 ## Supported Narsese grammar
 ```
 event ::== [attention] sentence
-sentence ::== belief | question | goal | quest 
-belief ::== statement ‘.’ [truth]
-goal ::== statement ‘!’  [desire] 
-question ::== statement ‘?’
-quest ::== statement '@'
-statement ::== ‘<’ term copula term ‘>’
-compound-term ::== ‘(‘ term binary-infix-operator term ‘)’
-term ::== word | variable | set | ‘(‘ statement ‘)’ | '--'  '(' term ')' | prefix-operator '(' term {term}+ ')'
+sentence ::== belief | question | goal 
+belief ::== statement '.' [truth]
+goal ::== statement '!'  [desire] 
+question ::== statement '?'
+statement ::== '<' term copula term '>'
+compound-term ::== '(' term operator term ')'
+term ::== word | variable | set | compound-term | statement | '--'  '(' term ')'
 set ::== '{' {term}+ '}' | '[' {term}+ ']'
-binary-infix-operator ::== '&&' | '||' ',' | ';' | '&' | '|'| '*' | '-' | '~' | ‘/’ | ‘\’
-copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=->' | '=|>' | '<+>' | '<|>'
-variable ::== independent-variable identifier | dependent-variable identifier | query-variable identifier 
-independent-variable ::== ‘#’ word
-dependent-variable ::== ‘$’ word
-query-variable ::== ‘?’ word
-word ::== string-literal | decimal-integer | real-number
-string-literal ::== leading-identifier {identifier | digit | '_'}
-leading-identifier ::== letter | ‘_’ | ‘”’ | ‘’’
-identifier ::== letter | digit | ‘_’ | ‘”’ | ‘’’ ‘.’
-decimal-integer ::== ['-' | '+'] digit-sequence
+operator ::== '&&' | '||' '&/' | ',' | '&|' | ';' | '&' | '|'| '*' | '-' | '~' | '/1' | '/2' | '\1' | '\2'
+copula ::== '-->' | '<->'  | '{--' | '--]' | '{-]'  '==>' | '<=>' | '=+>' | '=/>' | '=->' | #=\>' | '=|>' | '<+>' | '</>' | '<|>'
+variable ::== '$' identifier | '#' identifier | '?' identifier 
+word ::== string-literal | integer | real
+string-literal ::== leading-identifier {identifier}+
+leading-identifier ::== letter | '_' | '”' | '''
+identifier ::== letter | digit | '_' | '”' | '''
+integer ::== ['-' | '+'] digit-sequence
 digit-sequence ::== digit {digit}
-real-number ::== ['-' | '+'] digit-sequence '.' digit-sequence
-truth ::== ‘{ floatTuple ‘}’
-desire ::== floatTuple
-attention ::== ‘[‘ floatTuple ‘]’
-floatTuple ::== real-number real-number	 
+real ::== ['-' | '+'] digit-sequence '.' digit-sequence
+truth ::== '{' floatTuple '}'
+desire ::== '{' floatTuple '}'
+attention ::== '[' floatTuple ']'
+floatTuple ::== real real
 ```
 
 Note: relational images are considered binary operators although in practice the following form is used: 
