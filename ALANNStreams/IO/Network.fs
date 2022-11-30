@@ -28,13 +28,13 @@ open System.Net
 open System.Net.Sockets
 open System.Text
 
-let serverAddr = Params.SERVER_ADDR
-let clientAddr = Params.CLIENT_ADDR
-let serverPort = Params.SERVER_PORT
-let clientPort = Params.GUI_CLIENT_PORT
-let pongPort = Params.PONG_CLIENT_PORT
-let shellAddr = Params.SHELL_ADDR
-let shellPort = Params.SHELL_PORT
+let serverAddr = "127.0.0.1"
+let clientAddr = "127.0.0.1"
+let serverPort = 50001
+let clientPort = 50002
+let pongPort = 50003
+let shellAddr = "127.0.0.1"
+let shellPort = 50004
 
 let graphiteAddr = Params.GRAPHITE_ADDR
 let graphitePort = Params.GRAPHITE_PORT

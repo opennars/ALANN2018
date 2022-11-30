@@ -13,9 +13,9 @@ namespace ALANNShell
     public class Shell
     {
         static readonly string serverAddr = "127.0.0.1";
-        static readonly int serverPort = 5000;
+        static readonly int serverPort = 50001;
         static readonly string clientAddr = "127.0.0.1";
-        static readonly int clientPort = 5003;
+        static readonly int clientPort = 50002;
 
         static IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverAddr), serverPort);
         static IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, clientPort);
